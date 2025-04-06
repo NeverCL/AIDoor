@@ -16,14 +16,16 @@ const HomePage: React.FC = () => {
       <div className='flex-1 overflow-y-auto'>
         {/* banner */}
         <div className='h-[7.63rem] my-[1.13rem]'>
-          <img className='rounded-lg w-full h-full object-cover' src={url} alt="" />
+          <img className='rounded-lg object-cover' src={url} alt="" />
         </div>
         {/* AI产品 */}
         <div className='flex-1 overflow-y-auto'>
           {
             data.map(item =>
               <div className='flex items-center mb-4'>
-                <img className='w-[4.81rem] h-[4.81rem] rounded-lg' src={url} alt="" />
+                <div className='w-[4.81rem] h-[4.81rem]'>
+                  <img className='rounded-lg' src={url} alt="" />
+                </div>
                 <div className='flex flex-col flex-1 mx-2'>
                   <span className='font-bold text-sm text-primary'>标题</span>
                   <span className='text-secondary text-xs'>简介简介简介简介</span>
