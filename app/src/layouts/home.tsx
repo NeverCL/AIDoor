@@ -5,10 +5,8 @@ import { Outlet } from "@umijs/max"
 export default () => {
     return (
         <>
-            <div className="flex flex-col mx-4 mt-7 h-[100vh]">
-                <Outlet />
-            </div>
-            <FloatBtn />
+            <NavHeader />
+            <Outlet />
         </>
     )
 }

@@ -11,22 +11,37 @@ export default defineConfig({
       redirect: "/home",
     },
     {
+      component: '@/layouts/home',
+      routes: [
+        {
+          name: "首页",
+          path: "/home",
+          component: "./Home",
+        },
+        {
+          name: "首页",
+          path: "/find",
+          component: "./Home",
+        },
+      ]
+    },
+    {
       name: "首页",
-      path: "/home",
-      component: "./Home",
+      path: "/my",
+      component: "./My",
     },
-    {
-      name: "权限演示",
-      path: "/access",
-      component: "./Access",
-    },
-    {
-      name: " CRUD 示例",
-      path: "/table",
-      component: "./Table",
-    },
+    // {
+    //   name: "权限演示",
+    //   path: "/access",
+    //   component: "./Access",
+    // },
+    // {
+    //   name: " CRUD 示例",
+    //   path: "/table",
+    //   component: "./Table",
+    // },
   ],
-
+  icons: {},
   npmClient: "pnpm",
   tailwindcss: {},
 });

@@ -1,3 +1,17 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+    .flex-nowrap-no-shrink {
+        @apply flex flex-nowrap overflow-y-auto;
+    }
+
+    .flex-nowrap-no-shrink>* {
+        @apply shrink-0 mr-2 rounded-[1.06rem] px-[0.75rem] py-2 bg-[#525252] text-white text-sm;
+    }
+
+    .flex-nowrap-no-shrink>.active {
+        @apply shrink-0 mr-2 rounded-[1.06rem] px-[1.19rem] bg-white text-black;
+    }
+}
