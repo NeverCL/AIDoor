@@ -5,7 +5,7 @@ import { Outlet } from "@umijs/max"
 export default () => {
     return (
         <>
-            <div className="flex flex-col mx-4 h-[100vh] overflow-y-auto overflow-x-hidden text-secondary text-xs">
+            <div className="flex flex-col px-4 h-[100vh] overflow-y-auto overflow-x-hidden text-secondary text-xs">
                 <Outlet />
             </div>
 
