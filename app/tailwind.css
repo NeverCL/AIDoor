@@ -14,4 +14,8 @@
     .flex-nowrap-no-shrink>.active {
         @apply shrink-0 mr-2 rounded-[1.06rem] px-[1.19rem] bg-white text-black;
     }
+
+    .gap-fallback-2>* {
+        @apply m-1;
+    }
 }

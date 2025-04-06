@@ -41,7 +41,9 @@ export default defineConfig({
     //   component: "./Table",
     // },
   ],
-  icons: {},
+  icons: {
+
+  },
   npmClient: "pnpm",
   tailwindcss: {},
 });

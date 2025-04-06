@@ -15,7 +15,7 @@ const NavHeader: React.FC = () => {
 
   return (
     <>
-      <div className='flex items-center justify-between text-primary font-bold'>
+      <div className='flex mt-7 items-center justify-between text-primary font-bold text-xl'>
         <Icon icon="local:home-setting" onClick={() => setOpen(true)} />
 
         <div className='flex items-center'>

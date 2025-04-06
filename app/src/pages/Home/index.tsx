@@ -19,7 +19,7 @@ const HomePage: React.FC = () => {
           <img className='rounded-lg w-full h-full object-cover' src={url} alt="" />
         </div>
         {/* AI产品 */}
-        <div className='flex-1 overflow-y-auto mb-8'>
+        <div className='flex-1 overflow-y-auto'>
           {
             data.map(item =>
               <div className='flex items-center mb-4'>

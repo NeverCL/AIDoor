@@ -5,9 +5,10 @@ import { Outlet } from "@umijs/max"
 export default () => {
     return (
         <>
-            <div className="flex flex-col mx-4 mt-7 h-[100vh]">
+            <div className="flex flex-col mx-4 h-[100vh] overflow-y-auto overflow-x-hidden text-secondary text-xs">
                 <Outlet />
             </div>
+
             <FloatBtn />
         </>
     )
