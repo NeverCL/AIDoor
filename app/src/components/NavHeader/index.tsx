@@ -1,6 +1,6 @@
 import { NavLink, Icon, useLocation } from '@umijs/max';
 import { useState } from 'react';
-import { Drawer } from '@mui/material';
+import { Popup } from 'antd-mobile';
 
 const isActive = 'text-base flex flex-col justify-center items-center ';
 const notActive = 'text-secondary text-base ';
@@ -35,7 +35,12 @@ const NavHeader: React.FC = () => {
         <Icon icon="local:search" />
       </div>
 
-      <Drawer open={open} onClose={() => setOpen(false)}>
+      <Popup
+        visible={open}
+        onMaskClick={() => setOpen(false)}
+        position='left'
+        bodyStyle={{ width: '70vw' }}
+      >
         <div className='flex w-[70vw] flex-col text-[16px] p-4 pt-12'>
           <div className='flex flex-col'>
             <span className='font-bold'>系统消息</span>
@@ -63,7 +68,7 @@ const NavHeader: React.FC = () => {
             加入AI之门开发者社群
           </div>
         </div>
-      </Drawer>
+      </Popup>
     </>
   );
 };
