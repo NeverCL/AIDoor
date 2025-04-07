@@ -13,9 +13,9 @@ module.exports = {
       },
     },
   },
-  // corePlugins: {
-  //   preflight: false, // 完全禁用预设样式
-  // },
+  corePlugins: {
+    preflight: false, // 完全禁用预设样式
+  },
   // 通过在CSS中添加更高优先级的选择器来覆盖img和video样式
   // 或者使用下面的方式自定义预设样式
   // future: {
