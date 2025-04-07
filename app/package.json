@@ -14,7 +14,8 @@
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@mui/material": "^7.0.1",
-    "@umijs/max": "^4.4.6"
+    "@umijs/max": "^4.4.6",
+    "antd-mobile": "^5.39.0"
   },
   "devDependencies": {
     "@types/react": "^18.0.33",
