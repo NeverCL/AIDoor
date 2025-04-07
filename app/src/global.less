@@ -14,25 +14,28 @@ body {
     box-sizing: border-box;
 }
 
-span[role="img"] {
-    width: 1.38rem;
-    height: 1.38rem;
-    display: flex;
-    align-items: center;
-    -webkit-box-align: center;
-    -webkit-box-pack: center;
-}
 
-svg {
-    width: 1em;
-    height: 1em;
-}
+:root {
+    span[role="img"] {
+        width: 1.38rem;
+        height: 1.38rem;
+        display: flex;
+        align-items: center;
+        -webkit-box-align: center;
+        -webkit-box-pack: center;
+    }
 
-svg path,
-svg rect,
-svg circle,
-svg * {
-    fill: currentColor;
+    svg {
+        width: 1em;
+        height: 1em;
+    }
+
+    svg path,
+    svg rect,
+    svg circle,
+    svg * {
+        fill: currentColor;
+    }
 }
 
 a {
@@ -53,4 +56,5 @@ a {
 div>img {
     width: 100%;
     height: 100%;
+    object-fit: cover;
 }

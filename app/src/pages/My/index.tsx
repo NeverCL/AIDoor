@@ -1,4 +1,5 @@
 import { Icon, NavLink } from "@umijs/max"
+import { Space } from "antd-mobile";
 import { useEffect, useState } from "react";
 
 const url = 'https://t13.baidu.com/it/u=3156084650,599696862&fm=225&app=113&f=PNG?w=639&h=398&s=12D388724C11ADC8171E5E930300D09A';
@@ -173,27 +174,27 @@ const ContentSection = ({ section }) => (
                 <span>{section.name}</span>
             </div>
 
-            <div className="text-xs">
-                <span className="mr-1">全部</span>
-                <span>{'>'}</span>
+            <div className="flex items-center justify-center">
+                <span>全部 ＞</span>
+                {/* <Icon icon="local:enter" /> */}
             </div>
         </NavLink>
         {/* 内容 */}
-        <div className="flex text-xs flex-wrap gap-fallback-2 m-[-0.5rem]">
+        <Space wrap>
             {section.data?.map((item, index) => (
                 <ContentCard key={index} item={item} />
             ))}
-        </div>
+        </Space>
     </div>
 );
 
 // 设置导航组件
 const SettingNav = ({ navItem }) => (
-    <NavLink to={navItem.path} className="flex mb-7 justify-between" key={navItem.path}>
+    <NavLink to={navItem.path} className="flex mb-7 justify-between items-center" key={navItem.path}>
         <div className="flex text-primary text-[0.88rem] font-bold items-center">
             {navItem.icon}
             <span>{navItem.name}</span>
         </div>
-        <span>{'>'}</span>
+        <span>＞</span>
     </NavLink>
 );
