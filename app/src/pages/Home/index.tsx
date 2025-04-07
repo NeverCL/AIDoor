@@ -16,7 +16,7 @@ const HomePage: React.FC = () => {
       <div className='flex-1 overflow-y-auto'>
         {/* banner */}
         <div className='h-[7.63rem] my-[1.13rem]'>
-          <img className='rounded-lg object-cover' src={url} alt="" />
+          <img className='rounded-lg' src={url} alt="" />
         </div>
         {/* AI产品 */}
         <div className='flex-1 overflow-y-auto'>
