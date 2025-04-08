@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AIDoor.WebAPI", "AIDoor.WebAPI\AIDoor.WebAPI.csproj", "{2518682F-2A12-4D27-9A43-C0E079D500E3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AIDoor.Test", "AIDoor.Test\AIDoor.Test.csproj", "{647A4AFF-E97A-4AFF-BB26-83C86925C9F3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2518682F-2A12-4D27-9A43-C0E079D500E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2518682F-2A12-4D27-9A43-C0E079D500E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2518682F-2A12-4D27-9A43-C0E079D500E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2518682F-2A12-4D27-9A43-C0E079D500E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{647A4AFF-E97A-4AFF-BB26-83C86925C9F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{647A4AFF-E97A-4AFF-BB26-83C86925C9F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{647A4AFF-E97A-4AFF-BB26-83C86925C9F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{647A4AFF-E97A-4AFF-BB26-83C86925C9F3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
