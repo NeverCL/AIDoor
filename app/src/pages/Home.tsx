@@ -7,6 +7,7 @@ export default () => {
         <>
             <NavHeader />
             <Outlet />
+            <FloatBtn />
         </>
     )
 }

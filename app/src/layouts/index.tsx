@@ -17,7 +17,6 @@ export default () => {
 
     return (
         <>
-
             <div className="flex flex-col px-4 overflow-y-auto overflow-x-hidden text-secondary text-xs" style={{ height: windowHeight }}>
                 <SafeArea position={"top"} />
                 <div className="flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
@@ -25,8 +24,6 @@ export default () => {
                 </div>
                 <SafeArea position={"bottom"} />
             </div>
-
-            <FloatBtn />
         </>
     )
 }
