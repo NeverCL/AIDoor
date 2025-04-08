@@ -2,7 +2,7 @@ import { Icon, NavLink } from "@umijs/max"
 import { Space } from "antd-mobile";
 import { useEffect, useState } from "react";
 
-const url = 'https://t13.baidu.com/it/u=3156084650,599696862&fm=225&app=113&f=PNG?w=639&h=398&s=12D388724C11ADC8171E5E930300D09A';
+const url = 'https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418';
 
 // 用户设置相关导航
 const navs = [
@@ -155,7 +155,7 @@ const UserCard = () => (
 
 // 内容卡片组件
 const ContentCard = ({ item }) => (
-    <div className="flex flex-col w-[7rem]">
+    <div className="flex flex-col">
         <div className="h-[5.25rem]">
             <img src={item.img} alt="" />
         </div>
@@ -180,11 +180,11 @@ const ContentSection = ({ section }) => (
             </div>
         </NavLink>
         {/* 内容 */}
-        <Space wrap>
+        <div className="grid grid-cols-3 justify-items-stretch gap-2">
             {section.data?.map((item, index) => (
                 <ContentCard key={index} item={item} />
             ))}
-        </Space>
+        </div>
     </div>
 );
 

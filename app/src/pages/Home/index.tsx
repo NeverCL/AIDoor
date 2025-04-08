@@ -5,7 +5,7 @@ const HomePage: React.FC = () => {
 
   const data = ['全部', '大模型', '小模型', '插件', '工具', '小模型', '插件', '工具'];
 
-  const url = 'https://t13.baidu.com/it/u=3156084650,599696862&fm=225&app=113&f=PNG?w=639&h=398&s=12D388724C11ADC8171E5E930300D09A';
+  const url = 'https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418';
 
   return (
     <>

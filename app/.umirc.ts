@@ -21,7 +21,7 @@ export default defineConfig({
         {
           name: "首页",
           path: "/find",
-          component: "./Home",
+          component: "./Find",
         },
       ]
     },
@@ -29,6 +29,12 @@ export default defineConfig({
       name: "首页",
       path: "/my",
       component: "./My",
+    },
+    {
+      name: "首页",
+      path: "/demo",
+      layout: false,
+      component: "./Demo",
     },
     // {
     //   name: "权限演示",
