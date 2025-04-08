@@ -17,7 +17,7 @@ export default () => {
                 {
                     [1, 2, 3, 4, 5, 6, 7, 8, 9].map((item, index) => {
                         return (
-                            <div className="flex flex-col">
+                            <div className="flex flex-col h-fit">
                                 <img className="h-[18rem] rounded-lg overflow-hidden" src={url} alt="" />
                                 <span>{index % 2 == 0 ? '短的标题' : '长标题一长标题一长标题一长标题一长标题一'}</span>
                                 <div className="flex items-center">
