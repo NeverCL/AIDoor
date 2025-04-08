@@ -26,7 +26,7 @@ const NavHeader: React.FC = () => {
             AI应用
             {isAI ? <div className='w-6 bg-white h-0.5'></div> : <></>}
           </NavLink>
-          <NavLink to='/find' replace={true} className={isAI ? notActive : isActive}>
+          <NavLink to='/home/find' replace={true} className={isAI ? notActive : isActive}>
             发现
             {!isAI ? <div className='w-6 bg-white h-0.5'></div> : <></>}
           </NavLink>

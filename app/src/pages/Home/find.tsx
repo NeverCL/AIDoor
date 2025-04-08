@@ -7,16 +7,7 @@ export default () => {
 
     const [hasMore, setHasMore] = useState(true);
 
-    const [data, setData] = useState([1, 2, 3, 4, 5]);
-
     const loadMore = async () => {
-        await new Promise((resolve) => {
-            setTimeout(() => {
-                resolve(true);
-            }, 1000);
-        })
-
-        setData(val => [...val, 1, 2, 3, 4, 5])
 
     }
 
@@ -24,7 +15,7 @@ export default () => {
         <>
             <div className="grid grid-cols-2 gap-2 mt-6 overflow-y-auto">
                 {
-                    data.map((item, index) => {
+                    [1, 2, 3, 4, 5, 6, 7, 8, 9].map((item, index) => {
                         return (
                             <div className="flex flex-col h-fit">
                                 <img className="h-[18rem] rounded-lg overflow-hidden" src={url} alt="" />

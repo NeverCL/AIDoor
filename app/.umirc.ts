@@ -5,51 +5,7 @@ export default defineConfig({
   model: {},
   initialState: {},
   request: {},
-  routes: [
-    {
-      path: "/",
-      redirect: "/home",
-    },
-    {
-      component: '@/layouts/home',
-      routes: [
-        {
-          name: "首页",
-          path: "/home",
-          component: "./Home",
-        },
-        {
-          name: "首页",
-          path: "/find",
-          component: "./Find",
-        },
-      ]
-    },
-    {
-      name: "首页",
-      path: "/my",
-      component: "./My",
-    },
-    {
-      name: "首页",
-      path: "/demo",
-      layout: false,
-      component: "./Demo",
-    },
-    // {
-    //   name: "权限演示",
-    //   path: "/access",
-    //   component: "./Access",
-    // },
-    // {
-    //   name: " CRUD 示例",
-    //   path: "/table",
-    //   component: "./Table",
-    // },
-  ],
-  icons: {
-
-  },
+  icons: {},
   npmClient: "pnpm",
   tailwindcss: {},
   metas: [
