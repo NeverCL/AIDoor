@@ -21,7 +21,7 @@ const Guide: React.FC = () => {
 
                 <div className='bg-secondary w-[1px] h-4'></div>
 
-                <NavLink to='/home/my' replace={true} className={({ isActive }) => 'flex items-center ' + (!isInHomeGroup ? 'text-primary' : 'text-secondary')}>
+                <NavLink to='/my' replace={true} className={({ isActive }) => 'flex items-center ' + (!isInHomeGroup ? 'text-primary' : 'text-secondary')}>
                     <Icon icon="local:my" className='mr-2' />
                     <span>我的</span>
                 </NavLink>
