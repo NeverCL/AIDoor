@@ -1,3 +1,4 @@
+import VerificationCodeButton from "@/components/VerificationCodeButton"
 import { NavLink } from "@umijs/max"
 import { Button, Form, Input, Toast } from "antd-mobile"
 import { MailOutline, PhoneFill, UserOutline } from "antd-mobile-icons"
@@ -39,9 +40,11 @@ export default () => {
                         label={<MailOutline className="text-lg" />}
                         rules={[{ required: true }]}
                         extra={
-                            <div className='text-blue-500' onClick={sendSmsCode}>
-                                获取验证码
-                            </div>
+                            <VerificationCodeButton onSend={function (): Promise<boolean> {
+                                return new Promise((resolve, reject) => {
+                                    resolve(true)
+                                })
+                            }} />
                         }
                     >
                         <Input placeholder='请输入验证码' clearable type="number" />
