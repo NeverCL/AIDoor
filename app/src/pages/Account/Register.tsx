@@ -13,14 +13,14 @@ export default () => {
 
     return (
         <div className="grid items-center h-full">
-            <h1>登录账号</h1>
+            <h1>注册账号</h1>
 
             <div>
                 <Form
                     layout='horizontal'
                     footer={
                         <Button block type='submit' color='primary' size='large'>
-                            登录
+                            注册
                         </Button>
                     }
                     onFinish={login}
@@ -29,7 +29,14 @@ export default () => {
                         name='name'
                         rules={[{ required: true }]}
                     >
-                        <Input onChange={console.log} placeholder='请输入手机号' clearable type='number' />
+                        <Input onChange={console.log} placeholder='请输入昵称' clearable />
+                    </Form.Item>
+
+                    <Form.Item
+                        name='phone'
+                        rules={[{ required: true }]}
+                    >
+                        <Input type='number' onChange={console.log} placeholder='请输入手机号' clearable />
                     </Form.Item>
 
                     <Form.Item
@@ -47,8 +54,8 @@ export default () => {
                 </Form>
             </div>
 
-            <NavLink to='/account/register' className='justify-self-center text-lg'>
-                注册
+            <NavLink to='/account/login' className='justify-self-center text-lg'>
+                登录
             </NavLink>
         </div>
     )
