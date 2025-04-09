@@ -3,8 +3,9 @@ export default () => {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        height: '100%'
+        height: '100%',
+        minHeight: '70vh'
     }}>
-        <span>疯狂加载中...</span>
+        <span>加载中...</span>
     </div>
 }

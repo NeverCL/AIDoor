@@ -1,5 +1,6 @@
 import { NavLink } from "@umijs/max"
 import { Button, Form, Input, Toast } from "antd-mobile"
+import { MailOutline, PhoneFill, UserOutline } from "antd-mobile-icons"
 
 export default () => {
     const sendSmsCode = () => {
@@ -13,11 +14,10 @@ export default () => {
 
     return (
         <div className="grid items-center h-full">
-            <h1>登录账号</h1>
+            <h1 className="text-black">登录账号</h1>
 
             <div>
                 <Form
-                    layout='horizontal'
                     footer={
                         <Button block type='submit' color='primary' size='large'>
                             登录
@@ -26,7 +26,9 @@ export default () => {
                     onFinish={login}
                 >
                     <Form.Item
-                        name='name'
+                        name='phone'
+                        label={<PhoneFill className="text-lg" />}
+                        childElementPosition="normal"
                         rules={[{ required: true }]}
                     >
                         <Input onChange={console.log} placeholder='请输入手机号' clearable type='number' />
@@ -34,6 +36,7 @@ export default () => {
 
                     <Form.Item
                         name='code'
+                        label={<MailOutline className="text-lg" />}
                         rules={[{ required: true }]}
                         extra={
                             <div className='text-blue-500' onClick={sendSmsCode}>
@@ -41,13 +44,13 @@ export default () => {
                             </div>
                         }
                     >
-                        <Input placeholder='请输入验证码' clearable />
+                        <Input placeholder='请输入验证码' clearable type="number" />
                     </Form.Item>
 
                 </Form>
             </div>
 
-            <NavLink to='/account/register' className='justify-self-center text-lg'>
+            <NavLink to='/account/register' replace className='justify-self-center text-lg'>
                 注册
             </NavLink>
         </div>

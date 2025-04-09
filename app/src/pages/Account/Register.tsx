@@ -1,5 +1,6 @@
 import { NavLink } from "@umijs/max"
 import { Button, Form, Input, Toast } from "antd-mobile"
+import { MailOutline, PhoneFill, UserOutline } from "antd-mobile-icons"
 
 export default () => {
     const sendSmsCode = () => {
@@ -13,11 +14,10 @@ export default () => {
 
     return (
         <div className="grid items-center h-full">
-            <h1>注册账号</h1>
+            <h1 className="text-black">注册账号</h1>
 
             <div>
                 <Form
-                    layout='horizontal'
                     footer={
                         <Button block type='submit' color='primary' size='large'>
                             注册
@@ -27,6 +27,7 @@ export default () => {
                 >
                     <Form.Item
                         name='name'
+                        label={<UserOutline className="text-lg" />}
                         rules={[{ required: true }]}
                     >
                         <Input onChange={console.log} placeholder='请输入昵称' clearable />
@@ -34,6 +35,7 @@ export default () => {
 
                     <Form.Item
                         name='phone'
+                        label={<PhoneFill className="text-lg" />}
                         rules={[{ required: true }]}
                     >
                         <Input type='number' onChange={console.log} placeholder='请输入手机号' clearable />
@@ -41,6 +43,7 @@ export default () => {
 
                     <Form.Item
                         name='code'
+                        label={<MailOutline className="text-lg" />}
                         rules={[{ required: true }]}
                         extra={
                             <div className='text-blue-500' onClick={sendSmsCode}>
@@ -54,7 +57,7 @@ export default () => {
                 </Form>
             </div>
 
-            <NavLink to='/account/login' className='justify-self-center text-lg'>
+            <NavLink to='/account/login' replace className='justify-self-center text-lg'>
                 登录
             </NavLink>
         </div>
