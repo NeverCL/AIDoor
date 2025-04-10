@@ -1,5 +1,5 @@
 import { NavLink, Icon, useLocation } from '@umijs/max';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Popup, SearchBar, SearchBarRef } from 'antd-mobile';
 
 const isActive = 'text-base flex flex-col justify-center items-center ';
@@ -13,51 +13,66 @@ const NavHeader: React.FC = () => {
 
   const [showSearch, setShowSearch] = useState(false);
 
+  const [searchText, setSearchText] = useState('');
+
   const searchRef = useRef<SearchBarRef>(null);
 
-  const isAI = pathname === '/home';
+  useEffect(() => {
 
+    if (showSearch) {
+      searchRef.current?.focus();
+    }
+
+  }, [showSearch]);
+
+  const isAI = pathname === '/home';
 
   const url = 'https://t13.baidu.com/it/u=3156084650,599696862&fm=225&app=113&f=PNG?w=639&h=398&s=12D388724C11ADC8171E5E930300D09A';
 
   return (
     <>
-      {
-        showSearch ?
-          <SearchBar
-            ref={searchRef}
-            placeholder='请输入内容'
-            showCancelButton
-            onSearch={val => {
-              // Toast.show(`你搜索了：${val}`)
-            }}
-            onFocus={() => {
-              // console.log('获得焦点')
-            }}
-            onBlur={() => {
-              // console.log('失去焦点')
-            }}
-            onCancel={() => {
-              // console.log('取消搜索')
-            }}
-          /> :
-          <div className='flex mt-7 items-center justify-between text-primary font-bold text-xl'>
-            <Icon icon="local:home-setting" onClick={() => setOpen(true)} />
 
-            <div className='flex items-center'>
-              <NavLink to='/home' replace={true} className={(isAI ? isActive : notActive) + 'mr-12'}>
-                AI应用
-                {isAI ? <div className='w-6 bg-white h-0.5'></div> : <></>}
-              </NavLink>
-              <NavLink to='/home/find' replace={true} className={isAI ? notActive : isActive}>
-                发现
-                {!isAI ? <div className='w-6 bg-white h-0.5'></div> : <></>}
-              </NavLink>
-            </div>
+      <div className='flex mt-7 items-center justify-between text-primary font-bold text-xl'>
+        {
 
-            <Icon icon="local:search" onClick={() => setShowSearch(true)} />
-          </div>
-      }
+          showSearch ?
+            <SearchBar
+              ref={searchRef}
+              className='text-white flex-1'
+              placeholder='请输入内容'
+              showCancelButton
+              value={searchText}
+              onChange={val => setSearchText(val)}
+              onSearch={val => {
+                // Toast.show(`你搜索了：${val}`)
+              }}
+              onFocus={() => {
+                // console.log('获得焦点')
+              }}
+              onBlur={() => {
+                // console.log('失去焦点')
+                setShowSearch(false);
+              }}
+              onCancel={() => {
+                // console.log('取消搜索')
+              }}
+            /> :
+            <>
+              <Icon icon="local:home-setting" onClick={() => setOpen(true)} />
+              <div className='flex items-center'>
+                <NavLink to='/home' replace={true} className={(isAI ? isActive : notActive) + 'mr-12'}>
+                  AI应用
+                  {isAI ? <div className='w-6 bg-white h-0.5'></div> : <></>}
+                </NavLink>
+                <NavLink to='/home/find' replace={true} className={isAI ? notActive : isActive}>
+                  发现
+                  {!isAI ? <div className='w-6 bg-white h-0.5'></div> : <></>}
+                </NavLink>
+              </div>
+              <Icon icon="local:search" onClick={() => setShowSearch(true)} />
+            </>
+        }
+      </div>
 
 
       <Popup
