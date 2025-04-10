@@ -1,6 +1,6 @@
 import { NavLink, Icon, useLocation } from '@umijs/max';
-import { useState } from 'react';
-import { Popup } from 'antd-mobile';
+import { useRef, useState } from 'react';
+import { Popup, SearchBar, SearchBarRef } from 'antd-mobile';
 
 const isActive = 'text-base flex flex-col justify-center items-center ';
 const notActive = 'text-secondary text-base ';
@@ -11,6 +11,10 @@ const NavHeader: React.FC = () => {
 
   const [open, setOpen] = useState(false);
 
+  const [showSearch, setShowSearch] = useState(false);
+
+  const searchRef = useRef<SearchBarRef>(null);
+
   const isAI = pathname === '/home';
 
 
@@ -18,22 +22,43 @@ const NavHeader: React.FC = () => {
 
   return (
     <>
-      <div className='flex mt-7 items-center justify-between text-primary font-bold text-xl'>
-        <Icon icon="local:home-setting" onClick={() => setOpen(true)} />
+      {
+        showSearch ?
+          <SearchBar
+            ref={searchRef}
+            placeholder='请输入内容'
+            showCancelButton
+            onSearch={val => {
+              // Toast.show(`你搜索了：${val}`)
+            }}
+            onFocus={() => {
+              // console.log('获得焦点')
+            }}
+            onBlur={() => {
+              // console.log('失去焦点')
+            }}
+            onCancel={() => {
+              // console.log('取消搜索')
+            }}
+          /> :
+          <div className='flex mt-7 items-center justify-between text-primary font-bold text-xl'>
+            <Icon icon="local:home-setting" onClick={() => setOpen(true)} />
 
-        <div className='flex items-center'>
-          <NavLink to='/home' replace={true} className={(isAI ? isActive : notActive) + 'mr-12'}>
-            AI应用
-            {isAI ? <div className='w-6 bg-white h-0.5'></div> : <></>}
-          </NavLink>
-          <NavLink to='/home/find' replace={true} className={isAI ? notActive : isActive}>
-            发现
-            {!isAI ? <div className='w-6 bg-white h-0.5'></div> : <></>}
-          </NavLink>
-        </div>
+            <div className='flex items-center'>
+              <NavLink to='/home' replace={true} className={(isAI ? isActive : notActive) + 'mr-12'}>
+                AI应用
+                {isAI ? <div className='w-6 bg-white h-0.5'></div> : <></>}
+              </NavLink>
+              <NavLink to='/home/find' replace={true} className={isAI ? notActive : isActive}>
+                发现
+                {!isAI ? <div className='w-6 bg-white h-0.5'></div> : <></>}
+              </NavLink>
+            </div>
 
-        <Icon icon="local:search" />
-      </div>
+            <Icon icon="local:search" onClick={() => setShowSearch(true)} />
+          </div>
+      }
+
 
       <Popup
         visible={open}
