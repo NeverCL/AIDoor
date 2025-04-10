@@ -15,7 +15,7 @@ export default () => {
 
     return (
         <div className="grid items-center h-full">
-            <h1 className="text-black">登录账号</h1>
+            <h1 >登录账号</h1>
 
             <div>
                 <Form

@@ -1,5 +1,5 @@
-import { Icon, NavLink } from "@umijs/max"
-import { Space } from "antd-mobile";
+import { Icon, NavLink, history } from "@umijs/max"
+import { List, Space } from "antd-mobile";
 import { useEffect, useState } from "react";
 
 const url = 'https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418';
@@ -123,9 +123,13 @@ export default () => {
 
             <div className="mt-7"></div>
 
-            {navs.map(item => (
-                <SettingNav key={item.path} navItem={item} />
-            ))}
+            <List className="text-white text-xs">
+                {navs.map(item => (
+                    <List.Item key={item.name} prefix={item.icon} onClick={() => { history.push(item.path) }}>
+                        {item.name}
+                    </List.Item>
+                ))}
+            </List>
         </>
     )
 }

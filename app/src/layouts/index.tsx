@@ -2,6 +2,8 @@ import { Outlet, useLocation, useRouteData, useSelectedRoutes } from "@umijs/max
 import { SafeArea } from "antd-mobile"
 import { useEffect, useState } from "react"
 
+const bgGrays = ['/home', '/my', '/setting'];
+
 export default () => {
     const [windowHeight, setWindowHeight] = useState(window.innerHeight);
 
@@ -18,12 +20,11 @@ export default () => {
 
     const routes = useSelectedRoutes();
 
-    const isBgWhite = routes.at(-1)?.pathnameBase.includes('/account');
-
+    const isBgGray = true;//bgGrays.includes(routes.at(-1)?.pathnameBase ?? '');
 
     return (
         <>
-            <div className={"flex flex-col px-4 overflow-y-auto overflow-x-hidden text-secondary text-xs " + (isBgWhite ? 'bg-white' : 'bg-[#2d2d2d]')} style={{ height: windowHeight }}>
+            <div className={"flex flex-col px-4 overflow-y-auto overflow-x-hidden text-xs " + (!isBgGray ? 'bg-white text-black' : 'bg-[#2d2d2d] text-secondary')} style={{ height: windowHeight }}>
                 <SafeArea position={"top"} />
                 <div className="flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
                     <Outlet />
