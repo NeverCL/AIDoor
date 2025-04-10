@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "max dev",
     "build": "max build",
-    "openapi": "max openapi",
+    "openapi": "cross-env UMI_ENV=api max openapi",
     "format": "prettier --cache --write .",
     "prepare": "husky",
     "postinstall": "max setup",
@@ -21,6 +21,7 @@
     "@types/react": "^18.0.33",
     "@types/react-dom": "^18.0.11",
     "@umijs/max-plugin-openapi": "^2.0.3",
+    "cross-env": "^7.0.3",
     "husky": "^9",
     "lint-staged": "^13.2.0",
     "prettier": "^2.8.7",
