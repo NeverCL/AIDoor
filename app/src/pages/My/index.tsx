@@ -125,9 +125,14 @@ export default () => {
 
             <List className="text-white text-xs mb-28">
                 {navs.map(item => (
-                    <List.Item key={item.name} prefix={item.icon} onClick={() => { history.push(item.path) }}>
-                        {item.name}
-                    </List.Item>
+                    <NavLink key={item.name} to={item.path} className="block">
+                        <List.Item
+                            prefix={item.icon}
+                            arrowIcon
+                        >
+                            {item.name}
+                        </List.Item>
+                    </NavLink>
                 ))}
             </List>
         </>
