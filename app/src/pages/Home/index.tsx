@@ -1,7 +1,9 @@
 import { useModel } from '@umijs/max';
+import { useState } from 'react';
 
 const HomePage: React.FC = () => {
   const { name } = useModel('global');
+  const [activeIndex, setActiveIndex] = useState(0);
 
   const data = ['全部', '大模型', '小模型', '插件', '工具', '小模型', '插件', '工具'];
 
@@ -12,7 +14,15 @@ const HomePage: React.FC = () => {
       {/* 分类 */}
       <div className='flex-1 overflow-y-auto'>
         <div className='mt-9 flex-nowrap-no-shrink sticky py-2 top-0 bg-[#2d2d2d]'>
-          {data.map(item => <span>{item}</span>)}
+          {data.map((item, index) => (
+            <span
+              key={index}
+              className={activeIndex === index ? 'active' : ''}
+              onClick={() => setActiveIndex(index)}
+            >
+              {item}
+            </span>
+          ))}
         </div>
         <div className='flex-1 overflow-y-auto'>
           {/* banner */}
