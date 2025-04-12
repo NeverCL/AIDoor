@@ -1,12 +1,11 @@
 import { NavBar } from "antd-mobile"
 import { history } from "@umijs/max"
+import BackNavBar from "@/components/BackNavBar"
 
 export default () => {
     return (
-        <div className="flex flex-col h-full text-white">
-            <NavBar onBack={() => history.back()}>隐私政策</NavBar>
-
-            <div className="flex-1 p-4 overflow-auto">
+        <BackNavBar title="隐私政策">
+            <div className="overflow-auto">
                 <h2 className="text-xl font-bold mb-4">隐私政策</h2>
 
                 <section className="mb-4">
@@ -60,6 +59,6 @@ export default () => {
                     <p className="mb-2">邮箱：privacy@aidoor.com</p>
                 </section>
             </div>
-        </div>
+        </BackNavBar>
     )
 }

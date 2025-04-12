@@ -1,6 +1,7 @@
+import BackNavBar from "@/components/BackNavBar";
 import VerificationCodeButton from "@/components/VerificationCodeButton"
 import { NavLink, history } from "@umijs/max"
-import { Button, Form, Input, List, Toast } from "antd-mobile"
+import { Button, Form, Input, List, NavBar, Toast } from "antd-mobile"
 import { MailOutline, PhoneFill, UserOutline } from "antd-mobile-icons"
 
 const routes = [
@@ -15,10 +16,8 @@ const routes = [
 export default () => {
 
     return (
-        <div className="grid h-full items-center grid-rows-[1fr_2fr] text-white">
-            <h1>设置</h1>
-
-            <List className="bg-secondary">
+        <BackNavBar title="设置">
+            <List>
                 {
                     routes.map(r =>
                         <List.Item key={r.text} onClick={() => { history.push(r.path) }}>
@@ -27,6 +26,6 @@ export default () => {
                     )
                 }
             </List>
-        </div>
+        </BackNavBar>
     )
 }

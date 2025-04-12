@@ -123,7 +123,7 @@ export default () => {
 
             <div className="mt-7"></div>
 
-            <List className="text-white text-xs">
+            <List className="text-white text-xs mb-28">
                 {navs.map(item => (
                     <List.Item key={item.name} prefix={item.icon} onClick={() => { history.push(item.path) }}>
                         {item.name}
