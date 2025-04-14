@@ -123,7 +123,7 @@ export default () => {
 
             <div className="mt-7"></div>
 
-            <List className="text-white text-xs mb-28">
+            <List className="text-white mb-28 text-base">
                 {navs.map(item => (
                     <NavLink key={item.name} to={item.path} className="block">
                         <List.Item
@@ -150,13 +150,13 @@ const UserCard = () => (
         </div>
         <div className="flex items-center justify-between flex-1 mr-8">
             <NavLink to='/messages' className="flex flex-col justify-center items-center">
-                <span className="text-xs">消息</span>
-                <span className="text-primary">53</span>
+                <span >消息</span>
+                <span className="text-primary text-lg">53</span>
             </NavLink>
             <div className="w-[1px] bg-secondary h-3"></div>
             <NavLink to='/follows' className="flex flex-col justify-center items-center">
-                <span className="text-xs">关注</span>
-                <span className="text-primary">253</span>
+                <span className="">关注</span>
+                <span className="text-primary text-lg">253</span>
             </NavLink>
         </div>
     </div>
@@ -175,10 +175,10 @@ const ContentCard = ({ item }) => (
 
 // 内容模块组件
 const ContentSection = ({ section }) => (
-    <div className="flex flex-col flex-wrap mt-7">
+    <div className="flex flex-col flex-wrap mt-7 text-base">
         {/* title */}
         <NavLink to={section.path} className="flex justify-between items-center mb-2">
-            <div className="flex text-primary text-[0.88rem] font-bold items-center">
+            <div className="flex text-primary font-bold items-center">
                 {section.icon}
                 <span>{section.name}</span>
             </div>
@@ -200,7 +200,7 @@ const ContentSection = ({ section }) => (
 // 设置导航组件
 const SettingNav = ({ navItem }) => (
     <NavLink to={navItem.path} className="flex mb-7 justify-between items-center" key={navItem.path}>
-        <div className="flex text-primary text-[0.88rem] font-bold items-center">
+        <div className="flex text-primary font-bold items-center">
             {navItem.icon}
             <span>{navItem.name}</span>
         </div>

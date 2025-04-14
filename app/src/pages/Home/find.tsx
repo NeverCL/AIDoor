@@ -26,8 +26,8 @@ export default () => {
                     data.map((item, index) => {
                         return (
                             <div className="flex flex-col h-fit">
-                                <img className="h-[18rem] rounded-lg overflow-hidden" src={url} alt="" />
-                                <span>{index % 2 == 0 ? '短的标题' : '长标题一长标题一长标题一长标题一长标题一'}</span>
+                                <img className="h-[14rem] rounded-lg overflow-hidden" src={url} alt="" />
+                                <span className="text-lg">{index % 2 == 0 ? '短的标题' : '长标题一长标题一长标题一长标题一长标题一'}</span>
                                 <div className="flex items-center">
                                     <img className="round-full h-6 w-6" src={require('@/assets/my/icon.png')} alt="icon" />
                                     <span>作者名</span>
