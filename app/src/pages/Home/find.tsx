@@ -26,16 +26,16 @@ export default () => {
                 {
                     data.map((item, index) => {
                         return (
-                            <div className="flex flex-col h-fit">
-                                <NavLink to={`/detail/${index}`}>
+                            <NavLink to={`/detail/${index}`}>
+                                <div className="flex flex-col h-fit">
                                     <img className="h-[14rem] rounded-lg overflow-hidden" src={url} alt="" />
-                                </NavLink>
-                                <span className="text-lg">{index % 2 == 0 ? '短的标题' : '长标题一长标题一长标题一长标题一长标题一'}</span>
-                                <div className="flex items-center">
-                                    <img className="round-full h-6 w-6" src={require('@/assets/my/icon.png')} alt="icon" />
-                                    <span>作者名</span>
+                                    <span className="text-lg">{index % 2 == 0 ? '短的标题' : '长标题一长标题一长标题一长标题一长标题一'}</span>
+                                    <div className="flex items-center">
+                                        <img className="round-full h-6 w-6" src={require('@/assets/my/icon.png')} alt="icon" />
+                                        <span>作者名</span>
+                                    </div>
                                 </div>
-                            </div>
+                            </NavLink>
                         )
                     })
                 }

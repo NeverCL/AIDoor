@@ -80,13 +80,15 @@ export default () => {
                 {
                     img: url,
                     title: '浏览过的内容示例'
-                }
-                ,
+                },
                 {
                     img: url,
                     title: '浏览过的内容示例'
-                }
-                ,
+                },
+                {
+                    img: url,
+                    title: '浏览过的内容示例'
+                },
                 {
                     img: url,
                     title: '浏览过的内容示例'
@@ -164,18 +166,20 @@ const UserCard = () => (
 
 // 内容卡片组件
 const ContentCard = ({ item, index }) => (
-    <div className="flex flex-col">
-        <NavLink to={`/detail/${index}`} className="h-[5.25rem]">
-            <img src={item.img} alt="" />
-        </NavLink>
+    <NavLink to={`/detail/${index}`} className="h-[5.25rem]">
+        <div className="flex flex-col">
+            <div className="h-[3.75rem] overflow-hidden">
+                <img src={item.img} alt="" />
+            </div>
 
-        <span className="mt-[0.38rem] px-[0.06rem]">{item.title}</span>
-    </div>
+            <span className="mt-[0.38rem] px-[0.06rem]">{item.title}</span>
+        </div>
+    </NavLink>
 );
 
 // 内容模块组件
 const ContentSection = ({ section }) => (
-    <div className="flex flex-col flex-wrap mt-7 text-base">
+    <div className="flex flex-col flex-wrap my-7 text-base">
         {/* title */}
         <NavLink to={section.path} className="flex justify-between items-center mb-2">
             <div className="flex text-primary font-bold items-center">
@@ -189,7 +193,7 @@ const ContentSection = ({ section }) => (
             </div>
         </NavLink>
         {/* 内容 */}
-        <div className="grid grid-cols-3 justify-items-stretch gap-2">
+        <div className="grid grid-cols-3 gap-2">
             {section.data?.map((item, index) => (
                 <ContentCard key={index} item={item} />
             ))}

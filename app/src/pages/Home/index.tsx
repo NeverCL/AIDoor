@@ -28,6 +28,11 @@ const HomePage: React.FC = () => {
       name: '大模型',
       applications: [
         { id: '3', title: '大模型应用1', description: '这是大模型应用1的简介', imageUrl: 'https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418' },
+        { id: '4', title: '大模型应用2', description: '智能文本生成与处理工具', imageUrl: 'https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418' },
+        { id: '5', title: '大模型应用3', description: '智能问答系统', imageUrl: 'https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418' },
+        { id: '6', title: '大模型应用4', description: '自动内容摘要工具', imageUrl: 'https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418' },
+        { id: '7', title: '大模型应用5', description: '多语言翻译引擎', imageUrl: 'https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418' },
+        { id: '8', title: '大模型应用6', description: '智能代码助手', imageUrl: 'https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418' },
       ]
     },
     {
@@ -51,6 +56,34 @@ const HomePage: React.FC = () => {
         { id: '6', title: '工具1', description: '这是工具1的简介', imageUrl: 'https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418' },
       ]
     },
+    {
+      id: '6',
+      name: '聊天机器人',
+      applications: [
+        { id: '9', title: '智能客服', description: '24小时在线智能客服系统', imageUrl: 'https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418' },
+        { id: '10', title: '群聊助手', description: '提供群聊智能服务与管理', imageUrl: 'https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418' },
+        { id: '11', title: '虚拟伙伴', description: '个性化AI聊天伙伴', imageUrl: 'https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418' }
+      ]
+    },
+    {
+      id: '7',
+      name: '图像处理',
+      applications: [
+        { id: '12', title: 'AI绘画', description: '智能艺术创作工具', imageUrl: 'https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418' },
+        { id: '13', title: '图像增强', description: '提升图像质量和分辨率', imageUrl: 'https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418' },
+        { id: '14', title: '物体识别', description: '智能图像内容识别系统', imageUrl: 'https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418' },
+        { id: '15', title: '风格迁移', description: '艺术风格智能转换工具', imageUrl: 'https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418' }
+      ]
+    },
+    {
+      id: '8',
+      name: '语音处理',
+      applications: [
+        { id: '16', title: '语音转文本', description: '高精度语音识别系统', imageUrl: 'https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418' },
+        { id: '17', title: '文本转语音', description: '自然流畅的语音合成', imageUrl: 'https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418' },
+        { id: '18', title: '语音助手', description: '智能语音交互系统', imageUrl: 'https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418' }
+      ]
+    }
   ]);
 
   // Compute categories including "全部" which contains all applications
