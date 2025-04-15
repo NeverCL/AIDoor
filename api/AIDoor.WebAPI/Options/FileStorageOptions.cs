@@ -1,4 +1,4 @@
-namespace AIDoor.WebAPI.Models;
+namespace AIDoor.WebAPI.Options;
 
 public class FileStorageOptions
 {

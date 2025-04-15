@@ -1,5 +1,7 @@
 using AIDoor.WebAPI.Data;
+using AIDoor.WebAPI.Domain;
 using AIDoor.WebAPI.Models;
+using AIDoor.WebAPI.Options;
 using AIDoor.WebAPI.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.DataProtection;
@@ -83,6 +85,7 @@ builder.Services.Configure<FileStorageOptions>(
 builder.Services.AddScoped<AIDoor.WebAPI.Services.SmsService>();
 builder.Services.AddScoped<AIDoor.WebAPI.Services.UserService>();
 builder.Services.AddScoped<AIDoor.WebAPI.Services.FileService>();
+builder.Services.AddScoped<AIDoor.WebAPI.Services.ApplicationService>();
 
 var app = builder.Build();
 

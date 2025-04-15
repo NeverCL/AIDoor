@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using AIDoor.WebAPI.Models;
+using AIDoor.WebAPI.Options;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 
