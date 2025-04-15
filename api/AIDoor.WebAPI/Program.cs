@@ -1,8 +1,10 @@
 using AIDoor.WebAPI.Data;
+using AIDoor.WebAPI.Models;
 using AIDoor.WebAPI.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using System.Text;
+using System.IO;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,9 +36,14 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.LogoutPath = "/api/User/logout";
     });
 
+// 注册配置选项
+builder.Services.Configure<FileStorageOptions>(
+    builder.Configuration.GetSection(FileStorageOptions.FileStorage));
+
 // 注册应用服务
 builder.Services.AddScoped<AIDoor.WebAPI.Services.SmsService>();
 builder.Services.AddScoped<AIDoor.WebAPI.Services.UserService>();
+builder.Services.AddScoped<AIDoor.WebAPI.Services.FileService>();
 
 var app = builder.Build();
 
@@ -48,6 +55,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+// 添加静态文件服务
+app.UseStaticFiles();
+
 app.UseRouting();
 
 // 启用认证和授权中间件
@@ -55,6 +65,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+// 确保上传目录存在的逻辑已移到 FileService 静态构造函数中
 
 var summaries = new[]
 {
