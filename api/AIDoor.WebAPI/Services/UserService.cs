@@ -14,6 +14,24 @@ public class UserService
     private readonly IDistributedCache _cache;
     private const int VERIFICATION_CODE_EXPIRE_MINUTES = 5;
 
+    public async Task<User?> GetUserProfileAsync(int userId)
+    {
+        return await _context.Users.FindAsync(userId);
+    }
+
+    public async Task UpdateUserProfileAsync(int userId, string username, string avatarUrl)
+    {
+        var user = await _context.Users.FindAsync(userId);
+        if (user == null)
+        {
+            return;
+        }
+
+        user.Username = username;
+        user.AvatarUrl = avatarUrl;
+        await _context.SaveChangesAsync();
+    }
+
     public UserService(AppDbContext context, SmsService smsService, IDistributedCache cache)
     {
         _context = context;

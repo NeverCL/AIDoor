@@ -1,4 +1,3 @@
-using AIDoor.WebAPI.Models;
 using AIDoor.WebAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -92,9 +91,32 @@ public class UserController : BaseController
         await HttpContext.SignOutAsync();
         return Ok("已成功注销");
     }
+
+    [HttpGet("profile")]
+    public async Task<IActionResult> GetProfile()
+    {
+        var user = await _userService.GetUserProfileAsync(UserId);
+        
+        if (user == null)
+        {
+            return NotFound("用户不存在");
+        }
+        
+        return Ok(user);
+    }
+
+    [HttpPut("profile")]
+    public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileRequest request)
+    {
+        await _userService.UpdateUserProfileAsync(UserId, request.Username, request.AvatarUrl);
+        
+        return Ok("更新成功");
+    }
 }
 
 public record SendCodeRequest(string PhoneNumber);
+
+public record UpdateProfileRequest(string Username, string AvatarUrl);
 
 public record RegisterRequest(string PhoneNumber, string Password, string VerificationCode);
 
