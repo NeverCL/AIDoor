@@ -1,8 +1,21 @@
+using AIDoor.WebAPI.Data;
+using AIDoor.WebAPI.Services;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+builder.Services.AddControllers();
+
+// 添加数据库服务
+builder.Services.AddDbContext<AIDoor.WebAPI.Data.AppDbContext>(options =>
+    options.UseInMemoryDatabase("AIDoorDb")); // 开发阶段使用内存数据库，生产环境应替换为实际数据库
+
+// 注册应用服务
+builder.Services.AddScoped<AIDoor.WebAPI.Services.SmsService>();
+builder.Services.AddScoped<AIDoor.WebAPI.Services.UserService>();
 
 var app = builder.Build();
 
@@ -13,6 +26,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseRouting();
+app.MapControllers();
 
 var summaries = new[]
 {
