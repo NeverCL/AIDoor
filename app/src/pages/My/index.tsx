@@ -163,11 +163,11 @@ const UserCard = () => (
 );
 
 // 内容卡片组件
-const ContentCard = ({ item }) => (
+const ContentCard = ({ item, index }) => (
     <div className="flex flex-col">
-        <div className="h-[5.25rem]">
+        <NavLink to={`/detail/${index}`} className="h-[5.25rem]">
             <img src={item.img} alt="" />
-        </div>
+        </NavLink>
 
         <span className="mt-[0.38rem] px-[0.06rem]">{item.title}</span>
     </div>

@@ -1,5 +1,6 @@
 import { InfiniteScroll } from "antd-mobile"
 import { useState } from "react";
+import { NavLink } from "react-router-dom";
 
 export default () => {
 
@@ -26,7 +27,9 @@ export default () => {
                     data.map((item, index) => {
                         return (
                             <div className="flex flex-col h-fit">
-                                <img className="h-[14rem] rounded-lg overflow-hidden" src={url} alt="" />
+                                <NavLink to={`/detail/${index}`}>
+                                    <img className="h-[14rem] rounded-lg overflow-hidden" src={url} alt="" />
+                                </NavLink>
                                 <span className="text-lg">{index % 2 == 0 ? '短的标题' : '长标题一长标题一长标题一长标题一长标题一'}</span>
                                 <div className="flex items-center">
                                     <img className="round-full h-6 w-6" src={require('@/assets/my/icon.png')} alt="icon" />
