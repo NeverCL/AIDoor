@@ -10,11 +10,14 @@ public class UserService
 {
     private readonly AppDbContext _context;
     private readonly SmsService _smsService;
+    private readonly IDistributedCache _cache;
+    private const int VERIFICATION_CODE_EXPIRE_MINUTES = 5;
 
-    public UserService(AppDbContext context, SmsService smsService)
+    public UserService(AppDbContext context, SmsService smsService, IDistributedCache cache)
     {
         _context = context;
         _smsService = smsService;
+        _cache = cache;
     }
 
     public async Task<bool> IsPhoneRegisteredAsync(string phoneNumber)
@@ -24,8 +27,12 @@ public class UserService
 
     public async Task<(bool Success, string Message)> RegisterAsync(string phoneNumber, string password, string verificationCode)
     {
-        // 在实际应用中，这里应该验证短信验证码
-        // 此处简化处理，假设验证码已验证通过
+        // 验证短信验证码
+        var cachedCode = await _cache.GetStringAsync($"verification_code:{phoneNumber}");
+        if (cachedCode == null || cachedCode != verificationCode)
+        {
+            return (false, "验证码无效或已过期");
+        }
         
         if (await IsPhoneRegisteredAsync(phoneNumber))
         {
@@ -75,10 +82,18 @@ public class UserService
         // 生成随机验证码
         var code = GenerateRandomCode();
         
+        // 存储验证码到Redis，设置5分钟过期时间
+        await _cache.SetStringAsync(
+            $"verification_code:{phoneNumber}",
+            code,
+            new DistributedCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(VERIFICATION_CODE_EXPIRE_MINUTES)
+            }
+        );
+        
         // 发送验证码短信
         _smsService.SendCode(phoneNumber, code);
-        
-        // todo 在实际应用中，应该将验证码存储在缓存或数据库中，并设置过期时间
     }
 
     private string GenerateRandomCode()
