@@ -1,6 +1,8 @@
 using AIDoor.WebAPI.Models;
 using AIDoor.WebAPI.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
 
 namespace AIDoor.WebAPI.Controllers;
 
@@ -58,13 +60,37 @@ public class UserController : BaseController
             return BadRequest(result.Message);
         }
 
-        // todo 在实际应用中，这里应该生成JWT令牌
+        // 设置认证Cookie
+        var claims = new List<System.Security.Claims.Claim>
+        {
+            new(ClaimTypes.NameIdentifier, result.User!.Id.ToString()),
+            new(ClaimTypes.Name, result.User.Username),
+            new(ClaimTypes.MobilePhone, result.User.PhoneNumber)
+        };
+
+        var claimsIdentity = new ClaimsIdentity(claims);
+
+        await HttpContext.SignInAsync(
+            new ClaimsPrincipal(claimsIdentity),
+            new AuthenticationProperties
+            {
+                IsPersistent = true,
+                ExpiresUtc = DateTimeOffset.UtcNow.AddDays(7)
+            });
+
         return Ok(result.Message, new
         {
-            userId = result.User!.Id,
+            userId = result.User.Id,
             phoneNumber = result.User.PhoneNumber,
             username = result.User.Username
         });
+    }
+
+    [HttpPost("logout")]
+    public async Task<IActionResult> Logout()
+    {
+        await HttpContext.SignOutAsync();
+        return Ok("已成功注销");
     }
 }
 

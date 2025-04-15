@@ -3,6 +3,7 @@ using AIDoor.WebAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 using System.Text;
+using Microsoft.Extensions.Caching.Distributed;
 
 namespace AIDoor.WebAPI.Services;
 

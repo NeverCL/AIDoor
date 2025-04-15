@@ -1,6 +1,8 @@
 using AIDoor.WebAPI.Data;
 using AIDoor.WebAPI.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +22,18 @@ builder.Services.AddStackExchangeRedisCache(options =>
 builder.Services.AddDbContext<AIDoor.WebAPI.Data.AppDbContext>(options =>
     options.UseInMemoryDatabase("AIDoorDb")); // 开发阶段使用内存数据库，生产环境应替换为实际数据库
 
+// 添加Cookie认证
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.Cookie.Name = "AIDoor.Auth";
+        options.Cookie.HttpOnly = true;
+        options.ExpireTimeSpan = TimeSpan.FromDays(7);
+        options.SlidingExpiration = true;
+        options.LoginPath = "/api/User/login";
+        options.LogoutPath = "/api/User/logout";
+    });
+
 // 注册应用服务
 builder.Services.AddScoped<AIDoor.WebAPI.Services.SmsService>();
 builder.Services.AddScoped<AIDoor.WebAPI.Services.UserService>();
@@ -35,6 +49,11 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseRouting();
+
+// 启用认证和授权中间件
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.MapControllers();
 
 var summaries = new[]
