@@ -26,6 +26,12 @@ declare namespace API {
     data?: Record<string, any>;
   }
 
+  interface Result<T> {
+    success?: boolean;
+    errorMessage?: string;
+    data?: T;
+  }
+
   interface Result_PageInfo_UserInfo__ {
     success?: boolean;
     errorMessage?: string;
@@ -42,6 +48,17 @@ declare namespace API {
     success?: boolean;
     errorMessage?: string;
     data?: string;
+  }
+
+  interface Result_UserStats_ {
+    success?: boolean;
+    errorMessage?: string;
+    data?: UserStats;
+  }
+
+  interface UserStats {
+    messageCount?: number;
+    followCount?: number;
   }
 
   type UserGenderEnum = 'MALE' | 'FEMALE';

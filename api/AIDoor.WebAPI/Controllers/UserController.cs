@@ -2,6 +2,8 @@ using AIDoor.WebAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
+using System.Text.Json.Serialization;
+using AIDoor.WebAPI.Dtos;
 
 namespace AIDoor.WebAPI.Controllers;
 
@@ -111,6 +113,40 @@ public class UserController : BaseController
         await _userService.UpdateUserProfileAsync(UserId, request.Username, request.AvatarUrl);
         
         return Ok("更新成功");
+    }
+
+    /// <summary>
+    /// 获取用户的消息和关注统计数据
+    /// </summary>
+    /// <returns>消息数量和关注数量</returns>
+    [HttpGet("stats")]
+    public async Task<IActionResult> GetUserStats()
+    {
+        // 获取当前用户ID
+        var userId = UserId;
+        
+        // 调用服务获取统计数据
+        var userStats = await _userService.GetUserStatsAsync(userId);
+        
+        if (userStats == null)
+        {
+            return NotFound("无法获取用户统计数据");
+        }
+        
+        return Ok(userStats);
+    }
+
+    /// <summary>
+    /// 获取用户记录数据（点赞、收藏、足迹）
+    /// </summary>
+    /// <returns>用户记录数据</returns>
+    [HttpGet("records")]
+    public async Task<IActionResult> GetUserRecords()
+    {
+        var userId = UserId;
+        var recordsData = await _userService.GetUserRecordsAsync(userId);
+        
+        return Ok(recordsData);
     }
 }
 

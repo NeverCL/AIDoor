@@ -15,6 +15,9 @@ public class AppDbContext : DbContext
     public DbSet<AppItem> Applications { get; set; }
     public DbSet<Item> Items { get; set; }
     
+    // 用户记录表
+    public DbSet<UserRecord> UserRecords { get; set; }
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -37,6 +40,13 @@ public class AppDbContext : DbContext
             .HasForeignKey(i => i.UserId)
             .OnDelete(DeleteBehavior.Restrict); // 删除用户时不级联删除项目，而是限制删除
             
+        // 用户记录和用户之间的关系配置
+        modelBuilder.Entity<UserRecord>()
+            .HasOne(ur => ur.User)
+            .WithMany()
+            .HasForeignKey(ur => ur.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
+            
         // 索引配置
         modelBuilder.Entity<AppCategory>()
             .HasIndex(c => c.Name);
@@ -46,6 +56,12 @@ public class AppDbContext : DbContext
             
         modelBuilder.Entity<Item>()
             .HasIndex(i => i.Title);
+            
+        modelBuilder.Entity<UserRecord>()
+            .HasIndex(ur => ur.Title);
+            
+        modelBuilder.Entity<UserRecord>()
+            .HasIndex(ur => ur.RecordType);
             
         // 初始数据
         SeedData(modelBuilder);
@@ -133,6 +149,138 @@ public class AppDbContext : DbContext
                 DisplayOrder = 1,
                 IsActive = true,
                 CategoryId = 4,
+                CreatedAt = DateTime.UtcNow
+            }
+        );
+        
+        // 添加初始用户
+        modelBuilder.Entity<User>().HasData(
+            new User
+            {
+                Id = 1,
+                Username = "测试用户",
+                PhoneNumber = "13800138000",
+                PasswordHash = "jGl25bVBBBW96Qi9Te4V37Fnqchz/Eu4qB9vKrRIqRg=", // 123456的SHA-256哈希
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow
+            }
+        );
+        
+        // 添加用户记录数据 - 点赞
+        modelBuilder.Entity<UserRecord>().HasData(
+            new UserRecord
+            {
+                Id = 1,
+                RecordType = RecordType.Like,
+                Title = "2025看过最好的新剧院1232",
+                ImageUrl = "https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418",
+                UserId = 1,
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow
+            },
+            new UserRecord
+            {
+                Id = 2,
+                RecordType = RecordType.Like,
+                Title = "2025看过最好的新剧院1232",
+                ImageUrl = "https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418",
+                UserId = 1,
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow
+            },
+            // 添加用户记录数据 - 收藏
+            new UserRecord
+            {
+                Id = 3,
+                RecordType = RecordType.Favorite,
+                Title = "收藏的内容示例",
+                ImageUrl = "https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418",
+                UserId = 1,
+                Notes = "这是一个很好的内容",
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow
+            },
+            new UserRecord
+            {
+                Id = 4,
+                RecordType = RecordType.Favorite,
+                Title = "收藏的内容示例",
+                ImageUrl = "https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418",
+                UserId = 1,
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow
+            },
+            // 添加用户记录数据 - 足迹
+            new UserRecord
+            {
+                Id = 5,
+                RecordType = RecordType.Footprint,
+                Title = "浏览过的内容示例",
+                ImageUrl = "https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418",
+                UserId = 1,
+                LastViewedAt = DateTime.UtcNow,
+                ViewCount = 1,
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow
+            },
+            new UserRecord
+            {
+                Id = 6,
+                RecordType = RecordType.Footprint,
+                Title = "浏览过的内容示例",
+                ImageUrl = "https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418",
+                UserId = 1,
+                LastViewedAt = DateTime.UtcNow,
+                ViewCount = 2,
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow
+            },
+            new UserRecord
+            {
+                Id = 7,
+                RecordType = RecordType.Footprint,
+                Title = "浏览过的内容示例",
+                ImageUrl = "https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418",
+                UserId = 1,
+                LastViewedAt = DateTime.UtcNow,
+                ViewCount = 3,
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow
+            },
+            new UserRecord
+            {
+                Id = 8,
+                RecordType = RecordType.Footprint,
+                Title = "浏览过的内容示例",
+                ImageUrl = "https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418",
+                UserId = 1,
+                LastViewedAt = DateTime.UtcNow,
+                ViewCount = 1,
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow
+            },
+            new UserRecord
+            {
+                Id = 9,
+                RecordType = RecordType.Footprint,
+                Title = "浏览过的内容示例",
+                ImageUrl = "https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418",
+                UserId = 1,
+                LastViewedAt = DateTime.UtcNow,
+                ViewCount = 1,
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow
+            },
+            new UserRecord
+            {
+                Id = 10,
+                RecordType = RecordType.Footprint,
+                Title = "浏览过的内容示例",
+                ImageUrl = "https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418",
+                UserId = 1,
+                LastViewedAt = DateTime.UtcNow,
+                ViewCount = 1,
+                IsActive = true,
                 CreatedAt = DateTime.UtcNow
             }
         );

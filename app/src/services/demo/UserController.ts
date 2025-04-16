@@ -94,3 +94,13 @@ export async function deleteUser(
     ...(options || {}),
   });
 }
+
+/** 获取用户消息和关注统计数据 GET /api/v1/user/stats */
+export async function getUserStats(
+  options?: { [key: string]: any },
+) {
+  return request<API.Result_UserStats_>('/api/v1/user/stats', {
+    method: 'GET',
+    ...(options || {}),
+  });
+}
