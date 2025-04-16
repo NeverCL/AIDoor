@@ -5,22 +5,24 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AIDoor.WebAPI.Controllers;
 
-public class ApplicationController : BaseController
+[Authorize(Roles = "Admin")]
+[Route("api/admin/appitems")]
+public class AppItemAdminController : BaseController
 {
     private readonly ApplicationService _applicationService;
 
-    public ApplicationController(ApplicationService applicationService)
+    public AppItemAdminController(ApplicationService applicationService)
     {
         _applicationService = applicationService;
     }
-
+    
     [HttpGet("categories")]
-    public async Task<IActionResult> GetApplicationCategories()
+    public async Task<IActionResult> GetAllCategories()
     {
         var categories = await _applicationService.GetApplicationCategories();
-        return Ok("获取应用分类成功", categories);
+        return Ok("获取所有应用分类成功", categories);
     }
-
+    
     [HttpGet("categories/{categoryId:int}")]
     public async Task<IActionResult> GetCategoryById(int categoryId)
     {
@@ -33,7 +35,7 @@ public class ApplicationController : BaseController
         return Ok("获取分类成功", category);
     }
     
-    [HttpGet("{applicationId:int}")]
+    [HttpGet("applications/{applicationId:int}")]
     public async Task<IActionResult> GetApplicationById(int applicationId)
     {
         var application = await _applicationService.GetApplicationById(applicationId);
@@ -47,7 +49,6 @@ public class ApplicationController : BaseController
     
     // 创建分类 - 需要管理员权限
     [HttpPost("categories")]
-    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> CreateCategory([FromBody] CategoryCreateDto categoryDto)
     {
         if (!ModelState.IsValid)
@@ -67,7 +68,6 @@ public class ApplicationController : BaseController
     
     // 更新分类 - 需要管理员权限
     [HttpPut("categories/{categoryId:int}")]
-    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> UpdateCategory(int categoryId, [FromBody] CategoryUpdateDto categoryDto)
     {
         if (!ModelState.IsValid)
@@ -86,7 +86,6 @@ public class ApplicationController : BaseController
     
     // 删除分类 - 需要管理员权限
     [HttpDelete("categories/{categoryId:int}")]
-    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> DeleteCategory(int categoryId)
     {
         var result = await _applicationService.DeleteCategory(categoryId);
@@ -99,8 +98,7 @@ public class ApplicationController : BaseController
     }
     
     // 创建应用 - 需要管理员权限
-    [HttpPost]
-    [Authorize(Roles = "Admin")]
+    [HttpPost("applications")]
     public async Task<IActionResult> CreateApplication([FromBody] ApplicationCreateDto applicationDto)
     {
         if (!ModelState.IsValid)
@@ -119,8 +117,7 @@ public class ApplicationController : BaseController
     }
     
     // 更新应用 - 需要管理员权限
-    [HttpPut("{applicationId:int}")]
-    [Authorize(Roles = "Admin")]
+    [HttpPut("applications/{applicationId:int}")]
     public async Task<IActionResult> UpdateApplication(int applicationId, [FromBody] ApplicationUpdateDto applicationDto)
     {
         if (!ModelState.IsValid)
@@ -138,8 +135,7 @@ public class ApplicationController : BaseController
     }
     
     // 删除应用 - 需要管理员权限
-    [HttpDelete("{applicationId:int}")]
-    [Authorize(Roles = "Admin")]
+    [HttpDelete("applications/{applicationId:int}")]
     public async Task<IActionResult> DeleteApplication(int applicationId)
     {
         var result = await _applicationService.DeleteApplication(applicationId);
