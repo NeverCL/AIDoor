@@ -86,6 +86,7 @@ builder.Services.AddScoped<AIDoor.WebAPI.Services.SmsService>();
 builder.Services.AddScoped<AIDoor.WebAPI.Services.UserService>();
 builder.Services.AddScoped<AIDoor.WebAPI.Services.FileService>();
 builder.Services.AddScoped<AIDoor.WebAPI.Services.ApplicationService>();
+builder.Services.AddScoped<AIDoor.WebAPI.Services.ItemService>();
 
 var app = builder.Build();
 

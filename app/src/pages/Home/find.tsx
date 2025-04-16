@@ -8,8 +8,20 @@ interface Item {
     title: string;
     imageUrl: string;
     author: {
-        name: string;
-        avatar?: string;
+        id: number;
+        username: string;
+        avatarUrl: string;
+    };
+}
+
+interface ApiResponse {
+    message: string;
+    data: {
+        items: Item[];
+        totalCount: number;
+        currentPage: number;
+        pageSize: number;
+        totalPages: number;
     };
 }
 
@@ -18,13 +30,15 @@ const apiService = {
     async getItems(page: number, limit: number): Promise<{ items: Item[] }> {
         try {
             // Use umi max's request function
-            return await request('/api/items', {
+            const response = await request<ApiResponse>('/api/item', {
                 method: 'GET',
                 params: {
                     page,
                     limit
                 },
             });
+
+            return { items: response.data.items };
         } catch (error) {
             console.error('API request error:', error);
 
@@ -36,7 +50,9 @@ const apiService = {
                 title: (startIndex + index) % 2 === 0 ? '短的标题' : '长标题一长标题一长标题一长标题一长标题一',
                 imageUrl: 'https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418',
                 author: {
-                    name: `作者${startIndex + index + 1}`
+                    id: 1,
+                    username: `作者${startIndex + index + 1}`,
+                    avatarUrl: ''
                 }
             }));
 
@@ -97,8 +113,8 @@ export default () => {
                                     <img className="h-[14rem] rounded-lg overflow-hidden" src={item.imageUrl || defaultImg} alt="" />
                                     <span className="text-lg">{item.title}</span>
                                     <div className="flex items-center">
-                                        <img className="round-full h-6 w-6" src={item.author?.avatar || require('@/assets/my/icon.png')} alt="icon" />
-                                        <span>{item.author?.name || '作者名'}</span>
+                                        <img className="round-full h-6 w-6" src={item.author?.avatarUrl || require('@/assets/my/icon.png')} alt="icon" />
+                                        <span>{item.author?.username || '作者名'}</span>
                                     </div>
                                 </div>
                             </NavLink>
