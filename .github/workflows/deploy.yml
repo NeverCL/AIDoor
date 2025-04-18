@@ -87,6 +87,9 @@ jobs:
           #!/bin/bash
           set -e
 
+          # 指定kubectl配置文件路径
+          export KUBECONFIG=/etc/kubernetes/admin.conf
+
           # 创建aidoor命名空间（如果不存在）
           kubectl get namespace aidoor > /dev/null 2>&1 || kubectl create namespace aidoor
 
