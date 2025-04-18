@@ -48,8 +48,8 @@ jobs:
       - name: Login to Aliyun Container Registry
         uses: docker/login-action@v2
         with:
-          registry: ${{ vars.ALIYUN_REGISTRY }}
-          username: ${{ vars.ALIYUN_USERNAME }}
+          registry: registry.cn-beijing.aliyuncs.com
+          username: gmmtec
           password: ${{ secrets.ALIYUN_PASSWORD }}
 
       - name: Build and push Docker image
@@ -59,8 +59,8 @@ jobs:
           file: ./api/AIDoor.WebAPI/Dockerfile
           push: ${{ github.event_name != 'pull_request' }}
           tags: |
-            ${{ vars.ALIYUN_REGISTRY }}/${{ vars.ALIYUN_NAMESPACE }}/aidoor-webapi:latest
-            ${{ vars.ALIYUN_REGISTRY }}/${{ vars.ALIYUN_NAMESPACE }}/aidoor-webapi:${{ steps.timestamp.outputs.SHORT_TS }}
+            registry.cn-beijing.aliyuncs.com/wdora/ai-api:latest
+            registry.cn-beijing.aliyuncs.com/wdora/ai-api:${{ steps.timestamp.outputs.SHORT_TS }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
           build-args: |
@@ -80,7 +80,7 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ vars.SSH_HOST }} >> ~/.ssh/known_hosts
+          ssh-keyscan -H app.thedoorofai.com >> ~/.ssh/known_hosts
 
           # 准备部署脚本
           cat > deploy.sh << 'EOF'
@@ -104,7 +104,7 @@ jobs:
           fi
 
           # 使用环境变量替换占位符并应用
-          REGISTRY="${{ vars.ALIYUN_REGISTRY }}/${{ vars.ALIYUN_NAMESPACE }}"
+          REGISTRY="registry.cn-beijing.aliyuncs.com/wdora/ai-api"
           TAG="${{ steps.timestamp.outputs.SHORT_TS }}"
 
           # 将k8s配置文件下载到服务器
@@ -121,5 +121,5 @@ jobs:
           EOF
 
           # 将部署脚本复制到服务器并执行
-          scp deploy.sh ${{ vars.SSH_USER }}@${{ vars.SSH_HOST }}:~/deploy.sh
-          ssh ${{ vars.SSH_USER }}@${{ vars.SSH_HOST }} "chmod +x ~/deploy.sh && ~/deploy.sh"
+          scp deploy.sh root@app.thedoorofai.com:~/deploy.sh
+          ssh root@app.thedoorofai.com "chmod +x ~/deploy.sh && ~/deploy.sh"
