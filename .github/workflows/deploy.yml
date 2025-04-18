@@ -73,73 +73,33 @@ jobs:
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
       # 只有在推送到主分支且不是PR时才执行部署
-      - name: Set up SSH and deploy
+      - name: Install Helm
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        uses: azure/setup-helm@v3
+        with:
+          version: "v3.11.1"
+
+      - name: Set up kubeconfig
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        uses: azure/k8s-set-context@v3
+        with:
+          kubeconfig: ${{ secrets.KUBE_CONFIG }}
+
+      - name: Generate data protection key
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        id: generate-key
+        run: echo "DATA_PROTECTION_KEY=$(openssl rand -base64 32)" >> $GITHUB_OUTPUT
+
+      - name: Deploy with Helm
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         run: |
-          # 设置SSH
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H app.thedoorofai.com >> ~/.ssh/known_hosts
+          # 创建命名空间（如果不存在）
+          kubectl create namespace aidoor --dry-run=client -o yaml | kubectl apply -f -
 
-          # 准备部署脚本
-          cat > deploy.sh << 'EOF'
-          #!/bin/bash
-          set -e
-
-          # 检查kubectl是否已安装
-          if ! command -v kubectl &> /dev/null; then
-            echo "kubectl未安装，正在安装..."
-            curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-            chmod +x kubectl
-            sudo mv kubectl /usr/local/bin/
-          fi
-
-          # 检查kubeconfig文件是否存在
-          if [ ! -f /etc/kubernetes/admin.conf ]; then
-            echo "Kubeconfig文件不存在，请确保您的Kubernetes集群已正确配置"
-          fi
-
-          # 指定kubectl配置文件路径
-          export KUBECONFIG=/etc/kubernetes/admin.conf
-
-          # 测试kubectl连接
-          echo "测试Kubernetes连接..."
-          kubectl get nodes
-
-          # 创建aidoor命名空间（如果不存在）
-          kubectl get namespace aidoor > /dev/null 2>&1 || kubectl create namespace aidoor
-
-          # 检查认证密钥是否已存在
-          if ! kubectl get secret aidoor-auth-keys -n aidoor > /dev/null 2>&1; then
-            echo "生成新的数据保护密钥..."
-            DATA_PROTECTION_KEY=$(openssl rand -base64 32)
-            
-            kubectl create secret generic aidoor-auth-keys \
-                --namespace=aidoor \
-                --from-literal=dataProtectionKey="$DATA_PROTECTION_KEY"
-            echo "数据保护密钥已创建。"
-          else
-            echo "使用现有数据保护密钥。"
-          fi
-
-          # 使用环境变量替换占位符并应用
-          REGISTRY="registry.cn-beijing.aliyuncs.com/wdora/ai-api"
-          TAG="${{ steps.timestamp.outputs.SHORT_TS }}"
-
-          # 将k8s配置文件下载到服务器
-          cat > aidoor-webapi.yaml << 'YAML_EOF'
-          $(cat ./api/k8s/aidoor-webapi.yaml)
-          YAML_EOF
-
-          # 替换变量并应用
-          sed -i "s|\${REGISTRY}|${REGISTRY}|g" aidoor-webapi.yaml
-          sed -i "s|\${TAG}|${TAG}|g" aidoor-webapi.yaml
-
-          kubectl apply -f aidoor-webapi.yaml
-          kubectl rollout status deployment/aidoor-webapi -n aidoor
-          EOF
-
-          # 将部署脚本复制到服务器并执行
-          scp deploy.sh root@app.thedoorofai.com:~/deploy.sh
-          ssh root@app.thedoorofai.com "chmod +x ~/deploy.sh && ~/deploy.sh"
+          # 如果有Helm chart，使用以下命令
+          helm upgrade --install aidoor ./api/helm/aidoor \
+            --namespace aidoor \
+            --set image.repository=registry.cn-beijing.aliyuncs.com/wdora/ai-api \
+            --set image.tag=${{ steps.timestamp.outputs.SHORT_TS }} \
+            --set secrets.dataProtectionKey="${{ steps.generate-key.outputs.DATA_PROTECTION_KEY }}" \
+            --wait

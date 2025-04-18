@@ -1,0 +1,27 @@
+# 生产环境特定配置
+global:
+  environment: production
+
+# 副本数量增加
+replicaCount: 3
+
+# 生产环境资源配置
+resources:
+  requests:
+    cpu: 200m
+    memory: 512Mi
+  limits:
+    cpu: 1000m
+    memory: 1Gi
+
+# 生产环境网络配置
+ingress:
+  hosts:
+    - host: api.thedoorofai.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: aidoor-tls-prod
+      hosts:
+        - api.thedoorofai.com 

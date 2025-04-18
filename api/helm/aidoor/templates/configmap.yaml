@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "aidoor.fullname" . }}-config
+  labels:
+    {{- include "aidoor.labels" . | nindent 4 }}
+data:
+  appsettings.json: |
+    {
+      "Logging": {
+        "LogLevel": {
+          "Default": "{{ .Values.config.logging.level }}",
+          "Microsoft.AspNetCore": "Warning"
+        }
+      },
+      "ConnectionStrings": {
+        "Redis": "{{ .Values.redis.service }}:{{ .Values.redis.port }}"
+      },
+      "FileStorage": {
+        "UploadDirectory": "{{ .Values.config.fileStorage.uploadDirectory }}",
+        "MaxFileSize": {{ .Values.config.fileStorage.maxFileSize }}
+      },
+      "AllowedHosts": "*"
+    } 

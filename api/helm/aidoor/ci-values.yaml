@@ -1,0 +1,20 @@
+# CI/CD中使用的值文件
+global:
+  environment: production
+
+# 使用变量替换镜像标签
+image:
+  repository: registry.cn-beijing.aliyuncs.com/wdora/ai-api
+  # tag 由CI直接注入
+
+# 网络配置
+ingress:
+  hosts:
+    - host: api.thedoorofai.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: aidoor-tls-prod
+      hosts:
+        - api.thedoorofai.com 

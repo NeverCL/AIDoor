@@ -1,0 +1,11 @@
+apiVersion: v2
+name: aidoor
+description: A Helm chart for AIDoor API
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+maintainers:
+  - name: AIDoor Team
+keywords:
+  - aidoor
+  - api 
