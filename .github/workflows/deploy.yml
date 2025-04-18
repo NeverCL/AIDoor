@@ -87,8 +87,25 @@ jobs:
           #!/bin/bash
           set -e
 
+          # 检查kubectl是否已安装
+          if ! command -v kubectl &> /dev/null; then
+            echo "kubectl未安装，正在安装..."
+            curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+            chmod +x kubectl
+            sudo mv kubectl /usr/local/bin/
+          fi
+
+          # 检查kubeconfig文件是否存在
+          if [ ! -f /etc/kubernetes/admin.conf ]; then
+            echo "Kubeconfig文件不存在，请确保您的Kubernetes集群已正确配置"
+          fi
+
           # 指定kubectl配置文件路径
           export KUBECONFIG=/etc/kubernetes/admin.conf
+
+          # 测试kubectl连接
+          echo "测试Kubernetes连接..."
+          kubectl get nodes
 
           # 创建aidoor命名空间（如果不存在）
           kubectl get namespace aidoor > /dev/null 2>&1 || kubectl create namespace aidoor
