@@ -54,7 +54,7 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    public static IServiceCollection AddDataProtection(this IServiceCollection services)
+    public static IServiceCollection AddSecret(this IServiceCollection services)
     {
         // 配置 DataProtection (用于 Cookie 加密和其他安全功能)
         var keysFolder = Path.Combine(Directory.GetCurrentDirectory(), "keys");

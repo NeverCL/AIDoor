@@ -8,7 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services
     .AddCoreServices()
     .AddDataServices(builder.Configuration)
-    .AddDataProtection()
+    .AddSecret()
     .AddSecurityServices()
     .AddConfigOptions(builder.Configuration)
     .AddApplicationServices();
