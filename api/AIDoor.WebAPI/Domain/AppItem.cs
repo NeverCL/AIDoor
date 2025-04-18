@@ -3,11 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AIDoor.WebAPI.Domain;
 
-public class AppItem
+public class AppItem : BaseEntity
 {
-    public int Id { get; set; }
-    
-    [Required]
     [MaxLength(100)]
     public string Title { get; set; } = string.Empty;
     
@@ -25,7 +22,7 @@ public class AppItem
     
     public DateTime? UpdatedAt { get; set; }
     
-    // 外键关系
+    // Foreign key relationship
     [ForeignKey("Category")]
     public int CategoryId { get; set; }
     

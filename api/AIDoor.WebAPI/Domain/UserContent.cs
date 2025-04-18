@@ -28,15 +28,11 @@ public enum RecordType
 /// <summary>
 /// 用户记录，包含点赞、收藏和浏览足迹
 /// </summary>
-public class UserRecord
+public class UserRecord : BaseEntity
 {
-    [Key]
-    public int Id { get; set; }
-    
     /// <summary>
     /// 记录类型
     /// </summary>
-    [Required]
     public RecordType RecordType { get; set; }
     
     /// <summary>
@@ -45,11 +41,9 @@ public class UserRecord
     [NotMapped]
     public string TypeString => RecordType.ToString().ToLower();
     
-    [Required]
     [MaxLength(200)]
     public string Title { get; set; } = string.Empty;
     
-    [Required]
     public string ImageUrl { get; set; } = string.Empty;
     
     // User foreign key
@@ -59,9 +53,6 @@ public class UserRecord
     [ForeignKey("UserId")]
     public User User { get; set; } = null!;
     
-    // 标记记录是否有效
-    public bool IsActive { get; set; } = true;
-    
     // 可选备注
     public string? Notes { get; set; }
     
@@ -70,8 +61,4 @@ public class UserRecord
     
     // 查看计数，主要用于足迹类型
     public int ViewCount { get; set; } = 1;
-    
-    // Timestamps
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    public DateTime? UpdatedAt { get; set; }
 } 

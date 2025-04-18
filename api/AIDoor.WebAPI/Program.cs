@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
 using System.Text;
 using System.IO;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,8 +28,9 @@ builder.Services.AddStackExchangeRedisCache(options =>
 });
 
 // 添加数据库服务
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<AIDoor.WebAPI.Data.AppDbContext>(options =>
-    options.UseInMemoryDatabase("AIDoorDb")); // 开发阶段使用内存数据库，生产环境应替换为实际数据库
+    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
 // 配置 DataProtection (用于 Cookie 加密和其他安全功能)
 var keysFolder = Path.Combine(Directory.GetCurrentDirectory(), "keys");
