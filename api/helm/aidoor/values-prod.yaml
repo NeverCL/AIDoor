@@ -3,7 +3,7 @@ global:
   environment: production
 
 # 副本数量增加
-replicaCount: 2
+replicaCount: 1
 
 # 生产环境资源配置
 resources:
