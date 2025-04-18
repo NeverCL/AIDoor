@@ -85,11 +85,6 @@ jobs:
         with:
           kubeconfig: ${{ secrets.KUBE_CONFIG }}
 
-      - name: Generate data protection key
-        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
-        id: generate-key
-        run: echo "DATA_PROTECTION_KEY=$(openssl rand -base64 32)" >> $GITHUB_OUTPUT
-
       - name: Deploy with Helm
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         run: |
@@ -99,7 +94,7 @@ jobs:
           # 如果有Helm chart，使用以下命令
           helm upgrade --install aidoor ./api/helm/aidoor \
             --namespace aidoor \
+            -f ./api/helm/aidoor/values-prod.yaml \
             --set image.repository=registry.cn-beijing.aliyuncs.com/wdora/ai-api \
             --set image.tag=${{ steps.timestamp.outputs.SHORT_TS }} \
-            --set secrets.dataProtectionKey="${{ steps.generate-key.outputs.DATA_PROTECTION_KEY }}" \
             --wait

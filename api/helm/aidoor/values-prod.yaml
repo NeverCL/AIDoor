@@ -3,7 +3,7 @@ global:
   environment: production
 
 # 副本数量增加
-replicaCount: 3
+replicaCount: 2
 
 # 生产环境资源配置
 resources:
@@ -22,6 +22,6 @@ ingress:
         - path: /
           pathType: Prefix
   tls:
-    - secretName: aidoor-tls-prod
+    - secretName: thedoorofai.com
       hosts:
-        - api.thedoorofai.com 
+        - api.thedoorofai.com
