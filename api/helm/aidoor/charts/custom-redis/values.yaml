@@ -8,7 +8,7 @@ image:
 # 架构配置
 architecture: standalone
 auth:
-  enabled: true
+  enabled: false
   password: ""
   existingSecret: ""
   existingSecretPasswordKey: ""

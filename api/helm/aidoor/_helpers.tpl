@@ -53,15 +53,17 @@ Redis connection string
 */}}
 {{- define "aidoor.redisHost" -}}
 {{- if .Values.redis.enabled -}}
-{{- $redisHost := printf "%s-redis" .Release.Name -}}
+{{- /* 当作为子chart使用时，service名称将由Helm自动确定 */ -}}
+{{- $redisServiceName := printf "%s-%s" .Release.Name "custom-redis" -}}
+
 {{- if .Values.redis.auth.enabled -}}
 {{- if .Values.redis.auth.existingSecret -}}
-{{- printf "%s:6379,password=${REDIS_PASSWORD}" $redisHost -}}
+{{- printf "%s:6379,password=${REDIS_PASSWORD}" $redisServiceName -}}
 {{- else -}}
-{{- printf "%s:6379,password=%s" $redisHost (.Values.redis.auth.password | default "") -}}
+{{- printf "%s:6379,password=%s" $redisServiceName (.Values.redis.auth.password | default "") -}}
 {{- end -}}
 {{- else -}}
-{{- printf "%s:6379" $redisHost -}}
+{{- printf "%s:6379" $redisServiceName -}}
 {{- end -}}
 {{- else -}}
 {{- "localhost:6379" -}}

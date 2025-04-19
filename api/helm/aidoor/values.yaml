@@ -71,19 +71,3 @@ readinessProbe:
 # 密钥配置
 secrets:
   dataProtectionKey: "RFr9z0QPp8LNDX3rNwxgLTQVm1BBmXTmOyQJpTDCrpM="
-
-# Redis配置
-redis:
-  enabled: true
-  # 自定义Redis配置
-  auth:
-    enabled: false
-    password: ""
-    existingSecret: ""
-    existingSecretPasswordKey: ""
-  persistence:
-    enabled: true
-    size: 8Gi
-  settings:
-    maxmemory: 256mb
-    maxmemoryPolicy: allkeys-lru
