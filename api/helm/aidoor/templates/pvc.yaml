@@ -7,7 +7,7 @@ metadata:
     {{- include "aidoor.labels" . | nindent 4 }}
 spec:
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   storageClassName: local-path-fast
   resources:
     requests:
