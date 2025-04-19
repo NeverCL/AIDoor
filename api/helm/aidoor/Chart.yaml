@@ -8,4 +8,8 @@ maintainers:
   - name: AIDoor Team
 keywords:
   - aidoor
-  - api 
+  - api
+dependencies:
+  - name: redis
+    repository: "https://charts.bitnami.com/bitnami"
+    condition: redis.enabled

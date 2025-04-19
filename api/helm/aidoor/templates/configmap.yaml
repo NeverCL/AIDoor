@@ -5,7 +5,7 @@ metadata:
   labels:
     {{- include "aidoor.labels" . | nindent 4 }}
 data:
-  appsettings.json: |
+  appsettings.json: |-
     {
       "Logging": {
         "LogLevel": {
@@ -14,7 +14,7 @@ data:
         }
       },
       "ConnectionStrings": {
-        "Redis": "{{ .Values.redis.service }}:{{ .Values.redis.port }}"
+        "Redis": "{{ include "aidoor.redisHost" . }}"
       },
       "FileStorage": {
         "UploadDirectory": "{{ .Values.config.fileStorage.uploadDirectory }}",

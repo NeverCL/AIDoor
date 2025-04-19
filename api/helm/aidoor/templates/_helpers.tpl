@@ -46,4 +46,24 @@ Selector labels
 {{- define "aidoor.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "aidoor.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
-{{- end }} 
+{{- end }}
+
+{{/*
+Redis connection string
+*/}}
+{{- define "aidoor.redisHost" -}}
+{{- if .Values.redis.enabled -}}
+{{- $redisHost := printf "%s-redis-master:6379" .Release.Name -}}
+{{- if .Values.redis.auth.enabled -}}
+{{- if .Values.redis.auth.existingSecret -}}
+{{- printf "%s,password=${REDIS_PASSWORD}" $redisHost -}}
+{{- else -}}
+{{- printf "%s,password=%s" $redisHost (.Values.redis.auth.password | default "") -}}
+{{- end -}}
+{{- else -}}
+{{- printf "%s" $redisHost -}}
+{{- end -}}
+{{- else -}}
+{{- "localhost:6379" -}}
+{{- end -}}
+{{- end -}} 
