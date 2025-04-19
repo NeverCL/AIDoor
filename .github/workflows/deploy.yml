@@ -91,6 +91,11 @@ jobs:
           # 创建命名空间（如果不存在）
           kubectl create namespace aidoor --dry-run=client -o yaml | kubectl apply -f -
 
+          # 构建Helm依赖
+          cd ./api/helm/aidoor
+          helm dependency build
+          cd ../../../
+
           # 如果有Helm chart，使用以下命令
           helm upgrade --install aidoor ./api/helm/aidoor \
             --namespace aidoor \
