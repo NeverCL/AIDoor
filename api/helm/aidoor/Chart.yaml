@@ -11,5 +11,6 @@ keywords:
   - api
 dependencies:
   - name: redis
-    repository: "https://charts.bitnami.com/bitnami"
+    version: "1.0.0"
+    repository: "file://../custom-redis"
     condition: redis.enabled

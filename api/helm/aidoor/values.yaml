@@ -75,24 +75,15 @@ secrets:
 # Redis配置
 redis:
   enabled: true
-  architecture: standalone
+  # 自定义Redis配置
   auth:
-    enabled: true
+    enabled: false
     password: ""
     existingSecret: ""
     existingSecretPasswordKey: ""
-  master:
-    persistence:
-      enabled: true
-      size: 8Gi
-    resources:
-      requests:
-        memory: 256Mi
-        cpu: 100m
-      limits:
-        memory: 512Mi
-        cpu: 2000m
-  replica:
-    replicaCount: 0
-  metrics:
+  persistence:
     enabled: true
+    size: 8Gi
+  settings:
+    maxmemory: 256mb
+    maxmemoryPolicy: allkeys-lru

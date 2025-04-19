@@ -1,0 +1,58 @@
+# Redis配置
+enabled: true
+image:
+  repository: redis
+  tag: 7.0.10
+  pullPolicy: IfNotPresent
+
+# 架构配置
+architecture: standalone
+auth:
+  enabled: true
+  password: ""
+  existingSecret: ""
+  existingSecretPasswordKey: ""
+
+# 资源配置
+resources:
+  requests:
+    memory: 256Mi
+    cpu: 100m
+  limits:
+    memory: 512Mi
+    cpu: 250m
+
+# 持久化配置
+persistence:
+  enabled: true
+  size: 8Gi
+  accessModes:
+    - ReadWriteOnce
+
+# 服务配置
+service:
+  type: ClusterIP
+  port: 6379
+  annotations: {}
+
+# 健康检查
+livenessProbe:
+  enabled: true
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  successThreshold: 1
+  failureThreshold: 3
+
+readinessProbe:
+  enabled: true
+  initialDelaySeconds: 5
+  periodSeconds: 5
+  timeoutSeconds: 3
+  successThreshold: 1
+  failureThreshold: 3
+
+# 设置
+settings:
+  maxmemory: 256mb
+  maxmemoryPolicy: allkeys-lru
