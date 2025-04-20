@@ -36,10 +36,19 @@ body {
     }
 }
 
+// 路由的a标签颜色继承
+a[href^="/"] {
+    color: inherit;
+}
+
+// 路由的a标签指定颜色的覆盖
+a.text-secondary[href^="/"] {
+    color: #999999;
+}
+
 a {
     text-decoration: none;
     /* 移除下划线 */
-    color: inherit;
     /* 使用父元素颜色 */
     cursor: pointer;
     /* 保持手型指针 */
