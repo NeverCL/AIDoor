@@ -3,7 +3,6 @@ body {
     padding: 0;
     font-family: 'Inter', sans-serif;
     font-size: 4.2667vw;
-    overflow: hidden;
     box-sizing: border-box;
 }
 
@@ -46,6 +45,21 @@ a {
     /* 保持手型指针 */
     /* 其他可能需要重置的样式 */
     -webkit-tap-highlight-color: transparent;
+    /* 移除 iOS Safari 点击高亮 */
+    -moz-tap-highlight-color: transparent;
+    /* Firefox 兼容 */
+    -ms-tap-highlight-color: transparent;
+    /* 标准属性 (未来支持) */
+    outline: none;
+    /* 移除点击时的轮廓线 */
+    -webkit-user-select: none;
+    /* Chrome/Safari/Opera */
+    -moz-user-select: none;
+    /* Firefox */
+    -ms-user-select: none;
+    /* IE/Edge */
+    user-select: none;
+    /* 标准属性 */
 }
 
 *::-webkit-scrollbar {
