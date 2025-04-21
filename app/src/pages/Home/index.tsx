@@ -29,11 +29,11 @@ const HomePage: React.FC = () => {
       name: '大模型',
       applications: [
         { id: '3', title: '大模型应用1', description: '这是大模型应用1的简介', imageUrl: 'https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418' },
-        { id: '4', title: '大模型应用2', description: '智能文本生成与处理工具', imageUrl: 'https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418' },
-        { id: '5', title: '大模型应用3', description: '智能问答系统', imageUrl: 'https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418' },
-        { id: '6', title: '大模型应用4', description: '自动内容摘要工具', imageUrl: 'https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418' },
-        { id: '7', title: '大模型应用5', description: '多语言翻译引擎', imageUrl: 'https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418' },
-        { id: '8', title: '大模型应用6', description: '智能代码助手', imageUrl: 'https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418' },
+        { id: '54', title: '大模型应用2', description: '智能文本生成与处理工具', imageUrl: 'https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418' },
+        { id: '55', title: '大模型应用3', description: '智能问答系统', imageUrl: 'https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418' },
+        { id: '56', title: '大模型应用4', description: '自动内容摘要工具', imageUrl: 'https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418' },
+        { id: '57', title: '大模型应用5', description: '多语言翻译引擎', imageUrl: 'https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418' },
+        { id: '58', title: '大模型应用6', description: '智能代码助手', imageUrl: 'https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418' },
       ]
     },
     {
@@ -144,18 +144,20 @@ const HomePage: React.FC = () => {
   // Get current category applications
   const currentApplications = categories[activeIndex]?.applications || [];
 
+  console.log(currentApplications);
+
+
   return (
     <>
       <div
         ref={scrollContainerRef}
-        className='flex-nowrap-no-shrink'
+        className='flex flex-nowrap overflow-x-auto -mx-4'
       >
         {categories.map((category, index) => (
           <span
             key={category.id}
             ref={el => itemRefs.current[index] = el}
-            // className={activeIndex === index ? 'active' : ''}
-            className={cx(activeIndex === index && 'active')}
+            className={cx(activeIndex === index ? 'px-5 bg-white text-black' : 'px-3 bg-[#525252] text-sm', 'shrink-0 mx-1 rounded-2xl py-2 bg-[#525252]')}
             onClick={() => handleItemClick(index)}
           >
             {category.name}
@@ -163,13 +165,13 @@ const HomePage: React.FC = () => {
         ))}
       </div>
 
-      <div className='grid gap-4 overflow-y-auto'>
+      <div className='grid gap-4 overflow-y-auto grid-rows-[auto_1fr]'>
         {/* banner */}
         <div className='h-[7.63rem]'>
           <img className='rounded-lg' src='https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418' alt="" />
         </div>
         {/* AI产品 */}
-        <div className='mb-28'>
+        <div className='mb-28 flex flex-col'>
           {
             currentApplications.map(app => (
               <div key={app.id} className='flex items-center mb-4'>
