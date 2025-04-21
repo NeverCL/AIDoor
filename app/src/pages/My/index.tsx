@@ -158,27 +158,29 @@ export default () => {
 
     return (
         <>
-            <UserCard />
+            <div className="grid gap-x-4 h-full overflow-y-auto">
+                <UserCard />
 
-            {/* 我的点赞、我的收藏、足迹 */}
-            {processedData.map((section, index) => (
-                <RecordSection key={index} section={section} />
-            ))}
-
-            <div className="mt-7"></div>
-
-            <List className="text-white mb-28 text-base">
-                {navs.map(item => (
-                    <NavLink key={item.name} to={item.path} className="block">
-                        <List.Item
-                            prefix={item.icon}
-                            arrowIcon
-                        >
-                            {item.name}
-                        </List.Item>
-                    </NavLink>
+                {/* 我的点赞、我的收藏、足迹 */}
+                {processedData.map((section, index) => (
+                    <RecordSection key={index} section={section} />
                 ))}
-            </List>
+
+                <div className="mt-7"></div>
+
+                <List className="text-white mb-28 text-base">
+                    {navs.map(item => (
+                        <NavLink key={item.name} to={item.path} className="block">
+                            <List.Item
+                                prefix={item.icon}
+                                arrowIcon
+                            >
+                                {item.name}
+                            </List.Item>
+                        </NavLink>
+                    ))}
+                </List>
+            </div>
         </>
     )
 }

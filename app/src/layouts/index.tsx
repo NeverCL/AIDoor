@@ -21,10 +21,8 @@ export default () => {
 
     return (
         <>
-            <div className="bg-[#2d2d2d] p-4" style={{ height: windowHeight }}>
-                <SafeArea position={"top"} />
+            <div className="bg-[#2d2d2d] px-4" style={{ height: windowHeight }}>
                 <Outlet />
-                <SafeArea position={"bottom"} />
             </div>
         </>
     )

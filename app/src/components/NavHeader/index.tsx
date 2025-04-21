@@ -31,7 +31,7 @@ const NavHeader: React.FC = () => {
 
   return (
     <>
-      <div className='flex items-center justify-between text-primary font-bold text-2xl'>
+      <div className='flex my-4 items-center justify-between text-primary font-bold text-2xl'>
         {
 
           showSearch ?

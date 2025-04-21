@@ -1,7 +1,7 @@
-import { InfiniteScroll } from "antd-mobile"
 import { useState, useEffect } from "react";
 import { NavLink, request } from "@umijs/max";
 import Masonry from "react-masonry-css";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 // Define data interface
 interface Item {
@@ -74,6 +74,8 @@ export default () => {
     const fetchData = async (pageNum: number) => {
         if (loading) return;
 
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
         setLoading(true);
         try {
             const response = await apiService.getItems(pageNum, 5);
@@ -99,37 +101,49 @@ export default () => {
         fetchData(page);
     }, []);
 
-    const loadMore = async () => {
-        await fetchData(page);
+    const loadMore = () => {
+        fetchData(page);
     };
 
     return (
         <>
-            <div></div>
-            <Masonry
-                breakpointCols={2}
-                className="flex overflow-y-auto"
-                columnClassName="p-2"
-            >
-                {
-                    data.map((item) => {
-                        return (
+            <div id="scrollableMasonry" className="flex-1 overflow-y-auto -mx-2">
+                <InfiniteScroll
+                    dataLength={data.length}
+                    next={loadMore}
+                    hasMore={hasMore}
+                    loader={<div className="text-center py-4">加载中...</div>}
+                    endMessage={<div className="text-center py-4">到底了</div>}
+                    scrollableTarget="scrollableMasonry"
+                >
+                    <Masonry
+                        breakpointCols={2}
+                        className="flex"
+                        columnClassName="m-2"
+                    >
+                        {data.map(item => (
                             <NavLink key={item.id} to={`/detail/${item.id}`}>
-                                <div className="flex flex-col h-fit">
-                                    <img className="h-[14rem] rounded-lg overflow-hidden" src={item.imageUrl || defaultImg} alt="" />
-                                    <span className="text-lg">{item.title}</span>
-                                    <div className="flex items-center">
-                                        <img className="round-full h-6 w-6" src={item.author?.avatarUrl || require('@/assets/my/icon.png')} alt="icon" />
+                                <div className="flex flex-col my-2">
+                                    <img
+                                        className="h-[14rem] rounded-lg object-cover"
+                                        src={item.imageUrl || defaultImg}
+                                        alt=""
+                                    />
+                                    <span className="text-lg mt-2">{item.title}</span>
+                                    <div className="flex items-center mt-1 gap-2 text-sm text-gray-500">
+                                        <img
+                                            className="rounded-full h-6 w-6"
+                                            src={item.author?.avatarUrl || require('@/assets/my/icon.png')}
+                                            alt="icon"
+                                        />
                                         <span>{item.author?.username || '作者名'}</span>
                                     </div>
                                 </div>
                             </NavLink>
-                        )
-                    })
-                }
-
-                <InfiniteScroll className="col-span-full block text-center" loadMore={loadMore} hasMore={hasMore} />
-            </Masonry>
+                        ))}
+                    </Masonry>
+                </InfiniteScroll>
+            </div>
         </>
     )
 }
