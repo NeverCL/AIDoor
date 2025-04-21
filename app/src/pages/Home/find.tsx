@@ -1,6 +1,7 @@
 import { InfiniteScroll } from "antd-mobile"
 import { useState, useEffect } from "react";
 import { NavLink, request } from "@umijs/max";
+import Masonry from "react-masonry-css";
 
 // Define data interface
 interface Item {
@@ -104,7 +105,12 @@ export default () => {
 
     return (
         <>
-            <div className="grid grid-cols-2 gap-2 mt-6 overflow-y-auto">
+            <div></div>
+            <Masonry
+                breakpointCols={2}
+                className="flex overflow-y-auto"
+                columnClassName="p-2"
+            >
                 {
                     data.map((item) => {
                         return (
@@ -123,7 +129,7 @@ export default () => {
                 }
 
                 <InfiniteScroll className="col-span-full block text-center" loadMore={loadMore} hasMore={hasMore} />
-            </div>
+            </Masonry>
         </>
     )
 }
