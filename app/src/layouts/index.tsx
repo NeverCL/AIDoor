@@ -31,7 +31,7 @@ export default () => {
                 </div>
                 <SafeArea position={"bottom"} />
             </div > */}
-            <div className="bg-[#2d2d2d] h-svh p-4">
+            <div className="bg-[#2d2d2d] h-svh p-4 overflow-hidden">
                 <Outlet />
             </div>
         </>
