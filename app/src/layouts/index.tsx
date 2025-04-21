@@ -24,13 +24,16 @@ export default () => {
 
     return (
         <>
-            <div className={"flex flex-col px-4 overflow-y-auto overflow-x-hidden text-xs " + (!isBgGray ? 'bg-white text-black' : 'bg-[#2d2d2d] text-secondary')} style={{ height: windowHeight }}>
+            {/* <div className={"flex flex-col px-4 overflow-y-auto overflow-x-hidden text-xs " + (!isBgGray ? 'bg-white text-black' : 'bg-[#2d2d2d] text-secondary')} style={{ height: windowHeight }}>
                 <SafeArea position={"top"} />
                 <div className="flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
                     <Outlet />
                 </div>
                 <SafeArea position={"bottom"} />
-            </div >
+            </div > */}
+            <div className="bg-[#2d2d2d] h-svh p-4">
+                <Outlet />
+            </div>
         </>
     )
 }

@@ -31,14 +31,13 @@ const NavHeader: React.FC = () => {
 
   return (
     <>
-
-      <div className='flex mt-7 items-center justify-between text-primary font-bold text-xl'>
+      <div className='flex items-center justify-between text-primary font-bold text-2xl'>
         {
 
           showSearch ?
             <SearchBar
               ref={searchRef}
-              className='text-white flex-1'
+              className='flex-1'
               placeholder='请输入内容'
               showCancelButton
               value={searchText}

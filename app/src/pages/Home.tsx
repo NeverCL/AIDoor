@@ -6,8 +6,11 @@ export default () => {
 
     return (
         <>
-            <NavHeader />
-            <Outlet />
+            <div className="grid h-full gap-4">
+                <NavHeader />
+                <Outlet />
+            </div>
+
             <FloatBtn />
         </>
     )
