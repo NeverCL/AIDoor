@@ -163,7 +163,7 @@ const HomePage: React.FC = () => {
         ))}
       </div>
 
-      <div className='grid gap-4 overflow-y-auto'>
+      <div className='grid gap-4 h-full overflow-y-auto'>
         {/* banner */}
         <div className='h-[7.63rem]'>
           <img className='rounded-lg' src='https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418' alt="" />
