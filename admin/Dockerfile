@@ -1,19 +1,27 @@
 FROM node:20-alpine AS base
 
 # 安装依赖
-FROM base AS deps
-WORKDIR /app
-
-COPY package.json pnpm-lock.yaml ./
-RUN npm install -g pnpm && pnpm install
-
-# 构建应用
 FROM base AS builder
 WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
+
+# Add pnpm
+RUN corepack enable
+RUN corepack prepare pnpm@latest --activate
+
+# Set npm mirror for faster dependency installation
+ENV PNPM_REGISTRY=https://registry.npmmirror.com
+
+# Copy package.json and lockfile
+COPY package.json pnpm-lock.yaml ./
+
+# Install dependencies
+RUN pnpm install
+
+# Copy project files
 COPY . .
 
-RUN npm install -g pnpm && pnpm build
+# Build the project
+RUN pnpm build
 
 # 生产环境
 FROM nginx:alpine AS runner
