@@ -6,7 +6,7 @@ export default () => {
 
     return (
         <>
-            <div className="grid h-full gap-4 grid-rows-[auto_auto_1fr]">
+            <div className="h-full flex flex-col *:mt-4">
                 <NavHeader />
                 <Outlet />
             </div>

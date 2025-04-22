@@ -2,8 +2,8 @@ import { NavLink, Icon, useLocation } from '@umijs/max';
 import { useEffect, useRef, useState } from 'react';
 import { Popup, SearchBar, SearchBarRef } from 'antd-mobile';
 
-const isActive = 'text-base flex flex-col justify-center items-center ';
-const notActive = 'text-secondary text-base ';
+const isActive = 'flex flex-col justify-center items-center ';
+const notActive = 'text-secondary ';
 
 const NavHeader: React.FC = () => {
 
@@ -31,7 +31,7 @@ const NavHeader: React.FC = () => {
 
   return (
     <>
-      <div className='flex my-4 items-center justify-between text-primary font-bold text-2xl'>
+      <div className='flex items-center justify-between text-primary font-bold text-2xl'>
         {
 
           showSearch ?
@@ -58,7 +58,7 @@ const NavHeader: React.FC = () => {
             /> :
             <>
               <Icon icon="local:home-setting" onClick={() => setOpen(true)} />
-              <div className='flex items-center'>
+              <div className='flex items-center text-xl'>
                 <NavLink to='/home' replace={true} className={(isAI ? isActive : notActive) + 'mr-12'}>
                   AI应用
                   {isAI ? <div className='w-6 bg-white h-0.5'></div> : <></>}
@@ -72,7 +72,6 @@ const NavHeader: React.FC = () => {
             </>
         }
       </div>
-
 
       <Popup
         visible={open}

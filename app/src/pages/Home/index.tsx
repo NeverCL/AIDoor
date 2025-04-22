@@ -149,9 +149,10 @@ const HomePage: React.FC = () => {
 
   return (
     <>
+      {/* 分类 */}
       <div
         ref={scrollContainerRef}
-        className='flex flex-nowrap overflow-x-auto -mx-4'
+        className='flex overflow-x-auto -mx-4'
       >
         {categories.map((category, index) => (
           <span
@@ -165,28 +166,28 @@ const HomePage: React.FC = () => {
         ))}
       </div>
 
-      <div className='grid gap-4 overflow-y-auto grid-rows-[auto_1fr]'>
+      <div className='flex-1 flex flex-col overflow-y-auto'>
         {/* banner */}
-        <div className='h-[7.63rem]'>
-          <img className='rounded-lg' src='https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418' alt="" />
-        </div>
+        <img className='rounded-lg h-32' src='https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418' alt="" />
+
         {/* AI产品 */}
-        <div className='mb-28 flex flex-col'>
+        <div className='flex-1 flex flex-col mt-4 mb-28 *:mb-4'>
           {
             currentApplications.map(app => (
-              <div key={app.id} className='flex items-center mb-4'>
-                <div className='w-[4.81rem] h-[4.81rem]'>
-                  <img className='rounded-lg' src={app.imageUrl} alt={app.title} />
-                </div>
+              <div key={app.id} className='flex items-center'>
+                <img className='w-20 h-20 rounded-lg' src={app.imageUrl} alt={app.title} />
+
                 <div className='flex flex-col flex-1 mx-2'>
-                  <span className='font-bold text-sm text-primary'>{app.title}</span>
+                  <span className='font-bold text-sm'>{app.title}</span>
                   <span className='text-secondary text-xs'>{app.description}</span>
                 </div>
-                <div className='bg-[#525252] rounded-lg px-3 py-2 text-primary text-xs font-medium'>介绍</div>
+
+                <div className='bg-[#525252] rounded-lg px-3 py-2 text-xs font-medium'>介绍</div>
               </div>
             ))
           }
         </div>
+
       </div>
     </>
   );

@@ -21,7 +21,7 @@ export default () => {
 
     return (
         <>
-            <div className="bg-[#2d2d2d] px-4" style={{ height: windowHeight }}>
+            <div className="bg-[#2d2d2d] text-primary px-4" style={{ height: windowHeight }}>
                 <Outlet />
             </div>
         </>
