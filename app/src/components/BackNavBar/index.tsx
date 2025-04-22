@@ -1,4 +1,5 @@
 import { NavBar } from "antd-mobile"
+import { history } from "@umijs/max"
 
 export default ({ title, children }: { title: string, children: React.ReactNode }) => {
     return (
