@@ -1,6 +1,6 @@
 import BackNavBar from "@/components/BackNavBar";
 import { useParams } from "@umijs/max";
-import { Divider, TextArea } from "antd-mobile";
+import { Button, Divider, TextArea } from "antd-mobile";
 import { HeartOutline, LikeOutline, MessageOutline } from "antd-mobile-icons";
 import { useState } from "react";
 import ReactPlayer from 'react-player';
@@ -14,10 +14,10 @@ export default () => {
 
     return (
         <BackNavBar title="详情">
+            {/* 正文 */}
             <div className="flex-1 flex flex-col overflow-y-auto">
                 {
                     count > 3 ?
-                        <img className="-mx-4 h-2/4" src={defaultImg} alt="" /> :
                         <div className="h-2/4 w-full overflow-hidden flex justify-center items-center">
                             {/* {count > 4 ?
                                 <ReactPlayer
@@ -35,10 +35,19 @@ export default () => {
                                 x5-video-player-type="h5"
                                 x5-video-player-fullscreen="false"
                             ></video>
-                        </div>
+                        </div> :
+                        <img className="-mx-4 h-2/4 mx-auto" src={defaultImg} alt="" />
                 }
 
+                <div className="flex justify-between p-4 items-center">
+                    <div className="flex items-center *:mx-1">
+                        <img className="w-10 h-10 rounded-full" src={defaultImg} alt="" />
+                        <span>作者名</span>
+                    </div>
 
+                    {/* 关注 */}
+                    <Button className="px-4 rounded-lg" color="primary">关注</Button>
+                </div>
 
                 <h2>标题</h2>
 
@@ -49,6 +58,12 @@ export default () => {
                 </div>
 
                 <Divider className="bg-gray-400" />
+
+                <div className="flex justify-between p-4 text-2xl items-center">
+                    <LikeOutline className="text-red-500" />33
+                    <HeartOutline />22
+                    <MessageOutline />12
+                </div>
 
                 <p className="">共100条评论</p>
 
@@ -61,14 +76,31 @@ export default () => {
                     </div>
                 </div>
             </div>
+
             {/* 固定底部评论 */}
-            <div className="flex bg-gray-300">
-                <TextArea placeholder='说点什么...' autoSize rows={1} />
-                {/* <textarea className="flex-1" placeholder="说点什么..." /> */}
-                <button className="px-4 rounded-lg">发送</button>
-                <LikeOutline />33
-                <HeartOutline />22
-                <MessageOutline />12
+            <div className="flex bg-black -mx-4">
+                <TextArea placeholder='说点什么...' autoSize={{
+                    minRows: 1,
+                    maxRows: 4
+                }} rows={1} />
+                <div className='mt-auto text-lg'>
+                    <Button className="px-4 rounded-lg" color="primary">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="currentColor"
+                            className="w-6 h-6 rotate-45"
+                        >
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M4.5 12.75l6.75 2.25 2.25 6.75 7.5-18-18 7.5 6.75 2.25z"
+                            />
+                        </svg>
+                    </Button>
+                </div>
             </div>
         </BackNavBar>
     )
