@@ -5,7 +5,7 @@ import BackNavBar from "@/components/BackNavBar"
 export default () => {
     return (
         <BackNavBar title="隐私政策">
-            <div className="overflow-auto">
+            <div className="flex-1 p-4 overflow-auto">
                 <h2 className="text-xl font-bold mb-4">隐私政策</h2>
 
                 <section className="mb-4">

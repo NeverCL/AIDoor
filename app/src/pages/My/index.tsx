@@ -158,15 +158,13 @@ export default () => {
 
     return (
         <>
-            <div className="grid gap-x-4 h-full overflow-y-auto">
+            <div className="h-full flex flex-col *:mt-4 overflow-y-auto">
                 <UserCard />
 
                 {/* 我的点赞、我的收藏、足迹 */}
                 {processedData.map((section, index) => (
                     <RecordSection key={index} section={section} />
                 ))}
-
-                <div className="mt-7"></div>
 
                 <List className="text-white mb-28 text-base">
                     {navs.map(item => (
