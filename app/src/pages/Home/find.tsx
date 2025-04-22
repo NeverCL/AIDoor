@@ -119,7 +119,7 @@ export default () => {
                     <Masonry
                         breakpointCols={2}
                         className="flex"
-                        columnClassName="m-2"
+                        columnClassName="m-1"
                     >
                         {data.map(item => (
                             <NavLink key={item.id} to={`/detail/${item.id}`}>

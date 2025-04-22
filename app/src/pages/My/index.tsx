@@ -301,7 +301,7 @@ const RecordCard = ({ item, index }: RecordCardProps) => (
 
 // 记录模块组件
 const RecordSection = ({ section }: { section: RecordSectionProps }) => (
-    <div className="flex flex-col flex-wrap">
+    <div className="flex flex-col">
         {/* title */}
         <NavLink to={section.path} className="flex justify-between items-center mb-2">
             <div className="flex text-primary font-bold items-center">
@@ -315,7 +315,7 @@ const RecordSection = ({ section }: { section: RecordSectionProps }) => (
             </div>
         </NavLink>
         {/* 记录列表 */}
-        <div className="grid grid-cols-[repeat(auto-fill,minmax(7rem,1fr))] grid-rows-[7rem] gap-2">
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(6rem,1fr))] gap-2">
             {section.data?.map((item, index) => (
                 <RecordCard key={index} item={item} index={index} />
             ))}
