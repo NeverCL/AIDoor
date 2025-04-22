@@ -51,17 +51,17 @@ const recordTypeConfig = {
     like: {
         name: '我的点赞',
         icon: <Icon icon='local:like' className='mr-2 text-[1.13rem]' />,
-        path: '/like',
+        path: '/my/like',
     },
     favorite: {
         name: '我的收藏',
         icon: <Icon icon='local:fav' className='mr-2 text-[1.13rem]' />,
-        path: '/favorite',
+        path: '/my/favorite',
     },
     footprint: {
         name: '足迹',
         icon: <Icon icon='local:foot' className='mr-2 text-[1.13rem]' />,
-        path: '/footprint',
+        path: '/my/footprint',
     }
 }
 
@@ -78,83 +78,131 @@ async function getUserRecords() {
 
 export default () => {
     // 用于存储处理后的数据
-    const [processedData, setProcessedData] = useState<RecordSectionProps[]>([]);
+    const [processedData, setProcessedData] = useState<RecordSectionProps[]>([
+        {
+            type: 'like',
+            data: [
+                {
+                    img: url,
+                    title: '2025看过最好的新剧院1232'
+                },
+                {
+                    img: url,
+                    title: '2025看过最好的新剧院1232'
+                },
+                {
+                    img: url,
+                    title: '2025看过最好的新剧院1233'
+                },
+                {
+                    img: url,
+                    title: '2025看过最好的新剧院1234'
+                }
+            ]
+        },
+        {
+            type: 'favorite',
+            data: [
+                {
+                    img: url,
+                    title: '收藏的内容示例'
+                },
+                {
+                    img: url,
+                    title: '收藏的内容示例'
+                }
+            ]
+        },
+        {
+            type: 'footprint',
+            data: [
+                {
+                    img: url,
+                    title: '浏览过的内容示例'
+                },
+                {
+                    img: url,
+                    title: '浏览过的内容示例'
+                }
+            ]
+        }
+    ].map(item => ({
+        ...recordTypeConfig[item.type],
+        data: item.data
+    })));
+
     const [loading, setLoading] = useState<boolean>(true);
 
-    // 处理后端数据，匹配到前端展示所需的格式
-    useEffect(() => {
-        // 从API获取数据
-        const fetchRecordData = async () => {
-            try {
-                setLoading(true);
-                const response = await getUserRecords();
-                if (response.success && response.data) {
-                    // 将后端数据转换为组件所需格式
-                    const formattedData = response.data.map((item: ApiDataItem) => ({
-                        ...recordTypeConfig[item.type],
-                        data: item.data
-                    }));
-                    setProcessedData(formattedData);
-                }
-            } catch (error) {
-                console.error("Failed to fetch user records:", error);
-                // 出错时使用备用模拟数据
-                const mockApiData: ApiDataItem[] = [
-                    {
-                        type: 'like',
-                        data: [
-                            {
-                                img: url,
-                                title: '2025看过最好的新剧院1232'
-                            },
-                            {
-                                img: url,
-                                title: '2025看过最好的新剧院1232'
-                            }
-                        ]
-                    },
-                    {
-                        type: 'favorite',
-                        data: [
-                            {
-                                img: url,
-                                title: '收藏的内容示例'
-                            },
-                            {
-                                img: url,
-                                title: '收藏的内容示例'
-                            }
-                        ]
-                    },
-                    {
-                        type: 'footprint',
-                        data: [
-                            {
-                                img: url,
-                                title: '浏览过的内容示例'
-                            },
-                            {
-                                img: url,
-                                title: '浏览过的内容示例'
-                            }
-                        ]
-                    }
-                ];
+    // // 处理后端数据，匹配到前端展示所需的格式
+    // useEffect(() => {
+    //     // 从API获取数据
+    //     const fetchRecordData = async () => {
+    //         try {
+    //             setLoading(true);
+    //             const response = await getUserRecords();
+    //             if (response.success && response.data) {
+    //                 // 将后端数据转换为组件所需格式
+    //                 const formattedData = response.data.map((item: ApiDataItem) => ({
+    //                     ...recordTypeConfig[item.type],
+    //                     data: item.data
+    //                 }));
+    //                 setProcessedData(formattedData);
+    //             }
+    //         } catch (error) {
+    //             console.error("Failed to fetch user records:", error);
+    //             // 出错时使用备用模拟数据
+    //             const mockApiData: ApiDataItem[] = [
+    //                 {
+    //                     type: 'like',
+    //                     data: [
+    //                         {
+    //                             img: url,
+    //                             title: '2025看过最好的新剧院1232'
+    //                         },
+    //                         {
+    //                             img: url,
+    //                             title: '2025看过最好的新剧院1232'
+    //                         }
+    //                     ]
+    //                 },
+    //                 {
+    //                     type: 'favorite',
+    //                     data: [
+    //                         {
+    //                             img: url,
+    //                             title: '收藏的内容示例'
+    //                         },
+    //                         {
+    //                             img: url,
+    //                             title: '收藏的内容示例'
+    //                         }
+    //                     ]
+    //                 },
+    //                 {
+    //                     type: 'footprint',
+    //                     data: [
+    //                         {
+    //                             img: url,
+    //                             title: '浏览过的内容示例'
+    //                         },
+    //                         {
+    //                             img: url,
+    //                             title: '浏览过的内容示例'
+    //                         }
+    //                     ]
+    //                 }
+    //             ];
 
-                // 将备用数据转换为组件所需格式
-                const fallbackData = mockApiData.map(item => ({
-                    ...recordTypeConfig[item.type],
-                    data: item.data
-                }));
+    //             // 将备用数据转换为组件所需格式
 
-                setProcessedData(fallbackData);
-            } finally {
-                setLoading(false);
-            }
-        };
+    //             setProcessedData(fallbackData);
+    //         } finally {
+    //             setLoading(false);
+    //         }
+    //     };
 
-        fetchRecordData();
-    }, []);
+    //     fetchRecordData();
+    // }, []);
 
     return (
         <>
@@ -209,13 +257,15 @@ const UserCard = () => {
     }, []);
 
     return (
-        <div className="mt-10 h-16 rounded-xl bg-[#525252] flex justify-between items-center px-[0.88rem]">
+        <div className="my-10 h-16 rounded-xl bg-[#525252] flex justify-between items-center px-3">
+
             <div className="flex items-center flex-1">
                 <div className="h-[3.94rem] w-[3.94rem] rounded-xl relative bottom-[0.63rem]">
                     <img className="h-full w-full" src={require('@/assets/my/icon.png')} alt="my-header" />
                 </div>
                 <span className="text-primary text-lg font-bold ml-3">张三</span>
             </div>
+
             <div className="flex items-center justify-between flex-1 mr-8">
                 <NavLink to='/messages' className="flex flex-col justify-center items-center">
                     <span>消息</span>
@@ -238,9 +288,9 @@ interface RecordCardProps {
 }
 
 const RecordCard = ({ item, index }: RecordCardProps) => (
-    <NavLink to={`/detail/${index}`} className="h-[5.25rem]">
+    <NavLink to={`/detail/${index}`}>
         <div className="flex flex-col">
-            <div className="h-[3.75rem] overflow-hidden">
+            <div className="h-16">
                 <img src={item.img} alt="" />
             </div>
 
@@ -251,7 +301,7 @@ const RecordCard = ({ item, index }: RecordCardProps) => (
 
 // 记录模块组件
 const RecordSection = ({ section }: { section: RecordSectionProps }) => (
-    <div className="flex flex-col flex-wrap my-7 text-base">
+    <div className="flex flex-col flex-wrap">
         {/* title */}
         <NavLink to={section.path} className="flex justify-between items-center mb-2">
             <div className="flex text-primary font-bold items-center">
@@ -265,7 +315,7 @@ const RecordSection = ({ section }: { section: RecordSectionProps }) => (
             </div>
         </NavLink>
         {/* 记录列表 */}
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(7rem,1fr))] grid-rows-[7rem] gap-2">
             {section.data?.map((item, index) => (
                 <RecordCard key={index} item={item} index={index} />
             ))}
