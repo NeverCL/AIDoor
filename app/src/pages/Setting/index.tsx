@@ -1,11 +1,9 @@
 import BackNavBar from "@/components/BackNavBar";
-import VerificationCodeButton from "@/components/VerificationCodeButton"
-import { NavLink, history } from "@umijs/max"
-import { Button, Form, Input, List, NavBar, Toast } from "antd-mobile"
-import { MailOutline, PhoneFill, UserOutline } from "antd-mobile-icons"
+import { history } from "@umijs/max"
+import { List } from "antd-mobile"
 
 const routes = [
-    { text: "开发者社群", path: '/' },
+    { text: "开发者社群", path: '/qrcode' },
     { text: "关于我们", path: '/setting/about' },
     { text: "用户协议", path: '/setting/useragreement' },
     { text: "隐私政策", path: '/setting/privacypolicy' },

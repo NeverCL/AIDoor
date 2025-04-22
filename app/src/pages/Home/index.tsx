@@ -1,5 +1,5 @@
 import cx from '@/utils/classNames';
-import { useModel } from '@umijs/max';
+import { NavLink, useModel } from '@umijs/max';
 import { useState, useRef, useEffect, useMemo } from 'react';
 
 // Define interfaces for the backend data
@@ -168,7 +168,9 @@ const HomePage: React.FC = () => {
 
       <div className='flex-1 flex flex-col overflow-y-auto'>
         {/* banner */}
-        <img className='rounded-lg h-32' src='https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418' alt="" />
+        <NavLink to='/qrcode'>
+          <img className='rounded-lg h-32 w-full object-cover' src='https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418' alt="" />
+        </NavLink>
 
         {/* AI产品 */}
         <div className='flex-1 flex flex-col mt-4 mb-28 *:mb-4'>
