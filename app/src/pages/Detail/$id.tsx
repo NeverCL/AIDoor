@@ -19,21 +19,22 @@ export default () => {
                     count > 3 ?
                         <img className="-mx-4 h-2/4" src={defaultImg} alt="" /> :
                         <div className="h-2/4 w-full overflow-hidden flex justify-center items-center">
-                            {count > 4 ?
+                            {/* {count > 4 ?
                                 <ReactPlayer
                                     url='https://media.w3.org/2010/05/sintel/trailer_hd.mp4'
                                     controls
-                                /> :
-                                <video
-                                    controls
-                                    src='https://media.w3.org/2010/05/sintel/trailer_hd.mp4'
-                                    autoplay
-                                    muted
-                                    playsinline
-                                    webkit-playsinline
-                                    x5-video-player-type="h5"
-                                    x5-video-player-fullscreen="false"
-                                ></video>}
+                                /> : */
+                            }
+                            <video
+                                controls
+                                src='https://media.w3.org/2010/05/sintel/trailer_hd.mp4'
+                                autoplay
+                                muted
+                                playsinline
+                                webkit-playsinline
+                                x5-video-player-type="h5"
+                                x5-video-player-fullscreen="false"
+                            ></video>
                         </div>
                 }
 

@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer components {
+/* @layer components {
     .flex-nowrap-no-shrink {
         @apply flex flex-nowrap overflow-y-auto;
     }
@@ -18,4 +18,4 @@
     .gap-fallback-2>* {
         @apply m-1;
     }
-}
+} */
