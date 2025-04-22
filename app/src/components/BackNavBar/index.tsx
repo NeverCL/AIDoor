@@ -1,10 +1,11 @@
 import { NavBar } from "antd-mobile"
-import { history } from "@umijs/max"
+import { useNavigate } from "@umijs/max"
 
 export default ({ title, children }: { title: string, children: React.ReactNode }) => {
+    const navigate = useNavigate();
     return (
-        <div className="flex flex-col h-full overflow-hidden">
-            <NavBar className="-mx-4" onBack={() => history.go(-1)}>{title}</NavBar>
+        <div className="flex flex-col h-full overflow-hidden pt-4">
+            <NavBar className="-mx-4" onBack={() => navigate(-1)}>{title}</NavBar>
 
             {children}
         </div >
