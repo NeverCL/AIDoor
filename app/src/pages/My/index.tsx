@@ -206,7 +206,7 @@ export default () => {
 
     return (
         <>
-            <div className="h-full flex flex-col *:mt-4 overflow-y-auto">
+            <div className="h-full flex flex-col *:mt-8 overflow-y-auto">
                 <UserCard />
 
                 {/* 我的点赞、我的收藏、足迹 */}
@@ -257,8 +257,7 @@ const UserCard = () => {
     }, []);
 
     return (
-        <div className="my-10 h-16 rounded-xl bg-[#525252] flex justify-between items-center px-3">
-
+        <div className="h-16 rounded-xl bg-[#525252] flex justify-between items-center px-3">
             <div className="flex items-center flex-1">
                 <div className="h-[3.94rem] w-[3.94rem] rounded-xl relative bottom-[0.63rem]">
                     <img className="h-full w-full" src={require('@/assets/my/icon.png')} alt="my-header" />
