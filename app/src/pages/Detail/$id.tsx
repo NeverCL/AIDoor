@@ -3,7 +3,6 @@ import { useParams } from "@umijs/max";
 import { Button, Divider, TextArea } from "antd-mobile";
 import { HeartOutline, LikeOutline, MessageOutline } from "antd-mobile-icons";
 import { useState } from "react";
-import ReactPlayer from 'react-player';
 
 const defaultImg = 'https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418';
 
@@ -28,15 +27,15 @@ export default () => {
                             <video
                                 controls
                                 src='https://media.w3.org/2010/05/sintel/trailer_hd.mp4'
-                                autoplay
+                                autoPlay
                                 muted
-                                playsinline
+                                playsInline
                                 webkit-playsinline
                                 x5-video-player-type="h5"
                                 x5-video-player-fullscreen="false"
                             ></video>
                         </div> :
-                        <img className="-mx-4 h-2/4 mx-auto" src={defaultImg} alt="" />
+                        <img className="-mx-4 h-2/4" src={defaultImg} alt="" />
                 }
 
                 <div className="flex justify-between p-4 items-center">
