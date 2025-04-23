@@ -11,6 +11,10 @@ on:
       - "api/**"
   workflow_dispatch:
 
+concurrency:
+  group: "api-deploy"
+  cancel-in-progress: true
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest

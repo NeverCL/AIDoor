@@ -11,6 +11,10 @@ on:
       - "app/**"
   workflow_dispatch:
 
+concurrency:
+  group: "app-deploy"
+  cancel-in-progress: true
+
 env:
   REGISTRY: registry.cn-beijing.aliyuncs.com
   IMAGE_NAME: wdora/ai-app

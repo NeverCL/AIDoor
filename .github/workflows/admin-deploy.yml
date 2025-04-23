@@ -11,6 +11,10 @@ on:
       - "admin/**"
   workflow_dispatch:
 
+concurrency:
+  group: "admin-deploy"
+  cancel-in-progress: true
+
 env:
   REGISTRY: registry.cn-beijing.aliyuncs.com
   IMAGE_NAME: wdora/ai-admin
