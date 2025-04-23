@@ -239,23 +239,23 @@ const UserCard = () => {
         followCount: 0
     });
 
-    useEffect(() => {
-        const fetchUserStats = async () => {
-            try {
-                const response = await getUserStats();
-                if (response.success && response.data) {
-                    setUserStats({
-                        messageCount: response.data.messageCount ?? 0,
-                        followCount: response.data.followCount ?? 0
-                    });
-                }
-            } catch (error) {
-                console.error("Failed to fetch user stats:", error);
-            }
-        };
+    // useEffect(() => {
+    //     const fetchUserStats = async () => {
+    //         try {
+    //             const response = await getUserStats();
+    //             if (response.success && response.data) {
+    //                 setUserStats({
+    //                     messageCount: response.data.messageCount ?? 0,
+    //                     followCount: response.data.followCount ?? 0
+    //                 });
+    //             }
+    //         } catch (error) {
+    //             console.error("Failed to fetch user stats:", error);
+    //         }
+    //     };
 
-        fetchUserStats();
-    }, []);
+    //     fetchUserStats();
+    // }, []);
 
     return (
         <div className="h-16 rounded-xl bg-[#525252] flex justify-between items-center px-3">
