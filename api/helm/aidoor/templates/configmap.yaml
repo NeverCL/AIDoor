@@ -14,7 +14,8 @@ data:
         }
       },
       "ConnectionStrings": {
-        "Redis": "{{ include "aidoor.redisHost" . }}"
+        "Redis": "{{ include "aidoor.redisHost" . }}",
+        "DefaultConnection": "Server=db.wdora.com;Port=3306;Database=AIDoorDb;User=cl;Password=qweasd123!;"
       },
       "FileStorage": {
         "UploadDirectory": "{{ .Values.config.fileStorage.uploadDirectory }}",
