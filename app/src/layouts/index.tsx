@@ -13,6 +13,19 @@ export default () => {
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
+    useEffect(() => {
+        document.addEventListener('plusready', function () {
+            plus.key.addEventListener('backbutton', function () {
+                if (window.history.length > 1) {
+                    window.history.back();
+                } else {
+                    // 如果没有历史记录，可以选择退出应用或其他处理
+                    plus.runtime.quit();
+                }
+            });
+        });
+    }, []);
+
     // const { pathname } = useLocation();
 
     // const routes = useSelectedRoutes();

@@ -176,7 +176,7 @@ const HomePage: React.FC = () => {
         <div className='flex-1 flex flex-col mt-4 mb-28 *:mb-4'>
           {
             currentApplications.map(app => (
-              <div key={app.id} className='flex items-center'>
+              <div key={app.id} className='flex items-center' onClick={() => location.href = `https://www.wenxiaobai.com/chat/${app.id}`}>
                 <img className='w-20 h-20 rounded-lg' src={app.imageUrl} alt={app.title} />
 
                 <div className='flex flex-col flex-1 mx-2'>

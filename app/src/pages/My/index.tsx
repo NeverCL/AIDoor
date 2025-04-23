@@ -262,18 +262,18 @@ const UserCard = () => {
                 <div className="h-[3.94rem] w-[3.94rem] rounded-xl relative bottom-[0.63rem]">
                     <img className="h-full w-full" src={require('@/assets/my/icon.png')} alt="my-header" />
                 </div>
-                <span className="text-primary text-lg font-bold ml-3">张三</span>
+                <span className="text-lg font-bold ml-3">张三</span>
             </div>
 
             <div className="flex items-center justify-between flex-1 mr-8">
-                <NavLink to='/messages' className="flex flex-col justify-center items-center">
+                <NavLink to='/mylist/msg' className="flex flex-col justify-center items-center">
                     <span>消息</span>
-                    <span className="text-primary text-lg">{userStats.messageCount}</span>
+                    <span className="text-lg">{userStats.messageCount}</span>
                 </NavLink>
                 <div className="w-[1px] bg-secondary h-3"></div>
-                <NavLink to='/follows' className="flex flex-col justify-center items-center">
+                <NavLink to='/mylist/follow' className="flex flex-col justify-center items-center">
                     <span className="">关注</span>
-                    <span className="text-primary text-lg">{userStats.followCount}</span>
+                    <span className="text-lg">{userStats.followCount}</span>
                 </NavLink>
             </div>
         </div>
