@@ -1,10 +1,14 @@
 import BackNavBar from "@/components/BackNavBar";
-import { useParams } from "@umijs/max";
+import { useParams, useSearchParams } from "@umijs/max";
 
 const defaultImg = 'https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418';
 
 export default () => {
-    const { id, name = '消息' } = useParams();
+    const { id } = useParams();
+
+    const [searchParams] = useSearchParams();
+
+    const name = searchParams.get('name') ?? '消息';
 
     return (
         <BackNavBar title={name}>
