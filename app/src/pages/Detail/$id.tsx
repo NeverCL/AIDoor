@@ -25,6 +25,7 @@ export default () => {
                                 /> : */
                             }
                             <video
+                                className="w-full h-full"
                                 controls
                                 src='https://media.w3.org/2010/05/sintel/trailer_hd.mp4'
                                 autoPlay
