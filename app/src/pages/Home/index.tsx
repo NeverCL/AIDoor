@@ -23,7 +23,7 @@ interface Category {
 
 const HomePage: React.FC = () => {
   const { data } = useRequest(api.appItem.getAppItemAll);
-  const { name } = useModel('global');
+  const { user } = useModel('global');
   const [activeIndex, setActiveIndex] = useState(0);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef<(HTMLSpanElement | null)[]>([]);

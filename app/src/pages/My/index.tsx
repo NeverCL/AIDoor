@@ -1,5 +1,5 @@
 import { Icon, NavLink, history } from "@umijs/max"
-import { List, Space } from "antd-mobile";
+import { List, Space, Toast } from "antd-mobile";
 import { useEffect, useState } from "react";
 import { getUserStats } from "@/services/demo/UserController";
 import { request } from "@umijs/max";
@@ -203,6 +203,7 @@ export default () => {
 
     //     fetchRecordData();
     // }, []);
+    Toast.show(window.history.length.toString());
 
     return (
         <>

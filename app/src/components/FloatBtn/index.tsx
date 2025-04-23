@@ -1,11 +1,13 @@
 import React from 'react';
-import { Icon, NavLink, useLocation } from '@umijs/max';
+import { Icon, NavLink, useLocation, useModel } from '@umijs/max';
 
 
 const homeRoutes = ['/home', '/find'];
 
 // 脚手架示例组件
 const Guide: React.FC = () => {
+
+    const { user } = useModel('global');
 
     const { pathname } = useLocation();
 
@@ -19,7 +21,14 @@ const Guide: React.FC = () => {
                     <span className='text-sm'>首页</span>
                 </NavLink>
 
-                <div className='bg-secondary w-[1px] h-4'></div>
+                {
+                    user.isDev
+                        // 上传文件
+                        ? <NavLink to='/upload'>
+                            <div className='text-2xl p-3 bg-white text-black rounded-full text-center flex items-center justify-center w-10 h-10'>＋</div>
+                        </NavLink>
+                        : <div className='bg-secondary w-[1px] h-4'></div>
+                }
 
                 <NavLink to='/my' replace={true} className={({ isActive }) => 'flex items-center ' + (!isInHomeGroup ? 'text-primary' : 'text-secondary')}>
                     <Icon icon="local:my" className='mr-2' />
