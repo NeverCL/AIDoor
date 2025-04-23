@@ -100,7 +100,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<SmsService>();
         services.AddScoped<UserService>();
         services.AddScoped<FileService>();
-        services.AddScoped<ApplicationService>();
+        services.AddScoped<AppItemService>();
         services.AddScoped<ItemService>();
 
         return services;

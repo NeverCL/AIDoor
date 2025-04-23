@@ -1,0 +1,113 @@
+declare namespace API {
+  type ApplicationCreateDto = {
+    title: string;
+    description?: string;
+    imageUrl?: string;
+    displayOrder?: number;
+    categoryId: number;
+  };
+
+  type ApplicationUpdateDto = {
+    title: string;
+    description?: string;
+    imageUrl?: string;
+    displayOrder?: number;
+    isActive?: boolean;
+    categoryId: number;
+  };
+
+  type CategoryCreateDto = {
+    name: string;
+    displayOrder?: number;
+  };
+
+  type CategoryUpdateDto = {
+    name: string;
+    displayOrder?: number;
+    isActive?: boolean;
+  };
+
+  type deleteAdminAppitemsApplicationsApplicationIdParams = {
+    applicationId: number;
+  };
+
+  type deleteAdminAppitemsCategoriesCategoryIdParams = {
+    categoryId: number;
+  };
+
+  type deleteFileFileNameParams = {
+    fileName: string;
+  };
+
+  type deleteItemIdParams = {
+    id: number;
+  };
+
+  type getAdminAppitemsApplicationsApplicationIdParams = {
+    applicationId: number;
+  };
+
+  type getAdminAppitemsCategoriesCategoryIdParams = {
+    categoryId: number;
+  };
+
+  type getFileDownloadFileNameParams = {
+    fileName: string;
+  };
+
+  type getFilePreviewFileNameParams = {
+    fileName: string;
+  };
+
+  type getItemIdParams = {
+    id: number;
+  };
+
+  type getItemParams = {
+    Page?: number;
+    Limit?: number;
+  };
+
+  type ItemCreateDto = {
+    title: string;
+    imageUrl: string;
+    userId: number;
+  };
+
+  type ItemUpdateDto = {
+    title?: string;
+    imageUrl?: string;
+  };
+
+  type LoginRequest = {
+    phoneNumber: string;
+    password: string;
+  };
+
+  type putAdminAppitemsApplicationsApplicationIdParams = {
+    applicationId: number;
+  };
+
+  type putAdminAppitemsCategoriesCategoryIdParams = {
+    categoryId: number;
+  };
+
+  type putItemIdParams = {
+    id: number;
+  };
+
+  type RegisterRequest = {
+    phoneNumber: string;
+    password: string;
+    verificationCode: string;
+  };
+
+  type SendCodeRequest = {
+    phoneNumber: string;
+  };
+
+  type UpdateProfileRequest = {
+    username: string;
+    avatarUrl: string;
+  };
+}

@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AIDoor.WebAPI.Data;
 using AIDoor.WebAPI.Domain;
 using AIDoor.WebAPI.Models.Dtos;
@@ -9,11 +5,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AIDoor.WebAPI.Services;
 
-public class ApplicationService
+public class AppItemService
 {
     private readonly AppDbContext _dbContext;
 
-    public ApplicationService(AppDbContext dbContext)
+    public AppItemService(AppDbContext dbContext)
     {
         _dbContext = dbContext;
     }
@@ -27,22 +23,23 @@ public class ApplicationService
             .OrderBy(c => c.DisplayOrder)
             .ToListAsync();
             
-        return categories.Select(c => new CategoryDto
-        {
-            Id = c.Id,
-            Name = c.Name,
-            DisplayOrder = c.DisplayOrder,
-            Applications = c.Applications.Select(a => new ApplicationDto
+        return categories
+            .Select(c => new CategoryDto
             {
-                Id = a.Id,
-                Title = a.Title,
-                Description = a.Description,
-                ImageUrl = a.ImageUrl,
-                DisplayOrder = a.DisplayOrder,
-                CategoryId = a.CategoryId,
-                CategoryName = c.Name
-            }).ToList()
-        }).ToList();
+                Id = c.Id,
+                Name = c.Name,
+                DisplayOrder = c.DisplayOrder,
+                Applications = c.Applications.Select(a => new ApplicationDto
+                {
+                    Id = a.Id,
+                    Title = a.Title,
+                    Description = a.Description,
+                    ImageUrl = a.ImageUrl,
+                    DisplayOrder = a.DisplayOrder,
+                    CategoryId = a.CategoryId,
+                    CategoryName = c.Name
+                }).ToList()
+            }).ToList();
     }
     
     // 根据分类ID获取应用

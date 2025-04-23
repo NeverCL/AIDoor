@@ -6,17 +6,18 @@ namespace AIDoor.WebAPI.Controllers;
 
 public class AppItemController : BaseController
 {
-    private readonly ApplicationService _applicationService;
+    private readonly AppItemService _appItemService;
 
-    public AppItemController(ApplicationService applicationService)
+    public AppItemController(AppItemService appItemService)
     {
-        _applicationService = applicationService;
+        _appItemService = appItemService;
     }
 
     [HttpGet("all")]
     public async Task<IActionResult> GetAllCategoriesWithApplications()
     {
-        var categories = await _applicationService.GetApplicationCategories();
-        return Ok("获取所有应用分类成功", categories);
+        var categories = await _appItemService.GetApplicationCategories();
+        
+        return Ok(categories);
     }
 } 

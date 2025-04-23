@@ -1,3 +1,6 @@
+using AIDoor.WebAPI.Data;
+using Microsoft.EntityFrameworkCore;
+
 namespace AIDoor.WebAPI.Extensions;
 
 public static class ApplicationBuilderExtensions
@@ -22,6 +25,23 @@ public static class ApplicationBuilderExtensions
         app.MapControllers();
         app.MapHealthChecks("/healthz");
 
+        return app;
+    }
+    
+    public static WebApplication SeedDatabase(this WebApplication app)
+    {
+        using (var scope = app.Services.CreateScope())
+        {
+            var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            
+            // 执行迁移
+            dbContext.Database.Migrate();
+            
+            // 初始化种子数据
+            var initData = new InitData();
+            initData.Seed(dbContext);
+        }
+        
         return app;
     }
 } 

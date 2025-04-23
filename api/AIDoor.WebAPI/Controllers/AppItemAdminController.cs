@@ -9,24 +9,24 @@ namespace AIDoor.WebAPI.Controllers;
 [Route("api/admin/appitems")]
 public class AppItemAdminController : BaseController
 {
-    private readonly ApplicationService _applicationService;
+    private readonly AppItemService _appItemService;
 
-    public AppItemAdminController(ApplicationService applicationService)
+    public AppItemAdminController(AppItemService appItemService)
     {
-        _applicationService = applicationService;
+        _appItemService = appItemService;
     }
     
     [HttpGet("categories")]
     public async Task<IActionResult> GetAllCategories()
     {
-        var categories = await _applicationService.GetApplicationCategories();
+        var categories = await _appItemService.GetApplicationCategories();
         return Ok("获取所有应用分类成功", categories);
     }
     
     [HttpGet("categories/{categoryId:int}")]
     public async Task<IActionResult> GetCategoryById(int categoryId)
     {
-        var category = await _applicationService.GetCategoryById(categoryId);
+        var category = await _appItemService.GetCategoryById(categoryId);
         if (category == null)
         {
             return NotFound("未找到指定分类");
@@ -38,7 +38,7 @@ public class AppItemAdminController : BaseController
     [HttpGet("applications/{applicationId:int}")]
     public async Task<IActionResult> GetApplicationById(int applicationId)
     {
-        var application = await _applicationService.GetApplicationById(applicationId);
+        var application = await _appItemService.GetApplicationById(applicationId);
         if (application == null)
         {
             return NotFound("未找到指定应用");
@@ -56,7 +56,7 @@ public class AppItemAdminController : BaseController
             return BadRequest("请提供有效的分类信息");
         }
         
-        var result = await _applicationService.CreateCategory(categoryDto);
+        var result = await _appItemService.CreateCategory(categoryDto);
         if (!result.Success)
         {
             return BadRequest(result.Message);
@@ -75,7 +75,7 @@ public class AppItemAdminController : BaseController
             return BadRequest("请提供有效的分类信息");
         }
         
-        var result = await _applicationService.UpdateCategory(categoryId, categoryDto);
+        var result = await _appItemService.UpdateCategory(categoryId, categoryDto);
         if (!result.Success)
         {
             return BadRequest(result.Message);
@@ -88,7 +88,7 @@ public class AppItemAdminController : BaseController
     [HttpDelete("categories/{categoryId:int}")]
     public async Task<IActionResult> DeleteCategory(int categoryId)
     {
-        var result = await _applicationService.DeleteCategory(categoryId);
+        var result = await _appItemService.DeleteCategory(categoryId);
         if (!result.Success)
         {
             return BadRequest(result.Message);
@@ -106,7 +106,7 @@ public class AppItemAdminController : BaseController
             return BadRequest("请提供有效的应用信息");
         }
         
-        var result = await _applicationService.CreateApplication(applicationDto);
+        var result = await _appItemService.CreateApplication(applicationDto);
         if (!result.Success)
         {
             return BadRequest(result.Message);
@@ -125,7 +125,7 @@ public class AppItemAdminController : BaseController
             return BadRequest("请提供有效的应用信息");
         }
         
-        var result = await _applicationService.UpdateApplication(applicationId, applicationDto);
+        var result = await _appItemService.UpdateApplication(applicationId, applicationDto);
         if (!result.Success)
         {
             return BadRequest(result.Message);
@@ -138,7 +138,7 @@ public class AppItemAdminController : BaseController
     [HttpDelete("applications/{applicationId:int}")]
     public async Task<IActionResult> DeleteApplication(int applicationId)
     {
-        var result = await _applicationService.DeleteApplication(applicationId);
+        var result = await _appItemService.DeleteApplication(applicationId);
         if (!result.Success)
         {
             return BadRequest(result.Message);
