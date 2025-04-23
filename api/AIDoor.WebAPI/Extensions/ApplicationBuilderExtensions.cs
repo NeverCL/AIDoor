@@ -14,6 +14,7 @@ public static class ApplicationBuilderExtensions
         }
 
         // 中间件管道配置
+        app.UseCors(options => options.AllowAnyMethod().AllowAnyHeader().AllowAnyOrigin());
         app.UseStaticFiles();
         app.UseRouting();
 
