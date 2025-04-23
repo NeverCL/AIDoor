@@ -203,7 +203,6 @@ export default () => {
 
     //     fetchRecordData();
     // }, []);
-    Toast.show(window.history.length.toString());
 
     return (
         <>
