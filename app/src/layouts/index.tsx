@@ -1,5 +1,5 @@
 import { Outlet } from "@umijs/max"
-import { SafeArea } from "antd-mobile"
+import { SafeArea, Toast } from "antd-mobile"
 import { useEffect, useState } from "react"
 
 export default () => {
@@ -16,6 +16,8 @@ export default () => {
     useEffect(() => {
         document.addEventListener('plusready', function () {
             plus.key.addEventListener('backbutton', function () {
+                Toast.show('backbutton');
+
                 if (window.history.length > 1) {
                     window.history.back();
                 } else {

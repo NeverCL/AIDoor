@@ -1,6 +1,6 @@
 import BackNavBar from "@/components/BackNavBar";
 import { history } from "@umijs/max"
-import { List, Toast } from "antd-mobile"
+import { List } from "antd-mobile"
 
 const routes = [
     { text: "开发者社群", path: '/qrcode' },
@@ -12,9 +12,6 @@ const routes = [
 ];
 
 export default () => {
-
-    // window.history.length
-    Toast.show(window.history.length.toString());
 
     return (
         <BackNavBar title={'设置'}>
