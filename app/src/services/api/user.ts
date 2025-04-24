@@ -93,3 +93,11 @@ export async function getUserStats(options?: { [key: string]: any }) {
     ...(options || {}),
   });
 }
+
+/** 获取随机昵称 GET /api/User/random-nickname */
+export async function getUserRandomNickname(options?: { [key: string]: any }) {
+  return request<API.RandomNicknameResponse>('/api/User/random-nickname', {
+    method: 'GET',
+    ...(options || {}),
+  });
+}

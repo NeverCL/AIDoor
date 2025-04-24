@@ -77,6 +77,21 @@ public class UserService
         return (true, "注册成功");
     }
 
+    /// <summary>
+    /// 生成随机密码
+    /// </summary>
+    /// <returns>随机生成的密码</returns>
+    private string GenerateRandomPassword()
+    {
+        // 生成包含字母和数字的随机密码
+        const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        var random = new Random();
+        var password = new string(Enumerable.Repeat(chars, 12)
+            .Select(s => s[random.Next(s.Length)]).ToArray());
+
+        return password;
+    }
+
     public async Task<(bool Success, User? User, string Message)> LoginAsync(string phone, string password)
     {
         var user = await _context.Users.FirstOrDefaultAsync(u => u.PhoneNumber == phone);
@@ -147,6 +162,22 @@ public class UserService
         // 生成6位数字验证码
         var random = new Random();
         return random.Next(100000, 999999).ToString();
+    }
+
+    /// <summary>
+    /// 生成随机昵称
+    /// </summary>
+    /// <returns>随机生成的昵称</returns>
+    public string GenerateRandomNickname()
+    {
+        string[] adjectives = { "快乐", "聪明", "可爱", "帅气", "美丽", "勇敢", "温柔", "善良", "优雅", "活泼" };
+        string[] nouns = { "小猫", "小狗", "小鸟", "小熊", "小兔", "小鹿", "小象", "小狮", "小虎", "小龙" };
+
+        var random = new Random();
+        string adjective = adjectives[random.Next(adjectives.Length)];
+        string noun = nouns[random.Next(nouns.Length)];
+
+        return $"{adjective}{noun}{random.Next(100, 999)}";
     }
 
     private string HashPassword(string password)

@@ -2,7 +2,7 @@ import VerificationCodeButton from "@/components/VerificationCodeButton"
 import { NavLink, useRequest, history } from "@umijs/max"
 import { Button, Form, Input, Toast } from "antd-mobile"
 import { MailOutline, PhoneFill, UserOutline } from "antd-mobile-icons"
-import { postUserRegister, postUserSendCode } from "@/services/api/user"
+import { postUserRegister, postUserSendCode, getUserRandomNickname } from "@/services/api/user"
 
 export default () => {
     const [form] = Form.useForm();
@@ -15,6 +15,12 @@ export default () => {
         }
     });
 
+    const { run: getRandomNickname, loading: nicknameLoading } = useRequest(getUserRandomNickname, {
+        onSuccess: (data) => {
+            form.setFieldValue('name', data.nickname);
+        }
+    });
+
     return (
         <div className="grid items-center h-full">
             <h1>注册账号</h1>
@@ -22,6 +28,9 @@ export default () => {
             <div>
                 <Form
                     form={form}
+                    initialValues={{
+                        password: ''
+                    }}
                     footer={
                         <Button block loading={loading} type='submit' color='primary' size='large'>
                             注册
@@ -33,6 +42,17 @@ export default () => {
                         name='name'
                         label={<UserOutline className="text-lg" />}
                         rules={[{ required: true }]}
+                    // extra={
+                    //     <Button
+                    //         size='small'
+                    //         loading={nicknameLoading}
+                    //         onClick={() => {
+                    //             getRandomNickname();
+                    //         }}
+                    //     >
+                    //         随机昵称
+                    //     </Button>
+                    // }
                     >
                         <Input onChange={console.log} placeholder='请输入昵称' clearable />
                     </Form.Item>
@@ -43,15 +63,6 @@ export default () => {
                         rules={[{ required: true }]}
                     >
                         <Input type='number' onChange={console.log} placeholder='请输入手机号' clearable />
-                    </Form.Item>
-
-                    <Form.Item
-                        name='password'
-                        hidden
-                        label={<UserOutline className="text-lg" />}
-                    // rules={[{ required: true }]}
-                    >
-                        <Input type='password' placeholder='请输入密码' clearable />
                     </Form.Item>
 
                     <Form.Item

@@ -100,7 +100,7 @@ declare namespace API {
     name: string;
     phone: string;
     code: string;
-    password: string;
+    password?: string;
   };
 
   type SendCodeRequest = {
@@ -110,5 +110,9 @@ declare namespace API {
   type UpdateProfileRequest = {
     username: string;
     avatarUrl: string;
+  };
+
+  type RandomNicknameResponse = {
+    nickname: string;
   };
 }

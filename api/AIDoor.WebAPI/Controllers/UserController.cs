@@ -37,7 +37,7 @@ public class UserController : BaseController
             return BadRequest("请填写完整信息");
         }
 
-        var result = await _userService.RegisterAsync(request.Phone, request.Password, request.Code, request.Name);
+        var result = await _userService.RegisterAsync(request.Phone, request.Password ?? "", request.Code, request.Name);
 
         if (!result.Success)
         {
@@ -45,6 +45,17 @@ public class UserController : BaseController
         }
 
         return Ok(result.Message);
+    }
+
+    /// <summary>
+    /// 获取随机昵称
+    /// </summary>
+    /// <returns>随机生成的昵称</returns>
+    [HttpGet("random-nickname")]
+    public IActionResult GetRandomNickname()
+    {
+        var nickname = _userService.GenerateRandomNickname();
+        return Ok(new { nickname });
     }
 
     [HttpPost("login")]
@@ -154,6 +165,6 @@ public record SendCodeRequest(string Phone);
 
 public record UpdateProfileRequest(string Username, string AvatarUrl);
 
-public record RegisterRequest(string Name, string Phone, string Code, string Password);
+public record RegisterRequest(string Name, string Phone, string Code, string? Password = null);
 
 public record LoginRequest(string Phone, string Code);
