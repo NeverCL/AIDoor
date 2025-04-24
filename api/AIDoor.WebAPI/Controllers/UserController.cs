@@ -19,26 +19,26 @@ public class UserController : BaseController
     [HttpPost("send-code")]
     public async Task<IActionResult> SendVerificationCode([FromBody] SendCodeRequest request)
     {
-        if (string.IsNullOrEmpty(request.PhoneNumber))
+        if (string.IsNullOrEmpty(request.Phone))
         {
             return BadRequest("手机号不能为空");
         }
 
-        await _userService.SendVerificationCodeAsync(request.PhoneNumber);
+        await _userService.SendVerificationCodeAsync(request.Phone);
         return Ok("验证码已发送");
     }
 
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterRequest request)
     {
-        if (string.IsNullOrEmpty(request.PhoneNumber) || string.IsNullOrEmpty(request.Password) ||
-            string.IsNullOrEmpty(request.VerificationCode))
+        if (string.IsNullOrEmpty(request.Phone) || string.IsNullOrEmpty(request.Password) ||
+            string.IsNullOrEmpty(request.Code) || string.IsNullOrEmpty(request.Name))
         {
             return BadRequest("请填写完整信息");
         }
 
-        var result = await _userService.RegisterAsync(request.PhoneNumber, request.Password, request.VerificationCode);
-        
+        var result = await _userService.RegisterAsync(request.Phone, request.Password, request.Code, request.Name);
+
         if (!result.Success)
         {
             return BadRequest(result.Message);
@@ -98,12 +98,12 @@ public class UserController : BaseController
     public async Task<IActionResult> GetProfile()
     {
         var user = await _userService.GetUserProfileAsync(UserId);
-        
+
         if (user == null)
         {
             return NotFound("用户不存在");
         }
-        
+
         return Ok(user);
     }
 
@@ -111,7 +111,7 @@ public class UserController : BaseController
     public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileRequest request)
     {
         await _userService.UpdateUserProfileAsync(UserId, request.Username, request.AvatarUrl);
-        
+
         return Ok("更新成功");
     }
 
@@ -124,15 +124,15 @@ public class UserController : BaseController
     {
         // 获取当前用户ID
         var userId = UserId;
-        
+
         // 调用服务获取统计数据
         var userStats = await _userService.GetUserStatsAsync(userId);
-        
+
         if (userStats == null)
         {
             return NotFound("无法获取用户统计数据");
         }
-        
+
         return Ok(userStats);
     }
 
@@ -145,15 +145,15 @@ public class UserController : BaseController
     {
         var userId = UserId;
         var recordsData = await _userService.GetUserRecordsAsync(userId);
-        
+
         return Ok(recordsData);
     }
 }
 
-public record SendCodeRequest(string PhoneNumber);
+public record SendCodeRequest(string Phone);
 
 public record UpdateProfileRequest(string Username, string AvatarUrl);
 
-public record RegisterRequest(string PhoneNumber, string Password, string VerificationCode);
+public record RegisterRequest(string Name, string Phone, string Code, string Password);
 
 public record LoginRequest(string PhoneNumber, string Password);

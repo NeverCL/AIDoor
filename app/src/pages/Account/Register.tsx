@@ -45,6 +45,14 @@ export default () => {
                     </Form.Item>
 
                     <Form.Item
+                        name='password'
+                        label={<UserOutline className="text-lg" />}
+                        rules={[{ required: true }]}
+                    >
+                        <Input type='password' placeholder='请输入密码' clearable />
+                    </Form.Item>
+
+                    <Form.Item
                         name='code'
                         label={<MailOutline className="text-lg" />}
                         rules={[{ required: true }]}

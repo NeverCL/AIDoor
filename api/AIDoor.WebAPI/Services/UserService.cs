@@ -46,7 +46,7 @@ public class UserService
         return await _context.Users.AnyAsync(u => u.PhoneNumber == phoneNumber);
     }
 
-    public async Task<(bool Success, string Message)> RegisterAsync(string phoneNumber, string password, string verificationCode)
+    public async Task<(bool Success, string Message)> RegisterAsync(string phoneNumber, string password, string verificationCode, string name)
     {
         // 验证短信验证码
         var cachedCode = await _cache.GetStringAsync($"verification_code:{phoneNumber}");
@@ -66,7 +66,7 @@ public class UserService
         var user = new User
         {
             PhoneNumber = phoneNumber,
-            Username = $"user_{DateTime.Now.Ticks}", // 生成默认用户名
+            Username = name, // 使用用户提供的昵称
             PasswordHash = passwordHash,
             CreatedAt = DateTime.Now
         };
