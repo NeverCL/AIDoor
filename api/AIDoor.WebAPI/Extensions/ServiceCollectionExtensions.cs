@@ -48,7 +48,7 @@ public static class ServiceCollectionExtensions
                 options.LoginPath = "/api/User/login";
                 options.LogoutPath = "/api/User/logout";
                 options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-                options.Cookie.SameSite = SameSiteMode.Strict;
+                options.Cookie.SameSite = SameSiteMode.None;
             });
 
         return services;
@@ -105,4 +105,4 @@ public static class ServiceCollectionExtensions
 
         return services;
     }
-} 
+}
