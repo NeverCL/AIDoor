@@ -14,15 +14,23 @@ export default () => {
     }, []);
 
     useEffect(() => {
+        let firstBackTime = 0;
+
         document.addEventListener('plusready', function () {
             plus.key.addEventListener('backbutton', function () {
-                Toast.show('backbutton');
-
-                if (window.history.length > 1) {
+                Toast.show('back' + window.history.length);
+                if (window.history.length > 2) {
                     window.history.back();
                 } else {
                     // 如果没有历史记录，可以选择退出应用或其他处理
-                    plus.runtime.quit();
+                    // 如果在首页
+                    const now = Date.now();
+                    if (now - firstBackTime < 1500) {
+                        plus.runtime.quit(); // 1.5秒内第二次按，退出
+                    } else {
+                        plus.nativeUI.toast("再按一次退出应用");
+                        firstBackTime = now;
+                    }
                 }
             });
         });
