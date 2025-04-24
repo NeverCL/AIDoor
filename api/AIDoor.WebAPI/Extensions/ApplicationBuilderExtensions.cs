@@ -14,7 +14,7 @@ public static class ApplicationBuilderExtensions
         }
 
         // 中间件管道配置
-        app.UseCors(options => options.AllowAnyMethod().AllowAnyHeader().AllowAnyOrigin());
+        app.UseCors(options => options.AllowCredentials().AllowAnyMethod().AllowAnyHeader().AllowAnyOrigin());
         app.UseStaticFiles();
         app.UseRouting();
 
@@ -28,21 +28,21 @@ public static class ApplicationBuilderExtensions
 
         return app;
     }
-    
+
     public static WebApplication SeedDatabase(this WebApplication app)
     {
         using (var scope = app.Services.CreateScope())
         {
             var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            
+
             // 执行迁移
             dbContext.Database.Migrate();
-            
+
             // 初始化种子数据
             var initData = new InitData();
             initData.Seed(dbContext);
         }
-        
+
         return app;
     }
-} 
+}

@@ -18,8 +18,8 @@ export async function getInitialState(): Promise<{ name: string }> {
 // };
 
 const baseUrl = process.env.NODE_ENV === 'development'
-  // ? 'http://192.168.20.157:8000'
-  ? ''
+  ? 'http://192.168.20.157:8000'
+  // ? ''
   // ? 'https://api.thedoorofai.com'
   : 'https://api.thedoorofai.com';
 
@@ -35,7 +35,6 @@ export const request: RequestConfig = {
   requestInterceptors: [
     (config: any) => {
       const url = baseUrl + config.url;
-      config.options.withCredentials = true;
       return { ...config, url };
     }
   ],

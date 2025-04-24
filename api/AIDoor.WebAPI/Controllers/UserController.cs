@@ -27,15 +27,21 @@ public class UserController : BaseController
             new(ClaimTypes.Name, user.Username),
             new(ClaimTypes.MobilePhone, user.PhoneNumber)
         };
+
         var claimsIdentity = new ClaimsIdentity(claims, "login");
+
+        var authProperties = new AuthenticationProperties
+        {
+            IsPersistent = true,
+            ExpiresUtc = DateTimeOffset.UtcNow.AddDays(7)
+        };
+
+        authProperties.Parameters.Add("withCredentials", "true");
 
         await HttpContext.SignInAsync(
             new ClaimsPrincipal(claimsIdentity),
-            new AuthenticationProperties
-            {
-                IsPersistent = true,
-                ExpiresUtc = DateTimeOffset.UtcNow.AddDays(7)
-            });
+            authProperties
+        );
     }
 
     [HttpPost("send-code")]
