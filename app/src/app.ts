@@ -35,6 +35,7 @@ export const request: RequestConfig = {
   requestInterceptors: [
     (config: any) => {
       const url = baseUrl + config.url;
+      config.options.withCredentials = true;
       return { ...config, url };
     }
   ],
