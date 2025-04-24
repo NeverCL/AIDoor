@@ -46,18 +46,18 @@ public class UserService
         return await _context.Users.AnyAsync(u => u.PhoneNumber == phoneNumber);
     }
 
-    public async Task<(bool Success, string Message)> RegisterAsync(string phoneNumber, string password, string verificationCode, string name)
+    public async Task<(bool Success, User? User, string Message)> RegisterAsync(string phoneNumber, string password, string verificationCode, string name)
     {
         // 验证短信验证码
         var cachedCode = await _cache.GetStringAsync($"verification_code:{phoneNumber}");
         if (cachedCode == null || cachedCode != verificationCode)
         {
-            return (false, "验证码无效或已过期");
+            return (false, null, "验证码无效或已过期");
         }
 
         if (await IsPhoneRegisteredAsync(phoneNumber))
         {
-            return (false, "手机号已注册");
+            return (false, null, "手机号已注册");
         }
 
         // 创建密码哈希
@@ -74,7 +74,7 @@ public class UserService
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
 
-        return (true, "注册成功");
+        return (true, user, "注册成功");
     }
 
     /// <summary>

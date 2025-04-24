@@ -4,6 +4,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using System.Text.Json.Serialization;
 using AIDoor.WebAPI.Dtos;
+using AIDoor.WebAPI.Models;
 
 namespace AIDoor.WebAPI.Controllers;
 
@@ -14,6 +15,27 @@ public class UserController : BaseController
     public UserController(UserService userService)
     {
         _userService = userService;
+    }
+
+    // 辅助方法：创建用户身份认证并设置Cookie
+    private async Task SignInUserAsync(User user)
+    {
+        // 设置认证Cookie
+        var claims = new List<System.Security.Claims.Claim>
+        {
+            new(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new(ClaimTypes.Name, user.Username),
+            new(ClaimTypes.MobilePhone, user.PhoneNumber)
+        };
+        var claimsIdentity = new ClaimsIdentity(claims, "login");
+
+        await HttpContext.SignInAsync(
+            new ClaimsPrincipal(claimsIdentity),
+            new AuthenticationProperties
+            {
+                IsPersistent = true,
+                ExpiresUtc = DateTimeOffset.UtcNow.AddDays(7)
+            });
     }
 
     [HttpPost("send-code")]
@@ -44,6 +66,12 @@ public class UserController : BaseController
             return BadRequest(result.Message);
         }
 
+        // 注册成功后自动登录
+        if (result.User != null)
+        {
+            await SignInUserAsync(result.User);
+        }
+
         return Ok(result.Message);
     }
 
@@ -72,22 +100,8 @@ public class UserController : BaseController
             return BadRequest(result.Message);
         }
 
-        // 设置认证Cookie
-        var claims = new List<System.Security.Claims.Claim>
-        {
-            new(ClaimTypes.NameIdentifier, result.User!.Id.ToString()),
-            new(ClaimTypes.Name, result.User.Username),
-            new(ClaimTypes.MobilePhone, result.User.PhoneNumber)
-        };
-        var claimsIdentity = new ClaimsIdentity(claims, "login");
-
-        await HttpContext.SignInAsync(
-            new ClaimsPrincipal(claimsIdentity),
-            new AuthenticationProperties
-            {
-                IsPersistent = true,
-                ExpiresUtc = DateTimeOffset.UtcNow.AddDays(7)
-            });
+        // 使用共用方法设置认证Cookie
+        await SignInUserAsync(result.User!);
 
         return Ok(result.Message);
     }
