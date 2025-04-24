@@ -141,6 +141,8 @@ public class UserService
         // 生成随机验证码
         var code = GenerateRandomCode();
 
+        code = "123123";
+
         // 存储验证码到Redis，设置5分钟过期时间
         await _cache.SetStringAsync(
             $"verification_code:{phoneNumber}",

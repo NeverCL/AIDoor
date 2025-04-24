@@ -22,8 +22,7 @@ const Guide: React.FC = () => {
                 </NavLink>
 
                 {
-                    user.isDev
-                        // 上传文件
+                    user?.isDev ?? false
                         ? <NavLink to='/upload'>
                             <div className='text-2xl p-3 bg-white text-black rounded-full text-center flex items-center justify-center w-10 h-10'>＋</div>
                         </NavLink>

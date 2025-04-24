@@ -2,11 +2,8 @@
 import { useState } from 'react';
 
 const useUser = () => {
-  console.log('useUser');
 
-  const [user, setUser] = useState<any>({
-    isDev: false,
-  });
+  const [user, setUser] = useState<any>();
 
   const refreshUser = async () => {
     // const res = await getUserInfo();

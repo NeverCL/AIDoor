@@ -1,4 +1,4 @@
-import { Outlet } from "@umijs/max"
+import { Outlet, useModel, useNavigate, useSelectedRoutes } from "@umijs/max"
 import { SafeArea, Toast } from "antd-mobile"
 import { useEffect, useState } from "react"
 
@@ -36,11 +36,26 @@ export default () => {
         });
     }, []);
 
+
     // const { pathname } = useLocation();
 
-    // const routes = useSelectedRoutes();
+    const routes = useSelectedRoutes();
 
-    //const isBgGray = bgGrays.includes(routes.at(-1)?.pathnameBase ?? '');
+    const navigate = useNavigate();
+
+    const { user } = useModel('global');
+
+    const pathname = routes.at(-1)?.pathnameBase ?? '';
+
+    const noLoginRoutes = ['/account/login', '/account/register', '/', '/home'];
+
+    const shouldRedirect = !noLoginRoutes.includes(pathname);
+
+    if (shouldRedirect) {
+        if (!user) {
+            navigate('/account/login');
+        }
+    }
 
     return (
         <>
