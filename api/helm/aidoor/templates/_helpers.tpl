@@ -53,7 +53,7 @@ Redis connection string
 */}}
 {{- define "aidoor.redisHost" -}}
 {{- if .Values.redis.enabled -}}
-{{- $redisHost := printf "%s-redis-master:6379" .Release.Name -}}
+{{- $redisHost := printf "%s-redis:6379" .Release.Name -}}
 {{- if .Values.redis.auth.enabled -}}
 {{- if .Values.redis.auth.existingSecret -}}
 {{- printf "%s,password=${REDIS_PASSWORD}" $redisHost -}}
