@@ -2,6 +2,8 @@
 import { useState } from 'react';
 
 const useUser = () => {
+  console.log('useUser');
+
   const [user, setUser] = useState<any>({
     isDev: false,
   });

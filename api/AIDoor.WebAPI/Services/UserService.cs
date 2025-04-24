@@ -54,7 +54,7 @@ public class UserService
         {
             return (false, "验证码无效或已过期");
         }
-        
+
         if (await IsPhoneRegisteredAsync(phoneNumber))
         {
             return (false, "手机号已注册");
@@ -80,7 +80,7 @@ public class UserService
     public async Task<(bool Success, User? User, string Message)> LoginAsync(string phoneNumber, string password)
     {
         var user = await _context.Users.FirstOrDefaultAsync(u => u.PhoneNumber == phoneNumber);
-        
+
         if (user == null)
         {
             return (false, null, "用户不存在");
@@ -102,7 +102,7 @@ public class UserService
     {
         // 生成随机验证码
         var code = GenerateRandomCode();
-        
+
         // 存储验证码到Redis，设置5分钟过期时间
         await _cache.SetStringAsync(
             $"verification_code:{phoneNumber}",
@@ -112,7 +112,9 @@ public class UserService
                 AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(VERIFICATION_CODE_EXPIRE_MINUTES)
             }
         );
-        
+
+        System.Console.WriteLine($"验证码: {code}-{phoneNumber}");
+
         // 发送验证码短信
         _smsService.SendCode(phoneNumber, code);
     }
@@ -148,26 +150,26 @@ public class UserService
     public async Task<UserStats?> GetUserStatsAsync(int userId)
     {
         var user = await _context.Users.FindAsync(userId);
-        
+
         if (user == null)
         {
             return null;
         }
-        
+
         // 从数据库获取实际的消息数和关注数
-        
+
         // 假设有一个消息表，可以统计未读消息数量
         // 这里使用点赞数量作为消息数量的替代，实际项目中应当根据消息表来查询
         var messageCount = await _context.UserRecords
             .Where(ur => ur.UserId == userId && ur.RecordType == RecordType.Like && ur.IsActive)
             .CountAsync();
-        
+
         // 假设有一个关注表，可以统计关注数量
         // 这里使用收藏数量作为关注数量的替代，实际项目中应当根据关注表来查询
         var followCount = await _context.UserRecords
             .Where(ur => ur.UserId == userId && ur.RecordType == RecordType.Favorite && ur.IsActive)
             .CountAsync();
-        
+
         return new UserStats
         {
             MessageCount = messageCount,
@@ -188,20 +190,20 @@ public class UserService
         {
             return new List<UserRecordTypeDto>();
         }
-        
+
         var result = new List<UserRecordTypeDto>();
-        
+
         // 获取所有用户记录数据
         var userRecords = await _context.UserRecords
             .Where(ur => ur.UserId == userId && ur.IsActive)
             .OrderByDescending(ur => ur.CreatedAt)
             .ToListAsync();
-            
+
         // 按记录类型分组
         var recordsByType = userRecords
             .GroupBy(ur => ur.RecordType)
             .ToDictionary(g => g.Key, g => g.ToList());
-            
+
         // 处理点赞记录
         if (recordsByType.TryGetValue(RecordType.Like, out var likes) && likes.Any())
         {
@@ -226,7 +228,7 @@ public class UserService
                 Data = new List<UserRecordItemDto>()
             });
         }
-        
+
         // 处理收藏记录
         if (recordsByType.TryGetValue(RecordType.Favorite, out var favorites) && favorites.Any())
         {
@@ -251,7 +253,7 @@ public class UserService
                 Data = new List<UserRecordItemDto>()
             });
         }
-        
+
         // 处理足迹记录，按最后浏览时间排序
         if (recordsByType.TryGetValue(RecordType.Footprint, out var footprints) && footprints.Any())
         {
@@ -278,7 +280,7 @@ public class UserService
                 Data = new List<UserRecordItemDto>()
             });
         }
-        
+
         return result;
     }
 }
@@ -292,7 +294,7 @@ public class UserStats
     /// 未读消息数量
     /// </summary>
     public int MessageCount { get; set; }
-    
+
     /// <summary>
     /// 关注数量
     /// </summary>

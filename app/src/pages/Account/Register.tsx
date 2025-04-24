@@ -1,17 +1,15 @@
 import VerificationCodeButton from "@/components/VerificationCodeButton"
-import { NavLink } from "@umijs/max"
+import { NavLink, useRequest, history } from "@umijs/max"
 import { Button, Form, Input, Toast } from "antd-mobile"
 import { MailOutline, PhoneFill, UserOutline } from "antd-mobile-icons"
+import { postUserRegister, postUserSendCode } from "@/services/api/user"
 
 export default () => {
-    const sendSmsCode = () => {
-        throw new Error("Function not implemented.")
-    }
+    const [form] = Form.useForm();
 
-    const login = (values: any) => {
-        Toast.show(JSON.stringify(values));
-        throw new Error("Function not implemented.");
-    }
+    const { run: getSmsCode } = useRequest(postUserSendCode, { manual: true });
+
+    const { run: register, loading } = useRequest(postUserRegister, { manual: true });
 
     return (
         <div className="grid items-center h-full">
@@ -19,12 +17,16 @@ export default () => {
 
             <div>
                 <Form
+                    form={form}
                     footer={
-                        <Button block type='submit' color='primary' size='large'>
+                        <Button block loading={loading} type='submit' color='primary' size='large'>
                             注册
                         </Button>
                     }
-                    onFinish={login}
+                    onFinish={async (values) => {
+                        await register(values);
+                        history.replace('/');
+                    }}
                 >
                     <Form.Item
                         name='name'
@@ -47,10 +49,12 @@ export default () => {
                         label={<MailOutline className="text-lg" />}
                         rules={[{ required: true }]}
                         extra={
-                            <VerificationCodeButton onSend={function (): Promise<boolean> {
-                                return new Promise((resolve, reject) => {
-                                    resolve(true)
-                                })
+                            <VerificationCodeButton onSend={() => {
+                                if (!form.getFieldValue('phone')) {
+                                    Toast.show('请输入手机号');
+                                    return Promise.resolve(false);
+                                }
+                                return getSmsCode({ phoneNumber: form.getFieldValue('phone') });
                             }} />
                         }
                     >
