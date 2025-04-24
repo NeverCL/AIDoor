@@ -14,7 +14,7 @@ public static class ApplicationBuilderExtensions
         }
 
         // 中间件管道配置
-        app.UseCors(options => options.AllowCredentials().AllowAnyMethod().AllowAnyHeader().AllowAnyOrigin());
+        app.UseCors(options => options.AllowCredentials().AllowAnyMethod().AllowAnyHeader().WithOrigins("http://192.168.20.157:8000", "https://app.thedoorofai.com", "http://localhost:8000"));
         app.UseStaticFiles();
         app.UseRouting();
 
