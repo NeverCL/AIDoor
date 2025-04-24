@@ -79,8 +79,7 @@ public class UserController : BaseController
             new(ClaimTypes.Name, result.User.Username),
             new(ClaimTypes.MobilePhone, result.User.PhoneNumber)
         };
-
-        var claimsIdentity = new ClaimsIdentity(claims);
+        var claimsIdentity = new ClaimsIdentity(claims, "login");
 
         await HttpContext.SignInAsync(
             new ClaimsPrincipal(claimsIdentity),
@@ -90,12 +89,7 @@ public class UserController : BaseController
                 ExpiresUtc = DateTimeOffset.UtcNow.AddDays(7)
             });
 
-        return Ok(result.Message, new
-        {
-            userId = result.User.Id,
-            phoneNumber = result.User.PhoneNumber,
-            username = result.User.Username
-        });
+        return Ok(result.Message);
     }
 
     [HttpPost("logout")]

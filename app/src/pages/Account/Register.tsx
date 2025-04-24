@@ -1,5 +1,5 @@
 import VerificationCodeButton from "@/components/VerificationCodeButton"
-import { NavLink, useRequest, history } from "@umijs/max"
+import { NavLink, useRequest, history, useModel } from "@umijs/max"
 import { Button, Form, Input, Toast } from "antd-mobile"
 import { MailOutline, PhoneFill, UserOutline } from "antd-mobile-icons"
 import { postUserRegister, postUserSendCode, getUserRandomNickname } from "@/services/api/user"
@@ -7,11 +7,15 @@ import { postUserRegister, postUserSendCode, getUserRandomNickname } from "@/ser
 export default () => {
     const [form] = Form.useForm();
 
+    const { refreshUser } = useModel('global');
+
     const { run: getSmsCode } = useRequest(postUserSendCode, { manual: true });
 
     const { run: register, loading } = useRequest(postUserRegister, {
         manual: true, onSuccess: () => {
-            history.replace('/');
+            refreshUser().then(() => {
+                history.replace('/');
+            });
         }
     });
 

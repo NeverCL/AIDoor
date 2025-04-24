@@ -67,7 +67,7 @@ public class UserService
         {
             PhoneNumber = phoneNumber,
             Username = name, // 使用用户提供的昵称
-            PasswordHash = passwordHash,
+            // PasswordHash = passwordHash,
             CreatedAt = DateTime.Now
         };
 
@@ -101,10 +101,10 @@ public class UserService
             return (false, null, "用户不存在");
         }
 
-        if (!VerifyPassword(password, user.PasswordHash))
-        {
-            return (false, null, "密码错误");
-        }
+        // if (!VerifyPassword(password, user.PasswordHash))
+        // {
+        //     return (false, null, "密码错误");
+        // }
 
         // 更新最后登录时间
         user.LastLoginAt = DateTime.Now;

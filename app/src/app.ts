@@ -18,7 +18,8 @@ export async function getInitialState(): Promise<{ name: string }> {
 // };
 
 const baseUrl = process.env.NODE_ENV === 'development'
-  ? 'http://192.168.20.157:8000'
+  // ? 'http://192.168.20.157:8000'
+  ? ''
   // ? 'https://api.thedoorofai.com'
   : 'https://api.thedoorofai.com';
 
