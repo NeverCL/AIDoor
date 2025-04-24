@@ -49,7 +49,7 @@ export const request: RequestConfig = {
       },
 
       (error) => {
-        Toast.show(error.message);
+        Toast.show(error.response?.data.message ?? error.message);
         return Promise.reject(error);
       }
     ],

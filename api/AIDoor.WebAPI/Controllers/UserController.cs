@@ -96,7 +96,33 @@ public class UserController : BaseController
     public async Task<IActionResult> Logout()
     {
         await HttpContext.SignOutAsync();
-        return Ok("已成功注销");
+        return Ok("已成功退出登录");
+    }
+
+    /// <summary>
+    /// 注销/删除用户账号
+    /// </summary>
+    /// <returns>注销结果</returns>
+    [HttpPost("delete-account")]
+    public async Task<IActionResult> DeleteAccount()
+    {
+        // 获取当前用户ID
+        var userId = UserId;
+        if (userId <= 0)
+        {
+            return BadRequest("未登录，无法注销账号");
+        }
+
+        // 调用删除账号的服务
+        var result = await _userService.DeleteAccountAsync(userId);
+        if (!result.Success)
+        {
+            return BadRequest(result.Message);
+        }
+
+        // 注销成功后，退出登录
+        await HttpContext.SignOutAsync();
+        return Ok(result.Message);
     }
 
     [HttpGet("profile")]

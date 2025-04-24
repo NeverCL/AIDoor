@@ -101,3 +101,11 @@ export async function getUserRandomNickname(options?: { [key: string]: any }) {
     ...(options || {}),
   });
 }
+
+/** 注销/删除用户账号 POST /api/User/delete-account */
+export async function postUserDeleteAccount(options?: { [key: string]: any }) {
+  return request<any>('/api/User/delete-account', {
+    method: 'POST',
+    ...(options || {}),
+  });
+}

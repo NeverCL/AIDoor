@@ -339,6 +339,44 @@ public class UserService
 
         return result;
     }
+
+    /// <summary>
+    /// 删除/注销用户账号
+    /// </summary>
+    /// <param name="userId">用户ID</param>
+    /// <returns>注销结果</returns>
+    public async Task<(bool Success, string Message)> DeleteAccountAsync(int userId)
+    {
+        var user = await _context.Users.FindAsync(userId);
+        if (user == null)
+        {
+            return (false, "用户不存在");
+        }
+
+        try
+        {
+            // 先删除与用户相关的记录
+            var userRecords = await _context.UserRecords
+                .Where(ur => ur.UserId == userId)
+                .ToListAsync();
+
+            if (userRecords.Any())
+            {
+                _context.UserRecords.RemoveRange(userRecords);
+            }
+
+            // 删除用户
+            _context.Users.Remove(user);
+            await _context.SaveChangesAsync();
+
+            return (true, "账号已成功注销");
+        }
+        catch (Exception ex)
+        {
+            System.Console.WriteLine($"删除账号失败: {ex.Message}");
+            return (false, "注销账号时发生错误，请稍后重试");
+        }
+    }
 }
 
 /// <summary>

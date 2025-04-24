@@ -1,29 +1,52 @@
 import BackNavBar from "@/components/BackNavBar";
 import { history, useModel } from "@umijs/max";
-import { List, Dialog, Toast } from "antd-mobile";
-import { postUserLogout } from "@/services/api/user";
+import { List, Dialog, Toast, Modal } from "antd-mobile";
+import { postUserLogout, postUserDeleteAccount } from "@/services/api/user";
 
 const routes = [
     { text: "开发者社群", path: '/qrcode' },
     { text: "关于我们", path: '/setting/about' },
     { text: "用户协议", path: '/setting/useragreement' },
     { text: "隐私政策", path: '/setting/privacypolicy' },
-    { text: "注销账号", path: '/' },
 ];
 
 export default () => {
     const { refreshUser } = useModel('global');
 
     const handleAccountDeletion = async () => {
-        const result = await Dialog.confirm({
+        const result1 = await Dialog.confirm({
             content: '确定要注销账号吗？此操作不可恢复！',
+            confirmText: '继续注销',
+            cancelText: '取消',
         });
 
-        if (result) {
-            Toast.show({
-                icon: 'success',
-                content: '账号注销功能暂未实现',
+        if (result1) {
+            // 二次确认
+            const result2 = await Dialog.confirm({
+                content: '注销账号后，您的所有数据将被删除且无法恢复，确认继续吗？',
+                confirmText: '确认注销',
+                cancelText: '再想想',
             });
+
+            if (result2) {
+                Modal.show({
+                    content: '正在处理注销请求...',
+                    closeOnMaskClick: false,
+                    showCloseButton: false,
+                });
+
+                await postUserDeleteAccount();
+
+                Modal.clear();
+
+                Toast.show({
+                    icon: 'success',
+                    content: '账号已成功注销',
+                });
+
+                // 跳转到登录页
+                history.replace('/account/login');
+            }
         }
     };
 
@@ -33,19 +56,11 @@ export default () => {
         });
 
         if (result) {
-            try {
-                await postUserLogout();
-                Toast.show({
-                    icon: 'success',
-                    content: '已退出登录',
-                });
-                history.replace('/account/login');
-            } catch (error) {
-                Toast.show({
-                    icon: 'fail',
-                    content: '退出失败，请重试',
-                });
-            }
+            Toast.show({
+                icon: 'success',
+                content: '已退出登录',
+            });
+            history.replace('/account/login');
         }
     };
 
@@ -63,12 +78,18 @@ export default () => {
         <BackNavBar title={'设置'}>
             <List>
                 {
-                    [...routes, { text: "退出登录", path: '/account/login' }].map(r =>
+                    [...routes].map(r =>
                         <List.Item key={r.text} onClick={() => handleItemClick(r.path, r.text)}>
                             {r.text}
                         </List.Item>
                     )
                 }
+                <List.Item onClick={() => handleAccountDeletion()}>
+                    <span className="text-red-500">注销账号</span>
+                </List.Item>
+                <List.Item onClick={() => handleLogout()}>
+                    退出登录
+                </List.Item>
             </List>
         </BackNavBar>
     )
