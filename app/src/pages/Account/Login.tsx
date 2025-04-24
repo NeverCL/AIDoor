@@ -1,17 +1,20 @@
 import VerificationCodeButton from "@/components/VerificationCodeButton"
-import { NavLink } from "@umijs/max"
+import { NavLink, useRequest, history } from "@umijs/max"
 import { Button, Form, Input, Toast } from "antd-mobile"
-import { MailOutline, PhoneFill, UserOutline } from "antd-mobile-icons"
+import { MailOutline, PhoneFill } from "antd-mobile-icons"
+import { postUserLogin, postUserSendCode } from "@/services/api/user"
 
 export default () => {
-    const sendSmsCode = () => {
-        throw new Error("Function not implemented.")
-    }
+    const [form] = Form.useForm();
 
-    const login = (values: any) => {
-        Toast.show(JSON.stringify(values));
-        throw new Error("Function not implemented.");
-    }
+    const { run: getSmsCode } = useRequest(postUserSendCode, { manual: true });
+
+    const { run: login, loading } = useRequest(postUserLogin, {
+        manual: true,
+        onSuccess: () => {
+            history.replace('/');
+        },
+    });
 
     return (
         <div className="grid items-center h-full">
@@ -19,20 +22,22 @@ export default () => {
 
             <div>
                 <Form
+                    form={form}
                     footer={
-                        <Button block type='submit' color='primary' size='large'>
+                        <Button block loading={loading} type='submit' color='primary' size='large'>
                             登录
                         </Button>
                     }
-                    onFinish={login}
+                    onFinish={async (values) => {
+                        await login(values);
+                    }}
                 >
                     <Form.Item
                         name='phone'
                         label={<PhoneFill className="text-lg" />}
-                        childElementPosition="normal"
                         rules={[{ required: true }]}
                     >
-                        <Input onChange={console.log} placeholder='请输入手机号' clearable type='number' />
+                        <Input type='number' placeholder='请输入手机号' clearable />
                     </Form.Item>
 
                     <Form.Item
@@ -40,10 +45,12 @@ export default () => {
                         label={<MailOutline className="text-lg" />}
                         rules={[{ required: true }]}
                         extra={
-                            <VerificationCodeButton onSend={function (): Promise<boolean> {
-                                return new Promise((resolve, reject) => {
-                                    resolve(true)
-                                })
+                            <VerificationCodeButton onSend={() => {
+                                if (!form.getFieldValue('phone')) {
+                                    Toast.show('请输入手机号');
+                                    return Promise.resolve(false);
+                                }
+                                return getSmsCode({ phone: form.getFieldValue('phone') });
                             }} />
                         }
                     >

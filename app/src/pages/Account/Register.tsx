@@ -9,7 +9,11 @@ export default () => {
 
     const { run: getSmsCode } = useRequest(postUserSendCode, { manual: true });
 
-    const { run: register, loading } = useRequest(postUserRegister, { manual: true });
+    const { run: register, loading } = useRequest(postUserRegister, {
+        manual: true, onSuccess: () => {
+            history.replace('/');
+        }
+    });
 
     return (
         <div className="grid items-center h-full">
@@ -23,10 +27,7 @@ export default () => {
                             注册
                         </Button>
                     }
-                    onFinish={async (values) => {
-                        await register(values);
-                        history.replace('/');
-                    }}
+                    onFinish={register}
                 >
                     <Form.Item
                         name='name'
@@ -46,8 +47,9 @@ export default () => {
 
                     <Form.Item
                         name='password'
+                        hidden
                         label={<UserOutline className="text-lg" />}
-                        rules={[{ required: true }]}
+                    // rules={[{ required: true }]}
                     >
                         <Input type='password' placeholder='请输入密码' clearable />
                     </Form.Item>
@@ -62,7 +64,7 @@ export default () => {
                                     Toast.show('请输入手机号');
                                     return Promise.resolve(false);
                                 }
-                                return getSmsCode({ phoneNumber: form.getFieldValue('phone') });
+                                return getSmsCode({ phone: form.getFieldValue('phone') });
                             }} />
                         }
                     >

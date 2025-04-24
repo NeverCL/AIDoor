@@ -77,9 +77,9 @@ public class UserService
         return (true, "注册成功");
     }
 
-    public async Task<(bool Success, User? User, string Message)> LoginAsync(string phoneNumber, string password)
+    public async Task<(bool Success, User? User, string Message)> LoginAsync(string phone, string password)
     {
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.PhoneNumber == phoneNumber);
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.PhoneNumber == phone);
 
         if (user == null)
         {
@@ -89,6 +89,29 @@ public class UserService
         if (!VerifyPassword(password, user.PasswordHash))
         {
             return (false, null, "密码错误");
+        }
+
+        // 更新最后登录时间
+        user.LastLoginAt = DateTime.Now;
+        await _context.SaveChangesAsync();
+
+        return (true, user, "登录成功");
+    }
+
+    public async Task<(bool Success, User? User, string Message)> LoginWithCodeAsync(string phone, string code)
+    {
+        // 验证短信验证码
+        var cachedCode = await _cache.GetStringAsync($"verification_code:{phone}");
+        if (cachedCode == null || cachedCode != code)
+        {
+            return (false, null, "验证码无效或已过期");
+        }
+
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.PhoneNumber == phone);
+
+        if (user == null)
+        {
+            return (false, null, "用户不存在，请先注册");
         }
 
         // 更新最后登录时间

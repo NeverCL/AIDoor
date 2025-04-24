@@ -31,7 +31,7 @@ public class UserController : BaseController
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterRequest request)
     {
-        if (string.IsNullOrEmpty(request.Phone) || string.IsNullOrEmpty(request.Password) ||
+        if (string.IsNullOrEmpty(request.Phone) ||
             string.IsNullOrEmpty(request.Code) || string.IsNullOrEmpty(request.Name))
         {
             return BadRequest("请填写完整信息");
@@ -50,12 +50,12 @@ public class UserController : BaseController
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
-        if (string.IsNullOrEmpty(request.PhoneNumber) || string.IsNullOrEmpty(request.Password))
+        if (string.IsNullOrEmpty(request.Phone) || string.IsNullOrEmpty(request.Code))
         {
             return BadRequest("请填写完整信息");
         }
 
-        var result = await _userService.LoginAsync(request.PhoneNumber, request.Password);
+        var result = await _userService.LoginWithCodeAsync(request.Phone, request.Code);
         if (!result.Success)
         {
             return BadRequest(result.Message);
@@ -156,4 +156,4 @@ public record UpdateProfileRequest(string Username, string AvatarUrl);
 
 public record RegisterRequest(string Name, string Phone, string Code, string Password);
 
-public record LoginRequest(string PhoneNumber, string Password);
+public record LoginRequest(string Phone, string Code);

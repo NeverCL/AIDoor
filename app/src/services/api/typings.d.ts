@@ -80,8 +80,8 @@ declare namespace API {
   };
 
   type LoginRequest = {
-    phoneNumber: string;
-    password: string;
+    phone: string;
+    code: string;
   };
 
   type putAdminAppitemsApplicationsApplicationIdParams = {
@@ -97,13 +97,14 @@ declare namespace API {
   };
 
   type RegisterRequest = {
-    phoneNumber: string;
+    name: string;
+    phone: string;
+    code: string;
     password: string;
-    verificationCode: string;
   };
 
   type SendCodeRequest = {
-    phoneNumber: string;
+    phone: string;
   };
 
   type UpdateProfileRequest = {
