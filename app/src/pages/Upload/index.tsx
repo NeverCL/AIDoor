@@ -16,11 +16,16 @@ export default () => {
     return (
         <BackNavBar title="发布">
 
-            <ImageUploader ref={input} upload={async file => {
+            <ImageUploader accept="image/*,video/*" ref={input} upload={async file => {
                 return {
                     url: URL.createObjectURL(file)
                 }
             }} />
+
+
+            {/* 标题 */}
+
+            {/* 正文 */}
 
         </BackNavBar>
     )
