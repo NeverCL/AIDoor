@@ -25,6 +25,7 @@ const baseUrl = process.env.NODE_ENV === 'development'
 
 export const request: RequestConfig = {
   timeout: 3000,
+  withCredentials: true,
   // other axios options you want
   errorConfig: {
     errorHandler() {
