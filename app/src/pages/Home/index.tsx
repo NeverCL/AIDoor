@@ -40,7 +40,7 @@ const HomePage: React.FC = () => {
     // 过滤应用
     if (filter) {
       categoriesData.forEach(category => {
-        category.applications = (category.applications || []).filter((app: Application) => app.title.includes(filter));
+        category.applications = (category.applications || []).filter((app: Application) => app.title.includes(filter) || app.description.includes(filter));
       });
     }
 
