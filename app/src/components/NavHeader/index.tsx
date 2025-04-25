@@ -1,4 +1,4 @@
-import { NavLink, Icon, useLocation } from '@umijs/max';
+import { NavLink, Icon, useLocation, useModel } from '@umijs/max';
 import { useEffect, useRef, useState } from 'react';
 import { Popup, SearchBar, SearchBarRef } from 'antd-mobile';
 
@@ -10,6 +10,8 @@ const NavHeader: React.FC = () => {
   const { pathname } = useLocation();
 
   const [open, setOpen] = useState(false);
+
+  const { filter, setFilter } = useModel('filter');
 
   const [showSearch, setShowSearch] = useState(false);
 
@@ -40,8 +42,8 @@ const NavHeader: React.FC = () => {
               className='flex-1'
               placeholder='请输入内容'
               showCancelButton
-              value={searchText}
-              onChange={val => setSearchText(val)}
+              defaultValue={filter}
+              onChange={val => setFilter(val)}
               onSearch={val => {
                 // Toast.show(`你搜索了：${val}`)
               }}
@@ -53,6 +55,7 @@ const NavHeader: React.FC = () => {
                 setShowSearch(false);
               }}
               onCancel={() => {
+                setFilter(null);
                 // console.log('取消搜索')
               }}
             /> :

@@ -25,7 +25,7 @@ interface Category {
 
 const HomePage: React.FC = () => {
   const { data } = useRequest(api.appItem.getAppItemAll);
-  const { user } = useModel('global');
+  const { filter } = useModel('filter');
   const [activeIndex, setActiveIndex] = useState(0);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef<(HTMLSpanElement | null)[]>([]);
@@ -35,7 +35,15 @@ const HomePage: React.FC = () => {
     if (!data) return [];
 
     // 确保后端返回的数据是一个数组
-    const categoriesData = Array.isArray(data) ? data : [];
+    const categoriesData = Array.isArray(data) ? structuredClone(data) : [];
+
+    // 过滤应用
+    if (filter) {
+      categoriesData.forEach(category => {
+        category.applications = (category.applications || []).filter((app: Application) => app.title.includes(filter));
+      });
+    }
+
 
     // Collect all applications from all categories
     const allApplications = categoriesData.flatMap(category => category.applications || []);
@@ -48,9 +56,10 @@ const HomePage: React.FC = () => {
       applications: allApplications
     };
 
+
     // Return array with "全部" as first item followed by the other categories
     return [allCategory, ...categoriesData];
-  }, [data]);
+  }, [data, filter]);
 
   // Function to handle item selection and scrolling
   const handleItemClick = (index: number) => {
