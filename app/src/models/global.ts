@@ -15,6 +15,9 @@ const useUser = () => {
       setUser(data);
       setIsLoading(false);
     },
+    onError: () => {
+      setIsLoading(false);
+    },
   });
 
   const refreshUser = async () => {
