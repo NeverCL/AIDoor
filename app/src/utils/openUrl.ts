@@ -1,6 +1,6 @@
 export default (url, id = 'externalPage') => {
 
-    if (!plus) {
+    if (typeof plus === 'undefined') {
         location.assign(url);
         return;
     }
