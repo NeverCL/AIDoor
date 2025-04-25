@@ -1,5 +1,5 @@
 import { Outlet, useModel, useNavigate, useSelectedRoutes } from "@umijs/max"
-import { SafeArea, Toast } from "antd-mobile"
+import { Toast } from "antd-mobile"
 import { useEffect, useState } from "react"
 
 export default () => {
@@ -43,7 +43,13 @@ export default () => {
 
     const navigate = useNavigate();
 
-    const { user } = useModel('global');
+    const { user, isLoading } = useModel('global');
+
+    if (isLoading) {
+        return <div className="bg-[#2d2d2d] text-primary flex justify-center items-center flex-col" style={{ height: windowHeight }}>
+            身份验证中...
+        </div>;
+    }
 
     const pathname = routes.at(-1)?.pathnameBase ?? '';
 
