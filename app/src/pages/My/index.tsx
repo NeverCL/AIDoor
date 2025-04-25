@@ -1,7 +1,6 @@
-import { Icon, NavLink } from "@umijs/max"
+import { Icon, NavLink, useModel } from "@umijs/max"
 import { List } from "antd-mobile";
 import { useState } from "react";
-import useUser from "@/models/global";
 
 const url = 'https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418';
 
@@ -142,7 +141,7 @@ export default () => {
 
 // 用户资料卡组件
 const UserCard = () => {
-    const { user } = useUser();
+    const { user } = useModel('global');
 
     return (
         <div className="h-16 rounded-xl bg-[#525252] flex justify-between items-center px-3">

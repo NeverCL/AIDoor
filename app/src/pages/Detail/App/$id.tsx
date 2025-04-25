@@ -20,7 +20,7 @@ export default () => {
                     </div>
                 ) : (
                     <>
-                        <div className="h-2/4 -mx-4 flex justify-center items-center overflow-hidden">
+                        <div className="h-2/4 flex justify-center items-center overflow-hidden">
                             <Swiper loop autoplay>
                                 <Swiper.Item>
                                     <img className="w-full h-full object-cover" src={data?.imageUrl} alt={data?.title} />
