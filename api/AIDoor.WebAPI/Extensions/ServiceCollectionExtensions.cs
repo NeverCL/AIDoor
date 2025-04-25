@@ -47,9 +47,10 @@ public static class ServiceCollectionExtensions
                 options.SlidingExpiration = true;
                 options.LoginPath = "/api/User/login";
                 options.LogoutPath = "/api/User/logout";
-                options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                 options.Cookie.SameSite = SameSiteMode.None;
 #if DEBUG
+                options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
                 options.Cookie.SameSite = SameSiteMode.Lax;
 #endif
             });
