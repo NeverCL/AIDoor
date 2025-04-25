@@ -146,8 +146,8 @@ const UserCard = () => {
     return (
         <div className="h-16 rounded-xl bg-[#525252] flex justify-between items-center px-3">
             <div className="flex items-center flex-1">
-                <div className="h-[3.94rem] w-[3.94rem] rounded-xl relative bottom-[0.63rem]">
-                    <img className="h-full w-full" src={require('@/assets/my/icon.png')} alt="my-header" />
+                <div className="h-[3.94rem] w-[3.94rem] relative bottom-[0.63rem]">
+                    <img className="h-full w-full rounded-full" src={require('@/assets/my/icon.png')} alt="my-header" />
                 </div>
                 <span className="text-lg font-bold ml-3">{user?.username}</span>
             </div>
