@@ -24,7 +24,7 @@ const baseUrl = process.env.NODE_ENV === 'development'
   : 'https://api.thedoorofai.com';
 
 export const request: RequestConfig = {
-  timeout: 3000,
+  timeout: 15000,
   withCredentials: true,
   // other axios options you want
   errorConfig: {
