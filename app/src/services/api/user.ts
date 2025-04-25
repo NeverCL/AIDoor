@@ -2,6 +2,14 @@
 /* eslint-disable */
 import { request } from '@umijs/max';
 
+/** 此处后端没有提供注释 POST /api/User/delete-account */
+export async function postUserDeleteAccount(options?: { [key: string]: any }) {
+  return request<any>('/api/User/delete-account', {
+    method: 'POST',
+    ...(options || {}),
+  });
+}
+
 /** 此处后端没有提供注释 POST /api/User/login */
 export async function postUserLogin(
   body: API.LoginRequest,
@@ -48,6 +56,14 @@ export async function putUserProfile(
   });
 }
 
+/** 此处后端没有提供注释 GET /api/User/random-nickname */
+export async function getUserRandomNickname(options?: { [key: string]: any }) {
+  return request<any>('/api/User/random-nickname', {
+    method: 'GET',
+    ...(options || {}),
+  });
+}
+
 /** 此处后端没有提供注释 GET /api/User/records */
 export async function getUserRecords(options?: { [key: string]: any }) {
   return request<any>('/api/User/records', {
@@ -90,22 +106,6 @@ export async function postUserSendCode(
 export async function getUserStats(options?: { [key: string]: any }) {
   return request<any>('/api/User/stats', {
     method: 'GET',
-    ...(options || {}),
-  });
-}
-
-/** 获取随机昵称 GET /api/User/random-nickname */
-export async function getUserRandomNickname(options?: { [key: string]: any }) {
-  return request<API.RandomNicknameResponse>('/api/User/random-nickname', {
-    method: 'GET',
-    ...(options || {}),
-  });
-}
-
-/** 注销/删除用户账号 POST /api/User/delete-account */
-export async function postUserDeleteAccount(options?: { [key: string]: any }) {
-  return request<any>('/api/User/delete-account', {
-    method: 'POST',
     ...(options || {}),
   });
 }

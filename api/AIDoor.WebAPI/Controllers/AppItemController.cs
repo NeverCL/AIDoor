@@ -17,7 +17,20 @@ public class AppItemController : BaseController
     public async Task<IActionResult> GetAllCategoriesWithApplications()
     {
         var categories = await _appItemService.GetApplicationCategories();
-        
+
         return Ok(categories);
     }
-} 
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetAppItemById(int id)
+    {
+        var appItem = await _appItemService.GetApplicationById(id);
+
+        if (appItem == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(appItem);
+    }
+}

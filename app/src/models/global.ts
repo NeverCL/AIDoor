@@ -24,6 +24,10 @@ const useUser = () => {
     await requestUserInfo();
   };
 
+  const switchUser = (user: any) => {
+    setUser({ ...user, isDev: !user.isDev });
+  };
+
   useEffect(() => {
     requestUserInfo();
   }, []);
@@ -32,6 +36,7 @@ const useUser = () => {
     user,
     isLoading,
     refreshUser,
+    switchUser,
   };
 };
 

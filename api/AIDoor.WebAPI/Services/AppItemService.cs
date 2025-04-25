@@ -2,6 +2,8 @@ using AIDoor.WebAPI.Data;
 using AIDoor.WebAPI.Domain;
 using AIDoor.WebAPI.Models.Dtos;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace AIDoor.WebAPI.Services;
 
@@ -22,7 +24,7 @@ public class AppItemService
             .Include(c => c.Applications.Where(a => a.IsActive))
             .OrderBy(c => c.DisplayOrder)
             .ToListAsync();
-            
+
         return categories
             .Select(c => new CategoryDto
             {
@@ -35,23 +37,24 @@ public class AppItemService
                     Title = a.Title,
                     Description = a.Description,
                     ImageUrl = a.ImageUrl,
+                    Link = a.Link,
                     DisplayOrder = a.DisplayOrder,
                     CategoryId = a.CategoryId,
                     CategoryName = c.Name
                 }).ToList()
             }).ToList();
     }
-    
+
     // 根据分类ID获取应用
     public async Task<CategoryDto?> GetCategoryById(int categoryId)
     {
         var category = await _dbContext.ApplicationCategories
             .Include(c => c.Applications.Where(a => a.IsActive))
             .FirstOrDefaultAsync(c => c.Id == categoryId && c.IsActive);
-            
+
         if (category == null)
             return null;
-            
+
         return new CategoryDto
         {
             Id = category.Id,
@@ -63,37 +66,40 @@ public class AppItemService
                 Title = a.Title,
                 Description = a.Description,
                 ImageUrl = a.ImageUrl,
+                Link = a.Link,
                 DisplayOrder = a.DisplayOrder,
                 CategoryId = a.CategoryId,
                 CategoryName = category.Name
             }).ToList()
         };
     }
-    
+
     // 根据应用ID获取应用详情
-    public async Task<ApplicationDetailDto?> GetApplicationById(int applicationId)
+    public async Task<ApplicationDetailDto> GetApplicationById(int id)
     {
         var application = await _dbContext.Applications
             .Include(a => a.Category)
-            .FirstOrDefaultAsync(a => a.Id == applicationId && a.IsActive);
-            
+            .FirstOrDefaultAsync(a => a.Id == id && a.IsActive);
+
         if (application == null)
             return null;
-            
+
         return new ApplicationDetailDto
         {
             Id = application.Id,
             Title = application.Title,
             Description = application.Description,
             ImageUrl = application.ImageUrl,
+            Link = application.Link,
             DisplayOrder = application.DisplayOrder,
             CategoryId = application.CategoryId,
             CategoryName = application.Category.Name,
+            Content = application.Content,
             CreatedAt = application.CreatedAt,
             UpdatedAt = application.UpdatedAt
         };
     }
-    
+
     // 创建应用分类
     public async Task<(bool Success, int CategoryId, string Message)> CreateCategory(CategoryCreateDto categoryDto)
     {
@@ -106,10 +112,10 @@ public class AppItemService
                 IsActive = true,
                 CreatedAt = DateTime.UtcNow
             };
-            
+
             _dbContext.ApplicationCategories.Add(category);
             await _dbContext.SaveChangesAsync();
-            
+
             return (true, category.Id, "分类创建成功");
         }
         catch (Exception ex)
@@ -117,7 +123,7 @@ public class AppItemService
             return (false, 0, $"创建分类失败: {ex.Message}");
         }
     }
-    
+
     // 更新应用分类
     public async Task<(bool Success, string Message)> UpdateCategory(int categoryId, CategoryUpdateDto categoryDto)
     {
@@ -128,14 +134,14 @@ public class AppItemService
             {
                 return (false, "未找到指定分类");
             }
-            
+
             category.Name = categoryDto.Name;
             category.DisplayOrder = categoryDto.DisplayOrder;
             category.IsActive = categoryDto.IsActive;
             category.UpdatedAt = DateTime.UtcNow;
-            
+
             await _dbContext.SaveChangesAsync();
-            
+
             return (true, "分类更新成功");
         }
         catch (Exception ex)
@@ -143,7 +149,7 @@ public class AppItemService
             return (false, $"更新分类失败: {ex.Message}");
         }
     }
-    
+
     // 删除应用分类（软删除，将IsActive设为false）
     public async Task<(bool Success, string Message)> DeleteCategory(int categoryId)
     {
@@ -154,23 +160,23 @@ public class AppItemService
             {
                 return (false, "未找到指定分类");
             }
-            
+
             category.IsActive = false;
             category.UpdatedAt = DateTime.UtcNow;
-            
+
             // 同时将该分类下的所有应用标记为非活动
             var applications = await _dbContext.Applications
                 .Where(a => a.CategoryId == categoryId)
                 .ToListAsync();
-                
+
             foreach (var app in applications)
             {
                 app.IsActive = false;
                 app.UpdatedAt = DateTime.UtcNow;
             }
-            
+
             await _dbContext.SaveChangesAsync();
-            
+
             return (true, "分类删除成功");
         }
         catch (Exception ex)
@@ -178,7 +184,7 @@ public class AppItemService
             return (false, $"删除分类失败: {ex.Message}");
         }
     }
-    
+
     // 创建应用
     public async Task<(bool Success, int ApplicationId, string Message)> CreateApplication(ApplicationCreateDto appDto)
     {
@@ -187,12 +193,12 @@ public class AppItemService
             // 检查分类是否存在
             var categoryExists = await _dbContext.ApplicationCategories
                 .AnyAsync(c => c.Id == appDto.CategoryId && c.IsActive);
-                
+
             if (!categoryExists)
             {
                 return (false, 0, "指定的分类不存在或已被禁用");
             }
-            
+
             var application = new AppItem
             {
                 Title = appDto.Title,
@@ -203,10 +209,10 @@ public class AppItemService
                 CategoryId = appDto.CategoryId,
                 CreatedAt = DateTime.UtcNow
             };
-            
+
             _dbContext.Applications.Add(application);
             await _dbContext.SaveChangesAsync();
-            
+
             return (true, application.Id, "应用创建成功");
         }
         catch (Exception ex)
@@ -214,7 +220,7 @@ public class AppItemService
             return (false, 0, $"创建应用失败: {ex.Message}");
         }
     }
-    
+
     // 更新应用
     public async Task<(bool Success, string Message)> UpdateApplication(int applicationId, ApplicationUpdateDto appDto)
     {
@@ -225,16 +231,16 @@ public class AppItemService
             {
                 return (false, "未找到指定应用");
             }
-            
+
             // 检查分类是否存在
             var categoryExists = await _dbContext.ApplicationCategories
                 .AnyAsync(c => c.Id == appDto.CategoryId && c.IsActive);
-                
+
             if (!categoryExists)
             {
                 return (false, "指定的分类不存在或已被禁用");
             }
-            
+
             application.Title = appDto.Title;
             application.Description = appDto.Description;
             application.ImageUrl = appDto.ImageUrl;
@@ -242,9 +248,9 @@ public class AppItemService
             application.IsActive = appDto.IsActive;
             application.CategoryId = appDto.CategoryId;
             application.UpdatedAt = DateTime.UtcNow;
-            
+
             await _dbContext.SaveChangesAsync();
-            
+
             return (true, "应用更新成功");
         }
         catch (Exception ex)
@@ -252,7 +258,7 @@ public class AppItemService
             return (false, $"更新应用失败: {ex.Message}");
         }
     }
-    
+
     // 删除应用（软删除，将IsActive设为false）
     public async Task<(bool Success, string Message)> DeleteApplication(int applicationId)
     {
@@ -263,12 +269,12 @@ public class AppItemService
             {
                 return (false, "未找到指定应用");
             }
-            
+
             application.IsActive = false;
             application.UpdatedAt = DateTime.UtcNow;
-            
+
             await _dbContext.SaveChangesAsync();
-            
+
             return (true, "应用删除成功");
         }
         catch (Exception ex)
@@ -276,4 +282,4 @@ public class AppItemService
             return (false, $"删除应用失败: {ex.Message}");
         }
     }
-} 
+}

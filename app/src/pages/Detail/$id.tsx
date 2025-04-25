@@ -10,6 +10,36 @@ export default () => {
     const { id } = useParams();
 
     const [count, setCount] = useState(0);
+    const [comment, setComment] = useState('');
+
+    // 防止事件冒泡的处理函数
+    const stopPropagation = (e: React.MouseEvent | React.TouchEvent) => {
+        e.stopPropagation();
+    };
+
+    // 阻止Enter键的默认行为，但允许Shift+Enter换行
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault(); // 阻止默认换行
+
+            // 发送评论逻辑
+            if (comment.trim()) {
+                console.log('发送评论:', comment);
+                setComment('');
+            }
+        }
+    };
+
+    // 发送评论的处理函数
+    const sendComment = (e: React.MouseEvent) => {
+        // 阻止事件冒泡
+        e.stopPropagation();
+
+        if (comment.trim()) {
+            console.log('发送评论:', comment);
+            setComment('');
+        }
+    };
 
     return (
         <BackNavBar title="详情">
@@ -84,13 +114,33 @@ export default () => {
             </div>
 
             {/* 固定底部评论 */}
-            <div className="flex bg-black -mx-4">
-                <TextArea placeholder='说点什么...' autoSize={{
-                    minRows: 1,
-                    maxRows: 4
-                }} rows={1} />
-                <div className='mt-auto text-lg'>
-                    <Button className="px-4 rounded-lg" color="primary">
+            <div
+                className="flex bg-black -mx-4"
+                onClick={stopPropagation}
+            >
+                <div className="flex-1" onClick={stopPropagation}>
+                    <TextArea
+                        value={comment}
+                        onChange={setComment}
+                        placeholder='说点什么...'
+                        onKeyDown={handleKeyDown}
+                        onClick={stopPropagation}
+                        autoSize={{
+                            minRows: 1,
+                            maxRows: 4
+                        }}
+                        rows={1}
+                    />
+                </div>
+                <div
+                    className='mt-auto text-lg'
+                    onClick={stopPropagation}
+                >
+                    <Button
+                        className="px-4 rounded-lg"
+                        color="primary"
+                        onClick={sendComment}
+                    >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"

@@ -2,7 +2,9 @@ declare namespace API {
   type ApplicationCreateDto = {
     title: string;
     description?: string;
+    content?: string;
     imageUrl?: string;
+    link?: string;
     displayOrder?: number;
     categoryId: number;
   };
@@ -10,7 +12,9 @@ declare namespace API {
   type ApplicationUpdateDto = {
     title: string;
     description?: string;
+    content?: string;
     imageUrl?: string;
+    link?: string;
     displayOrder?: number;
     isActive?: boolean;
     categoryId: number;
@@ -49,6 +53,10 @@ declare namespace API {
 
   type getAdminAppitemsCategoriesCategoryIdParams = {
     categoryId: number;
+  };
+
+  type getAppItemIdParams = {
+    id: number;
   };
 
   type getFileDownloadFileNameParams = {
@@ -110,9 +118,5 @@ declare namespace API {
   type UpdateProfileRequest = {
     username: string;
     avatarUrl: string;
-  };
-
-  type RandomNicknameResponse = {
-    nickname: string;
   };
 }

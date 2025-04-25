@@ -13,6 +13,7 @@ interface Application {
   displayOrder: number;
   categoryId: number;
   categoryName: string;
+  link: string;
 }
 
 interface Category {
@@ -107,15 +108,19 @@ const HomePage: React.FC = () => {
         <div className='flex-1 flex flex-col mt-4 mb-28 *:mb-4'>
           {
             currentApplications.map((app: Application) => (
-              <div key={app.id} className='flex items-center' onClick={() => openUrl(`https://www.wenxiaobai.com/chat/${app.id}`)}>
-                <img className='w-20 h-20 rounded-lg' src={app.imageUrl} alt={app.title} />
+              <div key={app.id} className='flex items-center'>
+                <div className='flex flex-1 items-center' onClick={() => openUrl(app.link)}>
+                  <img className='w-20 h-20 rounded-lg' src={app.imageUrl} alt={app.title} />
 
-                <div className='flex flex-col flex-1 mx-2'>
-                  <span className='font-bold text-sm'>{app.title}</span>
-                  <span className='text-secondary text-xs'>{app.description}</span>
+                  <div className='flex flex-col flex-1 mx-2'>
+                    <span className='font-bold text-sm'>{app.title}</span>
+                    <span className='text-secondary text-xs'>{app.description}</span>
+                  </div>
                 </div>
 
-                <div className='bg-[#525252] rounded-lg px-3 py-2 text-xs font-medium'>介绍</div>
+                <NavLink to={`/detail/app/${app.id}`}>
+                  <div className='bg-[#525252] rounded-lg px-3 py-2 text-xs font-medium'>介绍</div>
+                </NavLink>
               </div>
             ))
           }

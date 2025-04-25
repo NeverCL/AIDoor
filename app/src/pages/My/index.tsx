@@ -1,8 +1,7 @@
-import { Icon, NavLink, history } from "@umijs/max"
-import { List, Space, Toast } from "antd-mobile";
-import { useEffect, useState } from "react";
-import { getUserStats } from "@/services/demo/UserController";
-import { request } from "@umijs/max";
+import { Icon, NavLink } from "@umijs/max"
+import { List } from "antd-mobile";
+import { useState } from "react";
+import useUser from "@/models/global";
 
 const url = 'https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418';
 
@@ -17,12 +16,6 @@ interface NavItem {
 interface RecordItem {
     img: string;
     title: string;
-}
-
-// 后端API数据类型
-interface ApiDataItem {
-    type: 'like' | 'favorite' | 'footprint';
-    data: RecordItem[];
 }
 
 // 记录区域类型
@@ -63,17 +56,6 @@ const recordTypeConfig = {
         icon: <Icon icon='local:foot' className='mr-2 text-[1.13rem]' />,
         path: '/my/footprint',
     }
-}
-
-// 获取用户记录数据的API方法
-async function getUserRecords() {
-    return request<{
-        success?: boolean;
-        errorMessage?: string;
-        data?: ApiDataItem[];
-    }>('/api/v1/user/records', {
-        method: 'GET',
-    });
 }
 
 export default () => {
@@ -131,79 +113,6 @@ export default () => {
         data: item.data
     })));
 
-    const [loading, setLoading] = useState<boolean>(true);
-
-    // // 处理后端数据，匹配到前端展示所需的格式
-    // useEffect(() => {
-    //     // 从API获取数据
-    //     const fetchRecordData = async () => {
-    //         try {
-    //             setLoading(true);
-    //             const response = await getUserRecords();
-    //             if (response.success && response.data) {
-    //                 // 将后端数据转换为组件所需格式
-    //                 const formattedData = response.data.map((item: ApiDataItem) => ({
-    //                     ...recordTypeConfig[item.type],
-    //                     data: item.data
-    //                 }));
-    //                 setProcessedData(formattedData);
-    //             }
-    //         } catch (error) {
-    //             console.error("Failed to fetch user records:", error);
-    //             // 出错时使用备用模拟数据
-    //             const mockApiData: ApiDataItem[] = [
-    //                 {
-    //                     type: 'like',
-    //                     data: [
-    //                         {
-    //                             img: url,
-    //                             title: '2025看过最好的新剧院1232'
-    //                         },
-    //                         {
-    //                             img: url,
-    //                             title: '2025看过最好的新剧院1232'
-    //                         }
-    //                     ]
-    //                 },
-    //                 {
-    //                     type: 'favorite',
-    //                     data: [
-    //                         {
-    //                             img: url,
-    //                             title: '收藏的内容示例'
-    //                         },
-    //                         {
-    //                             img: url,
-    //                             title: '收藏的内容示例'
-    //                         }
-    //                     ]
-    //                 },
-    //                 {
-    //                     type: 'footprint',
-    //                     data: [
-    //                         {
-    //                             img: url,
-    //                             title: '浏览过的内容示例'
-    //                         },
-    //                         {
-    //                             img: url,
-    //                             title: '浏览过的内容示例'
-    //                         }
-    //                     ]
-    //                 }
-    //             ];
-
-    //             // 将备用数据转换为组件所需格式
-
-    //             setProcessedData(fallbackData);
-    //         } finally {
-    //             setLoading(false);
-    //         }
-    //     };
-
-    //     fetchRecordData();
-    // }, []);
-
     return (
         <>
             <div className="h-full flex flex-col *:mt-8 overflow-y-auto">
@@ -233,28 +142,7 @@ export default () => {
 
 // 用户资料卡组件
 const UserCard = () => {
-    const [userStats, setUserStats] = useState({
-        messageCount: 0,
-        followCount: 0
-    });
-
-    // useEffect(() => {
-    //     const fetchUserStats = async () => {
-    //         try {
-    //             const response = await getUserStats();
-    //             if (response.success && response.data) {
-    //                 setUserStats({
-    //                     messageCount: response.data.messageCount ?? 0,
-    //                     followCount: response.data.followCount ?? 0
-    //                 });
-    //             }
-    //         } catch (error) {
-    //             console.error("Failed to fetch user stats:", error);
-    //         }
-    //     };
-
-    //     fetchUserStats();
-    // }, []);
+    const { user } = useUser();
 
     return (
         <div className="h-16 rounded-xl bg-[#525252] flex justify-between items-center px-3">
@@ -262,18 +150,18 @@ const UserCard = () => {
                 <div className="h-[3.94rem] w-[3.94rem] rounded-xl relative bottom-[0.63rem]">
                     <img className="h-full w-full" src={require('@/assets/my/icon.png')} alt="my-header" />
                 </div>
-                <span className="text-lg font-bold ml-3">张三</span>
+                <span className="text-lg font-bold ml-3">{user?.username}</span>
             </div>
 
             <div className="flex items-center justify-between flex-1 mr-8">
                 <NavLink to='/mylist/msg' className="flex flex-col justify-center items-center">
                     <span>消息</span>
-                    <span className="text-lg">{userStats.messageCount}</span>
+                    <span className="text-lg">{user?.messageCount}</span>
                 </NavLink>
                 <div className="w-[1px] bg-secondary h-3"></div>
                 <NavLink to='/mylist/follow' className="flex flex-col justify-center items-center">
                     <span className="">关注</span>
-                    <span className="text-lg">{userStats.followCount}</span>
+                    <span className="text-lg">{user?.followCount}</span>
                 </NavLink>
             </div>
         </div>
@@ -320,15 +208,4 @@ const RecordSection = ({ section }: { section: RecordSectionProps }) => (
             ))}
         </div>
     </div>
-);
-
-// 设置导航组件
-const SettingNav = ({ navItem }: { navItem: NavItem }) => (
-    <NavLink to={navItem.path} className="flex mb-7 justify-between items-center" key={navItem.path}>
-        <div className="flex text-primary font-bold items-center">
-            {navItem.icon}
-            <span>{navItem.name}</span>
-        </div>
-        <span>＞</span>
-    </NavLink>
 );
