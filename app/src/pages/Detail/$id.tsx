@@ -1,6 +1,6 @@
 import BackNavBar from "@/components/BackNavBar";
 import { useParams } from "@umijs/max";
-import { Button, Divider, TextArea } from "antd-mobile";
+import { Button, Divider, Swiper, TextArea } from "antd-mobile";
 import { HeartOutline, LikeOutline, MessageOutline } from "antd-mobile-icons";
 import { useState } from "react";
 
@@ -14,29 +14,35 @@ export default () => {
     return (
         <BackNavBar title="详情">
             {/* 正文 */}
-            <div className="flex-1 flex flex-col overflow-y-auto">
+            <div className="flex-1 flex flex-col *:flex-shrink-0 overflow-y-auto">
                 {
-                    count > 3 ?
-                        <div className="h-2/4 w-full overflow-hidden flex justify-center items-center">
-                            {/* {count > 4 ?
-                                <ReactPlayer
-                                    url='https://media.w3.org/2010/05/sintel/trailer_hd.mp4'
+                    <div className="h-2/4 -mx-4 flex justify-center items-center overflow-hidden">
+                        {
+                            count > 3
+                                ? <video
+                                    className="w-full h-full object-cover"
                                     controls
-                                /> : */
-                            }
-                            <video
-                                className="w-full h-full"
-                                controls
-                                src='https://media.w3.org/2010/05/sintel/trailer_hd.mp4'
-                                autoPlay
-                                muted
-                                playsInline
-                                webkit-playsinline
-                                x5-video-player-type="h5"
-                                x5-video-player-fullscreen="false"
-                            ></video>
-                        </div> :
-                        <img className="-mx-4 h-2/4" src={defaultImg} alt="" />
+                                    src='https://media.w3.org/2010/05/sintel/trailer_hd.mp4'
+                                    autoPlay
+                                    muted
+                                    playsInline
+                                    webkit-playsinline
+                                    x5-video-player-type="h5"
+                                    x5-video-player-fullscreen="false"
+                                ></video>
+                                : <Swiper loop autoplay >
+                                    <Swiper.Item>
+                                        <img className="w-full h-full object-cover" src={defaultImg} alt="" />
+                                    </Swiper.Item>
+                                    <Swiper.Item>
+                                        <img className="w-full h-full object-cover" src={defaultImg} alt="" />
+                                    </Swiper.Item>
+                                    <Swiper.Item>
+                                        <img className="w-full h-full object-cover" src={defaultImg} alt="" />
+                                    </Swiper.Item>
+                                </Swiper>
+                        }
+                    </div>
                 }
 
                 <div className="flex justify-between p-4 items-center">
