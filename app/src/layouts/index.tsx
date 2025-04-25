@@ -18,7 +18,6 @@ export default () => {
 
         document.addEventListener('plusready', function () {
             plus.key.addEventListener('backbutton', function () {
-                Toast.show('back' + window.history.length);
                 if (window.history.length > 2) {
                     window.history.back();
                 } else {
@@ -45,12 +44,6 @@ export default () => {
 
     const { user, isLoading } = useModel('global');
 
-    if (isLoading) {
-        return <div className="bg-[#2d2d2d] text-primary flex justify-center items-center flex-col" style={{ height: windowHeight }}>
-            身份验证中...
-        </div>;
-    }
-
     const pathname = routes.at(-1)?.pathnameBase ?? '';
 
     const noLoginRoutes = ['/account/login', '/account/register', '/', '/home'];
@@ -58,6 +51,11 @@ export default () => {
     const shouldRedirect = !noLoginRoutes.includes(pathname);
 
     if (shouldRedirect) {
+
+        if (isLoading) {
+            return <LoadingUser />;
+        }
+
         if (!user) {
             navigate('/account/login');
         }
@@ -69,5 +67,21 @@ export default () => {
                 <Outlet />
             </div>
         </>
+    )
+}
+
+
+const LoadingUser = () => {
+
+    const { refreshUser } = useModel('global');
+
+    useEffect(() => {
+        refreshUser();
+    }, []);
+
+    return (
+        <div className="bg-[#2d2d2d] h-screen text-primary flex justify-center items-center flex-col">
+            身份验证中...
+        </div>
     )
 }

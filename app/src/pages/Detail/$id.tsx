@@ -46,7 +46,7 @@ export default () => {
             {/* 正文 */}
             <div className="flex-1 flex flex-col *:flex-shrink-0 overflow-y-auto">
                 {
-                    <div className="h-2/4 -mx-4 flex justify-center items-center overflow-hidden">
+                    <div className="h-2/4 flex justify-center items-center ">
                         {
                             count > 3
                                 ? <video
@@ -62,13 +62,9 @@ export default () => {
                                 ></video>
                                 : <Swiper loop autoplay >
                                     <Swiper.Item>
-                                        <img className="w-full h-full object-cover" src={defaultImg} alt="" />
-                                    </Swiper.Item>
-                                    <Swiper.Item>
-                                        <img className="w-full h-full object-cover" src={defaultImg} alt="" />
-                                    </Swiper.Item>
-                                    <Swiper.Item>
-                                        <img className="w-full h-full object-cover" src={defaultImg} alt="" />
+                                        <div className="w-full">
+                                            <img className="w-full h-full object-contain" src={defaultImg} alt="" />
+                                        </div>
                                     </Swiper.Item>
                                 </Swiper>
                         }

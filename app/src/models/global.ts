@@ -28,10 +28,6 @@ const useUser = () => {
     setUser({ ...user, isDev: !user.isDev });
   };
 
-  useEffect(() => {
-    requestUserInfo();
-  }, []);
-
   return {
     user,
     isLoading,
