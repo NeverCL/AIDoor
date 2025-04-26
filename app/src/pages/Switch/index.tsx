@@ -1,20 +1,29 @@
+import BackNavBar from "@/components/BackNavBar";
 import { useModel, history } from "@umijs/max"
-import { useEffect } from "react";
+import { Button } from "antd-mobile";
 
 export default () => {
 
     const { user, switchUser } = useModel('global');
 
-    useEffect(() => {
-        switchUser(user);
-        history.replace('/');
-    }, []);
-
-    // todo 切换开发者时，未注册过，则跳转到注册开发者页面
-
     return (
-        <div>
-            <span>切换身份</span>
-        </div>
+        <BackNavBar title="切换身份">
+            <div className="flex flex-col justify-center items-center h-full *:mb-4 *:flex-shrink-0">
+                <div>
+                    <span className="text-4xl">
+                        {user.isDev ? '👨‍💻' : '👤'}
+                    </span>
+                </div>
+
+                <div>
+                    <span>你当前的身份是</span>
+                    <span>{user.isDev ? '“开发者”' : '“使用者”'}</span>
+                </div>
+                <Button block color="primary" onClick={() => {
+                    switchUser(user);
+                    history.replace('/');
+                }}>切换身份</Button>
+            </div>
+        </BackNavBar>
     )
 }
