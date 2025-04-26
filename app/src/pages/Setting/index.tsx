@@ -1,7 +1,8 @@
 import BackNavBar from "@/components/BackNavBar";
-import { history, useModel } from "@umijs/max";
+import { history, useModel, useRequest } from "@umijs/max";
 import { List, Dialog, Toast, Modal } from "antd-mobile";
 import { postUserLogout, postUserDeleteAccount } from "@/services/api/user";
+import api from "@/services/api";
 
 const routes = [
     { text: "开发者社群", path: '/qrcode' },
@@ -11,7 +12,13 @@ const routes = [
 ];
 
 export default () => {
-    const { refreshUser } = useModel('global');
+
+    const { run: logout } = useRequest(api.user.postUserLogout, {
+        manual: true,
+        onSuccess: () => {
+            history.replace('/account/login');
+        }
+    });
 
     const handleAccountDeletion = async () => {
         const result1 = await Dialog.confirm({
@@ -56,11 +63,11 @@ export default () => {
         });
 
         if (result) {
+            await logout();
             Toast.show({
                 icon: 'success',
                 content: '已退出登录',
             });
-            history.replace('/account/login');
         }
     };
 

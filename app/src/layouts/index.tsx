@@ -1,4 +1,4 @@
-import { Outlet, useModel, useNavigate, useSelectedRoutes } from "@umijs/max"
+import { Navigate, Outlet, useModel, useNavigate, useSelectedRoutes } from "@umijs/max"
 import { Toast } from "antd-mobile"
 import { useEffect, useState } from "react"
 
@@ -55,7 +55,7 @@ export default () => {
     const checkLogin = !noLoginRoutes.includes(pathname);
 
     if (checkLogin && !user) {
-        navigate('/account/login');
+        return <Navigate to="/account/login" />
     }
 
     return (

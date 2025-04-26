@@ -52,10 +52,12 @@ export const request: RequestConfig = {
 
       (error) => {
 
-        const message = (error.response?.data as any).message;
+        if (typeof error.response.data.message === 'string') {
+          const message = error.response?.data.message;
 
-        if (message) {
-          Toast.show(message);
+          if (message) {
+            Toast.show(message);
+          }
         }
 
         return Promise.reject(error);

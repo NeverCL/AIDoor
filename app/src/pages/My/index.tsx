@@ -1,14 +1,11 @@
-import { history, useModel } from "@umijs/max";
+import { Navigate, useModel } from "@umijs/max";
 
 export default () => {
     const { user } = useModel('global');
 
     if (user?.isDevMode) {
-        history.replace('/My/develop');
-        return;
+        return <Navigate to="/My/develop" />
     }
 
-    history.replace('/My/user');
-
-    return;
+    return <Navigate to="/My/user" />
 }
