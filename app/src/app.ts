@@ -52,7 +52,7 @@ export const request: RequestConfig = {
 
       (error) => {
 
-        if (typeof error.response.data.message === 'string') {
+        if (error.response.data && typeof error.response.data.message === 'string') {
           const message = error.response?.data.message;
 
           if (message) {
