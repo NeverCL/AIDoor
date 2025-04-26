@@ -16,12 +16,12 @@ export default () => {
             await switchUser();
 
             Toast.clear();
-            Toast.show({
-                icon: 'success',
-                content: `已切换为${!user?.isDevMode ? '开发者' : '使用者'}模式`,
-            });
 
-            history.replace('/');
+            if (user?.isDevMode) {
+                history.replace('/account/develop');
+            } else {
+                history.replace('/');
+            }
         } catch (error) {
             Toast.clear();
             Toast.show({
