@@ -18,7 +18,7 @@ const useUser = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const { run: requestUserInfo } = useRequest(api.user.getUserProfile, {
-    manual: true,
+    manual: false,
     onSuccess: (response) => {
       setUser(response);
       setIsLoading(false);
@@ -34,10 +34,6 @@ const useUser = () => {
       setUser({ ...user, isDevMode: !user?.isDevMode });
     }
   });
-
-  useEffect(() => {
-    requestUserInfo();
-  }, []);
 
   const refreshUser = async () => {
     await requestUserInfo();
