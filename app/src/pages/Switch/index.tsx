@@ -17,11 +17,7 @@ export default () => {
 
             Toast.clear();
 
-            if (user?.isDevMode) {
-                history.replace('/account/develop');
-            } else {
-                history.replace('/');
-            }
+            history.replace('/');
         } catch (error) {
             Toast.clear();
             Toast.show({
