@@ -109,3 +109,11 @@ export async function getUserStats(options?: { [key: string]: any }) {
     ...(options || {}),
   });
 }
+
+/** 此处后端没有提供注释 POST /api/User/switch-mode */
+export async function postUserSwitchMode(options?: { [key: string]: any }) {
+  return request<any>('/api/User/switch-mode', {
+    method: 'POST',
+    ...(options || {}),
+  });
+}

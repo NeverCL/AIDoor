@@ -1,6 +1,7 @@
 using AIDoor.WebAPI.Models.Dtos;
 using AIDoor.WebAPI.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AIDoor.WebAPI.Controllers;
 
@@ -13,6 +14,7 @@ public class AppItemController : BaseController
         _appItemService = appItemService;
     }
 
+    [AllowAnonymous]
     [HttpGet("all")]
     public async Task<IActionResult> GetAllCategoriesWithApplications()
     {

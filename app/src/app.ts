@@ -46,11 +46,18 @@ export const request: RequestConfig = {
         if (response.data.message) {
           Toast.show(response.data.message);
         }
+
         return response;
       },
 
       (error) => {
-        Toast.show(error.response?.data.message ?? error.message);
+
+        const message = (error.response?.data as any).message;
+
+        if (message) {
+          Toast.show(message);
+        }
+
         return Promise.reject(error);
       }
     ],

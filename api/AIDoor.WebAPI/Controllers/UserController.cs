@@ -5,12 +5,13 @@ using Microsoft.AspNetCore.Authentication;
 using System.Text.Json.Serialization;
 using AIDoor.WebAPI.Dtos;
 using AIDoor.WebAPI.Models;
-
+using Microsoft.AspNetCore.Authorization;
 namespace AIDoor.WebAPI.Controllers;
 
 public class UserController : BaseController
 {
     private readonly UserService _userService;
+    private const string DEV_MODE_COOKIE = "DevMode";
 
     public UserController(UserService userService)
     {
@@ -18,6 +19,7 @@ public class UserController : BaseController
     }
 
     // 辅助方法：创建用户身份认证并设置Cookie
+    [AllowAnonymous]
     private async Task SignInUserAsync(User user)
     {
         // 设置认证Cookie
@@ -25,7 +27,9 @@ public class UserController : BaseController
         {
             new(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new(ClaimTypes.Name, user.Username),
-            new(ClaimTypes.MobilePhone, user.PhoneNumber)
+            new(ClaimTypes.MobilePhone, user.PhoneNumber),
+            // 使用自定义类型保存开发者模式状态
+            new(DEV_MODE_COOKIE, user.IsDevMode.ToString())
         };
 
         var claimsIdentity = new ClaimsIdentity(claims, "login");
@@ -36,14 +40,13 @@ public class UserController : BaseController
             ExpiresUtc = DateTimeOffset.UtcNow.AddDays(7)
         };
 
-        authProperties.Parameters.Add("withCredentials", "true");
-
         await HttpContext.SignInAsync(
             new ClaimsPrincipal(claimsIdentity),
             authProperties
         );
     }
 
+    [AllowAnonymous]
     [HttpPost("send-code")]
     public async Task<IActionResult> SendVerificationCode([FromBody] SendCodeRequest request)
     {
@@ -56,6 +59,7 @@ public class UserController : BaseController
         return Ok("验证码已发送");
     }
 
+    [AllowAnonymous]
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterRequest request)
     {
@@ -92,6 +96,7 @@ public class UserController : BaseController
         return Ok(new { nickname });
     }
 
+    [AllowAnonymous]
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
@@ -152,10 +157,54 @@ public class UserController : BaseController
 
         if (user == null)
         {
+            return NotFound();
+        }
+
+        // 首先尝试从Claims中获取开发者模式状态
+        var isDevMode = User.FindFirstValue(DEV_MODE_COOKIE)?.ToLower() == "true";
+
+        // 设置用户开发者模式状态
+        user.IsDevMode = isDevMode;
+
+        return Ok(user);
+    }
+
+    /// <summary>
+    /// 切换用户身份（开发者/使用者模式）
+    /// </summary>
+    /// <returns>切换结果</returns>
+    [HttpPost("switch-mode")]
+    public async Task<IActionResult> SwitchDevMode()
+    {
+        var user = await _userService.GetUserProfileAsync(UserId);
+
+        if (user == null)
+        {
             return NotFound("用户不存在");
         }
 
-        return Ok(user);
+        // 首先尝试从Claims中获取开发者模式状态
+        var devModeClaim = User.FindFirst("DevMode");
+        var isDevMode = devModeClaim != null && devModeClaim.Value.ToLower() == "true";
+
+        // 如果Claims中没有，再尝试从Cookie获取
+        if (devModeClaim == null && HttpContext.Request.Cookies.TryGetValue(DEV_MODE_COOKIE, out var devModeCookie))
+        {
+            isDevMode = devModeCookie.ToLower() == "true";
+        }
+
+        // 切换开发者模式
+        bool newDevMode = !isDevMode;
+
+        System.Console.WriteLine($"Current DevMode: {isDevMode}, Switching to: {newDevMode}");
+
+        // 更新用户实体的开发者模式状态
+        user.IsDevMode = newDevMode;
+
+        // 更新认证信息和Cookie
+        await SignInUserAsync(user);
+
+        return Ok($"已切换为{(newDevMode ? "开发者" : "使用者")}模式");
     }
 
     [HttpPut("profile")]

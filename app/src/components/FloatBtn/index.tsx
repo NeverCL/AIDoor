@@ -22,7 +22,7 @@ const Guide: React.FC = () => {
                 </NavLink>
 
                 {
-                    user?.isDev ?? false
+                    user?.isDevMode ?? false
                         ? <NavLink to='/upload'>
                             <div className='text-2xl p-3 bg-white text-black rounded-full text-center flex items-center justify-center w-10 h-10'>＋</div>
                         </NavLink>

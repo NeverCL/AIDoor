@@ -1,10 +1,12 @@
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AIDoor.WebAPI.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class BaseController : ControllerBase
 {
     protected int UserId => int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var userId) ? userId : default;

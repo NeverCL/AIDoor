@@ -44,21 +44,18 @@ export default () => {
 
     const { user, isLoading } = useModel('global');
 
+    if (isLoading) {
+        return <LoadingUser />;
+    }
+
     const pathname = routes.at(-1)?.pathnameBase ?? '';
 
     const noLoginRoutes = ['/account/login', '/account/register', '/', '/home'];
 
-    const shouldRedirect = !noLoginRoutes.includes(pathname);
+    const checkLogin = !noLoginRoutes.includes(pathname);
 
-    if (shouldRedirect) {
-
-        if (isLoading) {
-            return <LoadingUser />;
-        }
-
-        if (!user) {
-            navigate('/account/login');
-        }
+    if (checkLogin && !user) {
+        navigate('/account/login');
     }
 
     return (
@@ -72,12 +69,6 @@ export default () => {
 
 
 const LoadingUser = () => {
-
-    const { refreshUser } = useModel('global');
-
-    useEffect(() => {
-        refreshUser();
-    }, []);
 
     return (
         <div className="bg-[#2d2d2d] h-screen text-primary flex justify-center items-center flex-col">
