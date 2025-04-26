@@ -9,8 +9,6 @@ export default () => {
 
     const { data, loading } = useRequest(() => api.appItem.getAppItemId({ id: Number(id) }));
 
-    console.log(data);
-
     return (
         <BackNavBar title="介绍">
             <div className="flex-1 flex flex-col *:flex-shrink-0 overflow-y-auto">
@@ -20,13 +18,13 @@ export default () => {
                     </div>
                 ) : (
                     <>
-                        <div className="h-2/4 flex justify-center items-center overflow-hidden">
-                            <Swiper loop autoplay>
-                                <Swiper.Item>
-                                    <img className="w-full h-full object-cover" src={data?.imageUrl} alt={data?.title} />
-                                </Swiper.Item>
-                            </Swiper>
-                        </div>
+                        <Swiper loop autoplay>
+                            <Swiper.Item>
+                                <div className="h-[40vh] overflow-hidden">
+                                    <img src={data?.imageUrl} alt={data?.title} />
+                                </div>
+                            </Swiper.Item>
+                        </Swiper>
 
                         <div className="flex justify-between items-center px-4 py-2">
                             <h2 className="text-xl font-bold">{data?.title}</h2>

@@ -46,29 +46,28 @@ export default () => {
             {/* 正文 */}
             <div className="flex-1 flex flex-col *:flex-shrink-0 overflow-y-auto">
                 {
-                    <div className="h-2/4 flex justify-center items-center ">
-                        {
-                            count > 3
-                                ? <video
-                                    className="w-full h-full object-cover"
-                                    controls
-                                    src='https://media.w3.org/2010/05/sintel/trailer_hd.mp4'
-                                    autoPlay
-                                    muted
-                                    playsInline
-                                    webkit-playsinline
-                                    x5-video-player-type="h5"
-                                    x5-video-player-fullscreen="false"
-                                ></video>
-                                : <Swiper loop autoplay >
-                                    <Swiper.Item>
-                                        <div className="w-full">
-                                            <img className="w-full h-full object-contain" src={defaultImg} alt="" />
-                                        </div>
-                                    </Swiper.Item>
-                                </Swiper>
-                        }
-                    </div>
+                    count > 3
+                        ? (
+                            <video
+                                className="w-full h-[40vh] object-cover"
+                                controls
+                                src='https://media.w3.org/2010/05/sintel/trailer_hd.mp4'
+                                autoPlay
+                                muted
+                                playsInline
+                                webkit-playsinline
+                                x5-video-player-type="h5"
+                                x5-video-player-fullscreen="false" />
+                        )
+                        : (
+                            <Swiper loop autoplay>
+                                <Swiper.Item>
+                                    <div className="h-[40vh]">
+                                        <img src={defaultImg} alt="" />
+                                    </div>
+                                </Swiper.Item>
+                            </Swiper>
+                        )
                 }
 
                 <div className="flex justify-between p-4 items-center">
