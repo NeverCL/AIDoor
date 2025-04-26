@@ -1,6 +1,6 @@
 import { NavLink, Icon, useLocation, useModel } from '@umijs/max';
 import { useEffect, useRef, useState } from 'react';
-import { Popup, SearchBar, SearchBarRef } from 'antd-mobile';
+import { Button, Popup, SearchBar, SearchBarRef } from 'antd-mobile';
 
 const isActive = 'flex flex-col justify-center items-center ';
 const notActive = 'text-secondary ';
@@ -106,8 +106,10 @@ const NavHeader: React.FC = () => {
           <div className='h-px bg-gray-200 my-4'></div>
 
           <NavLink to='/qrcode'>
-            <div className='text-center mb-8 py-2 bg-blue-600 text-white rounded-xl'>
-              加入AI之门开发者社群
+            <div className="w-full rounded-3xl overflow-hidden">
+              <Button block color="primary">
+                加入AI之门开发者社群
+              </Button>
             </div>
           </NavLink>
 

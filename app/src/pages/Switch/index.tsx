@@ -42,15 +42,18 @@ export default () => {
                 </div>
 
                 <div className="text-center">
-                    <div>你当前的身份是</div>
-                    <div className="font-bold mt-2">
-                        {user.isDevMode ? '"开发者"' : '"使用者"'}
+                    <div>你当前的身份是
+                        <span className="font-bold mt-2">
+                            {user.isDevMode ? '"开发者"' : '"使用者"'}
+                        </span>
                     </div>
                 </div>
 
-                <Button block color="primary" onClick={handleSwitchMode}>
-                    切换身份
-                </Button>
+                <div className="w-full rounded-3xl overflow-hidden">
+                    <Button block color="primary" onClick={handleSwitchMode}>
+                        点击切换为{!user?.isDevMode ? '"开发者"' : '"使用者"'}身份
+                    </Button>
+                </div>
             </div>
         </BackNavBar>
     )
