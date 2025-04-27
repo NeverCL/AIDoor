@@ -2,48 +2,6 @@
 /* eslint-disable */
 import { request } from '@umijs/max';
 
-/** 此处后端没有提供注释 DELETE /api/File/${param0} */
-export async function deleteFileFileName(
-  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
-  params: API.deleteFileFileNameParams,
-  options?: { [key: string]: any },
-) {
-  const { fileName: param0, ...queryParams } = params;
-  return request<any>(`/api/File/${param0}`, {
-    method: 'DELETE',
-    params: { ...queryParams },
-    ...(options || {}),
-  });
-}
-
-/** 此处后端没有提供注释 GET /api/File/download/${param0} */
-export async function getFileDownloadFileName(
-  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
-  params: API.getFileDownloadFileNameParams,
-  options?: { [key: string]: any },
-) {
-  const { fileName: param0, ...queryParams } = params;
-  return request<any>(`/api/File/download/${param0}`, {
-    method: 'GET',
-    params: { ...queryParams },
-    ...(options || {}),
-  });
-}
-
-/** 此处后端没有提供注释 GET /api/File/preview/${param0} */
-export async function getFilePreviewFileName(
-  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
-  params: API.getFilePreviewFileNameParams,
-  options?: { [key: string]: any },
-) {
-  const { fileName: param0, ...queryParams } = params;
-  return request<any>(`/api/File/preview/${param0}`, {
-    method: 'GET',
-    params: { ...queryParams },
-    ...(options || {}),
-  });
-}
-
 /** 此处后端没有提供注释 POST /api/File/upload */
 export async function postFileUpload(
   body: {},

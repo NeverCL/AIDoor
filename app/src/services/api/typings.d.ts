@@ -39,10 +39,6 @@ declare namespace API {
     categoryId: number;
   };
 
-  type deleteFileFileNameParams = {
-    fileName: string;
-  };
-
   type deleteItemIdParams = {
     id: number;
   };
@@ -57,14 +53,6 @@ declare namespace API {
 
   type getAppItemIdParams = {
     id: number;
-  };
-
-  type getFileDownloadFileNameParams = {
-    fileName: string;
-  };
-
-  type getFilePreviewFileNameParams = {
-    fileName: string;
   };
 
   type getItemIdParams = {

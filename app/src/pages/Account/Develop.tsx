@@ -1,10 +1,15 @@
-import { Form, Input, Button, Toast, Radio, ImageUploader, TextArea, Picker } from 'antd-mobile';
+import { Form, Input, Button, Toast, Radio, ImageUploader, TextArea, Picker, ImageUploadItem } from 'antd-mobile';
 import { useState } from 'react';
 import BackNavBar from '@/components/BackNavBar';
 import type { PickerColumnItem, PickerActions } from 'antd-mobile/es/components/picker';
+import { useRequest } from '@umijs/max';
+import api from '@/services/api';
+import ImgUploader from '@/components/ImgUploader';
 
 export default () => {
     const [fileList, setFileList] = useState<any[]>([]);
+
+    const { run: uploadFile } = useRequest(api.file.postFileUpload);
 
     const onFinish = (values: any) => {
         Toast.show({
@@ -14,9 +19,11 @@ export default () => {
         console.log(values);
     };
 
-    const handleUpload = async () => {
+    const handleUpload = async (file: File): Promise<ImageUploadItem> => {
+        const res = await uploadFile({}, file);
+
         return {
-            url: URL.createObjectURL(new File([new ArrayBuffer(1)], 'image.png')),
+            url: res.data.url,
         };
     };
 
@@ -47,14 +54,7 @@ export default () => {
                         label="项目Logo/产品图"
                         rules={[{ required: true, message: '请上传Logo' }]}
                     >
-                        <ImageUploader
-                            value={fileList}
-                            onChange={setFileList}
-                            upload={handleUpload}
-                            maxCount={1}
-                            showUpload={fileList.length < 1}
-                        >
-                        </ImageUploader>
+                        <ImgUploader accept="image/*" />
                     </Form.Item>
 
                     <Form.Item

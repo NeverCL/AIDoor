@@ -51,7 +51,7 @@ export default () => {
                             <video
                                 className="w-full h-[40vh] object-cover"
                                 controls
-                                src='https://media.w3.org/2010/05/sintel/trailer_hd.mp4'
+                                src='https://cdn.thedoorofai.com/20250427/857d903a-c031-4557-85f2-4e5b4d77d7fb.MOV'
                                 autoPlay
                                 muted
                                 playsInline
