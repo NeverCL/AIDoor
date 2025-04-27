@@ -95,6 +95,9 @@ public static class ServiceCollectionExtensions
         services.Configure<FileStorageOptions>(
             configuration.GetSection(FileStorageOptions.FileStorage));
 
+        services.Configure<AliyunOSSOptions>(
+            configuration.GetSection(AliyunOSSOptions.AliyunOSS));
+
         return services;
     }
 
@@ -104,6 +107,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<SmsService>();
         services.AddScoped<UserService>();
         services.AddScoped<FileService>();
+        services.AddScoped<AliFileService>();
         services.AddScoped<AppItemService>();
         services.AddScoped<ItemService>();
 
