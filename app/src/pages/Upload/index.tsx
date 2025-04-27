@@ -36,7 +36,11 @@ export default () => {
                     <Input placeholder="请输入标题" />
                 </Form.Item>
 
-                <Form.Item name="image" label="图片">
+                <Form.Item name="image" label="图片"
+                    getValueFromEvent={(value) => {
+                        return (value || []).map((file: any) => file.extra.fileName);
+                    }}
+                >
                     <ImgUploader accept="image/*,video/*" />
                 </Form.Item>
 

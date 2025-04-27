@@ -7,7 +7,6 @@ import api from '@/services/api';
 import ImgUploader from '@/components/ImgUploader';
 
 export default () => {
-    const [fileList, setFileList] = useState<any[]>([]);
 
     const { run: uploadFile } = useRequest(api.file.postFileUpload);
 
@@ -54,7 +53,7 @@ export default () => {
                         label="项目Logo/产品图"
                         rules={[{ required: true, message: '请上传Logo' }]}
                     >
-                        <ImgUploader accept="image/*" />
+                        <ImgUploader accept="image/*" maxCount={3} />
                     </Form.Item>
 
                     <Form.Item
