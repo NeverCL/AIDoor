@@ -90,6 +90,7 @@ public class UserController : BaseController
     /// </summary>
     /// <returns>随机生成的昵称</returns>
     [HttpGet("random-nickname")]
+    [AllowAnonymous]
     public IActionResult GetRandomNickname()
     {
         var nickname = _userService.GenerateRandomNickname();
