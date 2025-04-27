@@ -141,12 +141,12 @@ public class UserService
         // 生成随机验证码
         var code = GenerateRandomCode();
 
-        code = "123123";
+        code = 123123;
 
         // 存储验证码到Redis，设置5分钟过期时间
         await _cache.SetStringAsync(
             $"verification_code:{phoneNumber}",
-            code,
+            code.ToString(),
             new DistributedCacheEntryOptions
             {
                 AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(VERIFICATION_CODE_EXPIRE_MINUTES)
@@ -159,11 +159,11 @@ public class UserService
         _smsService.SendCode(phoneNumber, code);
     }
 
-    private string GenerateRandomCode()
+    private int GenerateRandomCode()
     {
         // 生成6位数字验证码
         var random = new Random();
-        return random.Next(100000, 999999).ToString();
+        return random.Next(100000, 999999);
     }
 
     /// <summary>
