@@ -1,6 +1,6 @@
 import { useParams, useRequest } from "@umijs/max";
 import { useState, useEffect } from "react";
-import { Swiper, Image, NavBar, Toast, Card, Skeleton } from "antd-mobile";
+import { Swiper, Image, NavBar, Toast, Card, Skeleton, ImageViewer } from "antd-mobile";
 import api from '@/services/api';
 import dayjs from 'dayjs';
 
@@ -76,7 +76,12 @@ export default () => {
                                 <Swiper>
                                     {content.images.map((image, index) => (
                                         <Swiper.Item key={index}>
-                                            <div className="flex justify-center">
+                                            <div className="flex justify-center" onClick={() => {
+                                                ImageViewer.Multi.show({
+                                                    images: content.images.map(getImageUrl),
+                                                    defaultIndex: index,
+                                                })
+                                            }}>
                                                 <Image
                                                     src={getImageUrl(image)}
                                                     fit="cover"
