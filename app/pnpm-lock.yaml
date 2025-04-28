@@ -17,6 +17,9 @@ importers:
       antd-mobile-icons:
         specifier: ^0.3.0
         version: 0.3.0
+      dayjs:
+        specifier: ^1.11.13
+        version: 1.11.13
       react-infinite-scroll-component:
         specifier: ^6.1.0
         version: 6.1.0(react@18.3.1)

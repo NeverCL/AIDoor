@@ -1,24 +1,24 @@
 import { useState, useEffect } from "react";
-import { NavLink, request } from "@umijs/max";
+import { NavLink, useRequest } from "@umijs/max";
 import Masonry from "react-masonry-css";
 import InfiniteScroll from "react-infinite-scroll-component";
+import api from '@/services/api';
 
 // Define data interface
-interface Item {
+interface UserContent {
     id: number;
     title: string;
-    imageUrl: string;
-    author: {
-        id: number;
-        username: string;
-        avatarUrl: string;
-    };
+    content?: string;
+    images: string[];
+    createdBy: string;
+    createdByAvatar?: string;
+    createdAt: string;
 }
 
 interface ApiResponse {
     message: string;
     data: {
-        items: Item[];
+        contents: UserContent[];
         totalCount: number;
         currentPage: number;
         pageSize: number;
@@ -26,83 +26,59 @@ interface ApiResponse {
     };
 }
 
-// API service using umi max's request
-const apiService = {
-    async getItems(page: number, limit: number): Promise<{ items: Item[] }> {
-        try {
-            // Use umi max's request function
-            const response = await request<ApiResponse>('/api/item', {
-                method: 'GET',
-                params: {
-                    page,
-                    limit
-                },
-            });
-
-            return { items: response.data.items };
-        } catch (error) {
-            console.error('API request error:', error);
-
-            // Fallback to mock data if API call fails
-            // Only for development, remove in production
-            const startIndex = (page - 1) * limit;
-            const mockItems: Item[] = Array(limit).fill(null).map((_, index) => ({
-                id: startIndex + index + 1,
-                title: (startIndex + index) % 2 === 0 ? '短的标题' : '长标题一长标题一长标题一长标题一长标题一',
-                imageUrl: 'https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418',
-                author: {
-                    id: 1,
-                    username: `作者${startIndex + index + 1}`,
-                    avatarUrl: ''
-                }
-            }));
-
-            // Mock API will stop returning data after page 3
-            return { items: page <= 3 ? mockItems : [] };
-        }
-    }
-};
-
 export default () => {
-    const defaultImg = 'https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418';
+    const defaultImg = require('@/assets/my/icon.png');
 
     const [hasMore, setHasMore] = useState(true);
     const [page, setPage] = useState(1);
-    const [data, setData] = useState<Item[]>([]);
+    const [data, setData] = useState<UserContent[]>([]);
     const [loading, setLoading] = useState(false);
+    const limit = 10; // 每页显示数量
 
-    const fetchData = async (pageNum: number) => {
-        if (loading) return;
-
-        await new Promise(resolve => setTimeout(resolve, 1000));
-
-        setLoading(true);
-        try {
-            const response = await apiService.getItems(pageNum, 5);
-
-            const newData = response.items || [];
+    // 使用 useRequest 钩子获取内容
+    const { run: fetchContents } = useRequest(api.userContent.getUserContent, {
+        manual: true,
+        onSuccess: (response) => {
+            // 解析返回数据
+            const newData = response.data?.contents || [];
 
             if (newData.length === 0) {
                 setHasMore(false);
             } else {
                 setData(prev => [...prev, ...newData]);
-                setPage(pageNum + 1);
+                setPage(prevPage => prevPage + 1);
             }
-        } catch (error) {
-            console.error('Failed to fetch data:', error);
-            setHasMore(false);
-        } finally {
+            setLoading(false);
+        },
+        onError: (error) => {
+            console.error('Failed to fetch content:', error);
             setLoading(false);
         }
+    });
+
+    const fetchData = async (pageNum: number) => {
+        if (loading) return;
+
+        setLoading(true);
+        fetchContents({ Page: pageNum, Limit: limit });
     };
 
     useEffect(() => {
-        // Fetch initial data
+        // 获取初始数据
         fetchData(page);
     }, []);
 
     const loadMore = () => {
         fetchData(page);
+    };
+
+    // 获取图片地址，使用数组中的第一张图片
+    const getImageUrl = (content: UserContent) => {
+        if (content.images && content.images.length > 0) {
+            // 假设 images 包含的是文件名，需要拼接完整 URL
+            return `https://cdn.thedoorofai.com/${content.images[0]}`;
+        }
+        return defaultImg;
     };
 
     return (
@@ -122,21 +98,21 @@ export default () => {
                         columnClassName="m-1"
                     >
                         {data.map(item => (
-                            <NavLink key={item.id} to={`/detail/${item.id}`}>
+                            <NavLink key={item.id} to={`/detail/content/${item.id}`}>
                                 <div className="flex flex-col my-2">
                                     <img
                                         className="h-[14rem] rounded-lg object-cover"
-                                        src={item.imageUrl || defaultImg}
-                                        alt=""
+                                        src={getImageUrl(item)}
+                                        alt={item.title}
                                     />
                                     <span className="text-lg mt-2">{item.title}</span>
                                     <div className="flex items-center mt-1 gap-2 text-sm text-gray-500">
                                         <img
                                             className="rounded-full h-6 w-6"
-                                            src={item.author?.avatarUrl || require('@/assets/my/icon.png')}
-                                            alt="icon"
+                                            src={item.createdByAvatar || defaultImg}
+                                            alt="avatar"
                                         />
-                                        <span>{item.author?.username || '作者名'}</span>
+                                        <span>{item.createdBy}</span>
                                     </div>
                                 </div>
                             </NavLink>
