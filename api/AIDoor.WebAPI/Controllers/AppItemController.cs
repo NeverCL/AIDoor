@@ -2,16 +2,19 @@ using AIDoor.WebAPI.Models.Dtos;
 using AIDoor.WebAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using AIDoor.WebAPI.Domain;
 
 namespace AIDoor.WebAPI.Controllers;
 
 public class AppItemController : BaseController
 {
     private readonly AppItemService _appItemService;
+    private readonly UserRecordService _recordService;
 
-    public AppItemController(AppItemService appItemService)
+    public AppItemController(AppItemService appItemService, UserRecordService recordService)
     {
         _appItemService = appItemService;
+        _recordService = recordService;
     }
 
     [AllowAnonymous]
@@ -32,6 +35,18 @@ public class AppItemController : BaseController
         {
             return NotFound();
         }
+
+        // 创建浏览记录
+        var recordDto = new UserRecordCreateDto
+        {
+            RecordType = RecordType.Footprint,
+            Title = appItem.Title,
+            ImageUrl = appItem.ImageUrl,
+            TargetId = id,
+            TargetType = "App"
+        };
+
+        await _recordService.CreateRecordAsync(recordDto);
 
         return Ok(appItem);
     }

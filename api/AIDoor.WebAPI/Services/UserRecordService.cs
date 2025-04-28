@@ -183,7 +183,7 @@ public class UserRecordService
             _context.UserRecords.Remove(record);
             await _context.SaveChangesAsync();
 
-            return (true, "记录已删除");
+            return (true, null);
         }
         catch (Exception ex)
         {

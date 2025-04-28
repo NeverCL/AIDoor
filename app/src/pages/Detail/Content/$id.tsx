@@ -1,6 +1,7 @@
 import { useParams, useRequest } from "@umijs/max";
 import { useState, useEffect } from "react";
-import { Swiper, Image, NavBar, Toast, Card, Skeleton, ImageViewer } from "antd-mobile";
+import { Swiper, Image, NavBar, Card, Skeleton, ImageViewer, Button } from "antd-mobile";
+import { HeartOutline, HeartFill, StarOutline, StarFill } from 'antd-mobile-icons';
 import api from '@/services/api';
 import dayjs from 'dayjs';
 
@@ -19,6 +20,9 @@ export default () => {
     const { id } = useParams();
     const [content, setContent] = useState<UserContent | null>(null);
     const [loading, setLoading] = useState(true);
+    const [isLiked, setIsLiked] = useState(false);
+    const [isFavorite, setIsFavorite] = useState(false);
+    const [actionLoading, setActionLoading] = useState(false);
 
     // 使用useRequest获取内容详情
     const { run } = useRequest(api.userContent.getUserContentId, {
@@ -26,30 +30,126 @@ export default () => {
         onSuccess: (data) => {
             if (data) {
                 setContent(data);
-            } else {
-                Toast.show({
-                    icon: 'fail',
-                    content: '获取内容详情失败',
-                });
             }
             setLoading(false);
         },
-        onError: (error) => {
-            console.error('获取内容详情失败:', error);
-            Toast.show({
-                icon: 'fail',
-                content: '获取内容详情失败',
-            });
+        onError: () => {
             setLoading(false);
         }
     });
+
+    // 检查是否已点赞和收藏
+    const checkUserActions = async (contentId: number) => {
+        // 获取用户记录数据
+        const response = await api.userRecord.getUserRecords({});
+
+        if (response && response.records) {
+            // 查找当前内容的点赞记录
+            const likeRecord = response.records.find(
+                (record: any) =>
+                    record.typeString === 'like' &&
+                    record.targetType === 'Content' &&
+                    record.targetId === contentId
+            );
+
+            // 查找当前内容的收藏记录
+            const favoriteRecord = response.records.find(
+                (record: any) =>
+                    record.typeString === 'favorite' &&
+                    record.targetType === 'Content' &&
+                    record.targetId === contentId
+            );
+
+            setIsLiked(!!likeRecord);
+            setIsFavorite(!!favoriteRecord);
+        }
+    };
 
     useEffect(() => {
         if (id) {
             setLoading(true);
             run({ id: parseInt(id) });
+
+            // 检查用户是否对该内容点赞/收藏
+            checkUserActions(parseInt(id));
         }
     }, [id]);
+
+    // 处理点赞操作
+    const handleLike = async () => {
+        if (!content || actionLoading) return;
+
+        setActionLoading(true);
+
+        if (isLiked) {
+            // 如果已点赞，则取消点赞（需要先获取记录ID，然后删除）
+            const response = await api.userRecord.getUserRecords({});
+            if (response && response.records) {
+                const likeRecord = response.records.find(
+                    (record: any) =>
+                        record.typeString === 'like' &&
+                        record.targetType === 'Content' &&
+                        record.targetId === content.id
+                );
+
+                if (likeRecord) {
+                    await api.userRecord.deleteUserRecord({ id: likeRecord.id });
+                    setIsLiked(false);
+                }
+            }
+        } else {
+            // 添加点赞记录
+            await api.userRecord.createUserRecord({
+                recordType: 0, // 0 表示点赞
+                title: content.title,
+                imageUrl: content.images.length > 0 ? `https://cdn.thedoorofai.com/${content.images[0]}` : '',
+                targetId: content.id,
+                targetType: 'Content'
+            });
+
+            setIsLiked(true);
+        }
+
+        setActionLoading(false);
+    };
+
+    // 处理收藏操作
+    const handleFavorite = async () => {
+        if (!content || actionLoading) return;
+
+        setActionLoading(true);
+
+        if (isFavorite) {
+            // 如果已收藏，则取消收藏
+            const response = await api.userRecord.getUserRecords({});
+            if (response && response.records) {
+                const favoriteRecord = response.records.find(
+                    (record: any) =>
+                        record.typeString === 'favorite' &&
+                        record.targetType === 'Content' &&
+                        record.targetId === content.id
+                );
+
+                if (favoriteRecord) {
+                    await api.userRecord.deleteUserRecord({ id: favoriteRecord.id });
+                    setIsFavorite(false);
+                }
+            }
+        } else {
+            // 添加收藏记录
+            await api.userRecord.createUserRecord({
+                recordType: 1, // 1 表示收藏
+                title: content.title,
+                imageUrl: content.images.length > 0 ? `https://cdn.thedoorofai.com/${content.images[0]}` : '',
+                targetId: content.id,
+                targetType: 'Content'
+            });
+
+            setIsFavorite(true);
+        }
+
+        setActionLoading(false);
+    };
 
     // 获取图片完整URL
     const getImageUrl = (fileName: string) => {
@@ -119,6 +219,35 @@ export default () => {
                                 <div className="whitespace-pre-wrap">{content.content}</div>
                             </Card>
                         )}
+
+                        {/* 添加点赞和收藏按钮 */}
+                        <div className="flex justify-center mt-6 space-x-8">
+                            <Button
+                                onClick={handleLike}
+                                loading={actionLoading}
+                                disabled={actionLoading}
+                                className={`flex items-center px-6 py-2 rounded-full ${isLiked ? 'bg-[#f5222d] text-white' : 'bg-[#525252]'}`}
+                            >
+                                {isLiked ?
+                                    <HeartFill className="mr-1" color="#fff" /> :
+                                    <HeartOutline className="mr-1" />
+                                }
+                                {isLiked ? '已点赞' : '点赞'}
+                            </Button>
+
+                            <Button
+                                onClick={handleFavorite}
+                                loading={actionLoading}
+                                disabled={actionLoading}
+                                className={`flex items-center px-6 py-2 rounded-full ${isFavorite ? 'bg-[#faad14] text-white' : 'bg-[#525252]'}`}
+                            >
+                                {isFavorite ?
+                                    <StarFill className="mr-1" color="#fff" /> :
+                                    <StarOutline className="mr-1" />
+                                }
+                                {isFavorite ? '已收藏' : '收藏'}
+                            </Button>
+                        </div>
                     </div>
                 ) : (
                     <div className="flex justify-center items-center h-64">
