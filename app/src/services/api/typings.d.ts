@@ -43,6 +43,10 @@ declare namespace API {
     id: number;
   };
 
+  type deleteUserContentIdParams = {
+    id: number;
+  };
+
   type getAdminAppitemsApplicationsApplicationIdParams = {
     applicationId: number;
   };
@@ -60,6 +64,15 @@ declare namespace API {
   };
 
   type getItemParams = {
+    Page?: number;
+    Limit?: number;
+  };
+
+  type getUserContentIdParams = {
+    id: number;
+  };
+
+  type getUserContentParams = {
     Page?: number;
     Limit?: number;
   };
@@ -106,5 +119,11 @@ declare namespace API {
   type UpdateProfileRequest = {
     username: string;
     avatarUrl: string;
+  };
+
+  type UserContentCreateDto = {
+    title: string;
+    content?: string;
+    images: string[];
   };
 }

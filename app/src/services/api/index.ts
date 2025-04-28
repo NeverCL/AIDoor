@@ -7,10 +7,12 @@ import * as appItemAdmin from './appItemAdmin';
 import * as file from './file';
 import * as item from './item';
 import * as user from './user';
+import * as userContent from './userContent';
 export default {
   appItemAdmin,
   appItem,
   file,
   item,
+  userContent,
   user,
 };

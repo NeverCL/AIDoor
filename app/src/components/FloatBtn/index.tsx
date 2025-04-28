@@ -23,10 +23,12 @@ const Guide: React.FC = () => {
 
                 {
                     user?.isDevMode ?? false
-                        ? <NavLink to='/upload'>
-                            <div className='text-2xl p-3 bg-white text-black rounded-full text-center flex items-center justify-center w-10 h-10'>＋</div>
-                        </NavLink>
-                        : <div className='bg-secondary w-[1px] h-4'></div>
+                        ? (
+                            <NavLink to='/userContent'>
+                                <div className='text-2xl p-3 bg-white text-black rounded-full text-center flex items-center justify-center w-10 h-10'>＋</div>
+                            </NavLink>
+                        )
+                        : (<div className='bg-secondary w-[1px] h-4'></div>)
                 }
 
                 <NavLink to='/my' replace={true} className={({ isActive }) => 'flex items-center ' + (!isInHomeGroup ? 'text-primary' : 'text-secondary')}>

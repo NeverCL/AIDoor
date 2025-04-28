@@ -14,6 +14,7 @@ public static class ServiceCollectionExtensions
         services.AddControllers();
         services.AddOpenApi(); // API 文档服务
         services.AddHealthChecks(); // 健康检查
+        services.AddHttpContextAccessor();
 
         return services;
     }
@@ -110,6 +111,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<AliFileService>();
         services.AddScoped<AppItemService>();
         services.AddScoped<ItemService>();
+        services.AddScoped<UserContentService>();
 
         return services;
     }
