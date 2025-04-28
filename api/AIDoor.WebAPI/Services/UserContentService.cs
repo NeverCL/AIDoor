@@ -121,6 +121,38 @@ public class UserContentService
         };
     }
 
+    // 获取内容的统计数据（点赞数、收藏数、评论数）
+    public async Task<ContentStatsDto> GetContentStatsAsync(int contentId)
+    {
+        // 获取点赞数
+        int likesCount = await _context.UserRecords.CountAsync(r =>
+            r.RecordType == RecordType.Like &&
+            r.Notes == $"Content:{contentId}");
+
+        // 获取收藏数
+        int favoritesCount = await _context.UserRecords.CountAsync(r =>
+            r.RecordType == RecordType.Favorite &&
+            r.Notes == $"Content:{contentId}");
+
+        // 获取评论数
+        int commentsCount = await _context.Comments.CountAsync(c =>
+            c.TargetType == "Content" &&
+            c.TargetId == contentId);
+
+        // 获取浏览数（足迹记录数）
+        int viewsCount = await _context.UserRecords.CountAsync(r =>
+            r.RecordType == RecordType.Footprint &&
+            r.Notes == $"Content:{contentId}");
+
+        return new ContentStatsDto
+        {
+            LikesCount = likesCount,
+            FavoritesCount = favoritesCount,
+            CommentsCount = commentsCount,
+            ViewsCount = viewsCount
+        };
+    }
+
     // 删除内容
     public async Task<(bool Success, string Message)> DeleteContentAsync(int id)
     {

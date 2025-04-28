@@ -1,7 +1,7 @@
 import { useParams, useRequest } from "@umijs/max";
 import { useState, useEffect } from "react";
 import { Swiper, Image, NavBar, Card, Skeleton, ImageViewer, Button, TextArea, Divider, List, Avatar, InfiniteScroll } from "antd-mobile";
-import { HeartOutline, HeartFill, StarOutline, StarFill, MessageOutline } from 'antd-mobile-icons';
+import { HeartOutline, HeartFill, StarOutline, StarFill, MessageOutline, EyeOutline } from 'antd-mobile-icons';
 import api from '@/services/api';
 import dayjs from 'dayjs';
 
@@ -14,6 +14,14 @@ interface UserContent {
     createdBy: string;
     createdByAvatar?: string;
     createdAt: string;
+}
+
+// 内容统计数据接口
+interface ContentStats {
+    likesCount: number;
+    favoritesCount: number;
+    commentsCount: number;
+    viewsCount: number;
 }
 
 // 评论接口
@@ -31,6 +39,12 @@ interface Comment {
 export default () => {
     const { id } = useParams();
     const [content, setContent] = useState<UserContent | null>(null);
+    const [stats, setStats] = useState<ContentStats>({
+        likesCount: 0,
+        favoritesCount: 0,
+        commentsCount: 0,
+        viewsCount: 0
+    });
     const [loading, setLoading] = useState(true);
     const [isLiked, setIsLiked] = useState(false);
     const [isFavorite, setIsFavorite] = useState(false);
@@ -49,7 +63,15 @@ export default () => {
         manual: true,
         onSuccess: (data) => {
             if (data) {
-                setContent(data);
+                // 设置内容数据
+                if (data.content) {
+                    setContent(data.content);
+                }
+
+                // 设置统计数据
+                if (data.stats) {
+                    setStats(data.stats);
+                }
             }
             setLoading(false);
         },
@@ -61,7 +83,7 @@ export default () => {
     // 检查是否已点赞和收藏
     const checkUserActions = async (contentId: number) => {
         // 获取用户记录数据
-        const response = await api.userRecord.getUserRecords({});
+        const response = await api.userRecord.getUserRecord({});
 
         if (response && response.records) {
             // 查找当前内容的点赞记录
@@ -106,7 +128,7 @@ export default () => {
 
         if (isLiked) {
             // 如果已点赞，则取消点赞（需要先获取记录ID，然后删除）
-            const response = await api.userRecord.getUserRecords({});
+            const response = await api.userRecord.getUserRecord({});
             if (response && response.records) {
                 const likeRecord = response.records.find(
                     (record: any) =>
@@ -116,13 +138,15 @@ export default () => {
                 );
 
                 if (likeRecord) {
-                    await api.userRecord.deleteUserRecord({ id: likeRecord.id });
+                    await api.userRecord.deleteUserRecordId({ id: likeRecord.id });
                     setIsLiked(false);
+                    // 更新点赞数
+                    setStats(prev => ({ ...prev, likesCount: Math.max(0, prev.likesCount - 1) }));
                 }
             }
         } else {
             // 添加点赞记录
-            await api.userRecord.createUserRecord({
+            await api.userRecord.postUserRecord({
                 recordType: 0, // 0 表示点赞
                 title: content.title,
                 imageUrl: content.images.length > 0 ? `https://cdn.thedoorofai.com/${content.images[0]}` : '',
@@ -131,6 +155,8 @@ export default () => {
             });
 
             setIsLiked(true);
+            // 更新点赞数
+            setStats(prev => ({ ...prev, likesCount: prev.likesCount + 1 }));
         }
 
         setActionLoading(false);
@@ -144,7 +170,7 @@ export default () => {
 
         if (isFavorite) {
             // 如果已收藏，则取消收藏
-            const response = await api.userRecord.getUserRecords({});
+            const response = await api.userRecord.getUserRecord({});
             if (response && response.records) {
                 const favoriteRecord = response.records.find(
                     (record: any) =>
@@ -154,13 +180,15 @@ export default () => {
                 );
 
                 if (favoriteRecord) {
-                    await api.userRecord.deleteUserRecord({ id: favoriteRecord.id });
+                    await api.userRecord.deleteUserRecordId({ id: favoriteRecord.id });
                     setIsFavorite(false);
+                    // 更新收藏数
+                    setStats(prev => ({ ...prev, favoritesCount: Math.max(0, prev.favoritesCount - 1) }));
                 }
             }
         } else {
             // 添加收藏记录
-            await api.userRecord.createUserRecord({
+            await api.userRecord.postUserRecord({
                 recordType: 1, // 1 表示收藏
                 title: content.title,
                 imageUrl: content.images.length > 0 ? `https://cdn.thedoorofai.com/${content.images[0]}` : '',
@@ -169,6 +197,8 @@ export default () => {
             });
 
             setIsFavorite(true);
+            // 更新收藏数
+            setStats(prev => ({ ...prev, favoritesCount: prev.favoritesCount + 1 }));
         }
 
         setActionLoading(false);
@@ -181,10 +211,10 @@ export default () => {
         setCommentLoading(true);
         try {
             // 调用评论API获取评论列表
-            const response = await api.comment.getComments({
-                contentId: parseInt(id),
-                page,
-                limit: 10
+            const response = await api.comment.getComment({
+                ContentId: parseInt(id),
+                Page: page,
+                Limit: 10
             });
 
             // 处理API返回的评论数据
@@ -208,6 +238,11 @@ export default () => {
 
                 setCommentPage(page);
                 setHasMoreComments(page < Math.ceil(response.totalCount / 10));
+
+                // 更新评论总数
+                if (page === 1) {
+                    setStats(prev => ({ ...prev, commentsCount: response.totalCount }));
+                }
             } else {
                 // 如果API尚未实现，使用模拟数据
                 const mockComments = Array(10).fill(0).map((_, index) => ({
@@ -268,6 +303,8 @@ export default () => {
                 };
 
                 setComments(prev => [newComment, ...prev]);
+                // 更新评论数
+                setStats(prev => ({ ...prev, commentsCount: prev.commentsCount + 1 }));
             } else {
                 // 如果API尚未实现，使用模拟数据
                 const newComment: Comment = {
@@ -282,6 +319,8 @@ export default () => {
                 };
 
                 setComments(prev => [newComment, ...prev]);
+                // 更新评论数
+                setStats(prev => ({ ...prev, commentsCount: prev.commentsCount + 1 }));
             }
 
             setCommentText('');
@@ -361,6 +400,26 @@ export default () => {
                             </div>
                         </div>
 
+                        {/* 内容统计信息 */}
+                        <div className="flex justify-between mb-4 text-gray-500 text-sm">
+                            <div className="flex items-center">
+                                <EyeOutline className="mr-1" />
+                                <span>{stats.viewsCount} 浏览</span>
+                            </div>
+                            <div className="flex items-center">
+                                <HeartOutline className="mr-1" />
+                                <span>{stats.likesCount} 赞</span>
+                            </div>
+                            <div className="flex items-center">
+                                <StarOutline className="mr-1" />
+                                <span>{stats.favoritesCount} 收藏</span>
+                            </div>
+                            <div className="flex items-center">
+                                <MessageOutline className="mr-1" />
+                                <span>{stats.commentsCount} 评论</span>
+                            </div>
+                        </div>
+
                         {content.content && (
                             <Card>
                                 <div className="whitespace-pre-wrap">{content.content}</div>
@@ -379,7 +438,7 @@ export default () => {
                                     <HeartFill className="mr-1" color="#fff" /> :
                                     <HeartOutline className="mr-1" />
                                 }
-                                {isLiked ? '已点赞' : '点赞'}
+                                {isLiked ? `已点赞 ${stats.likesCount}` : `点赞 ${stats.likesCount}`}
                             </Button>
 
                             <Button
@@ -392,7 +451,7 @@ export default () => {
                                     <StarFill className="mr-1" color="#fff" /> :
                                     <StarOutline className="mr-1" />
                                 }
-                                {isFavorite ? '已收藏' : '收藏'}
+                                {isFavorite ? `已收藏 ${stats.favoritesCount}` : `收藏 ${stats.favoritesCount}`}
                             </Button>
                         </div>
 
@@ -400,7 +459,7 @@ export default () => {
                         <div className="mt-8">
                             <Divider className="bg-gray-600">
                                 <MessageOutline className="mr-2" />
-                                评论区
+                                评论区 ({stats.commentsCount})
                             </Divider>
 
                             {/* 评论列表 */}

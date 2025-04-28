@@ -20,6 +20,13 @@ declare namespace API {
     categoryId: number;
   };
 
+  type AppVisitDto = {
+    appId: number;
+    title: string;
+    imageUrl?: string;
+    link?: string;
+  };
+
   type CategoryCreateDto = {
     name: string;
     displayOrder?: number;
@@ -31,6 +38,13 @@ declare namespace API {
     isActive?: boolean;
   };
 
+  type CommentCreateDto = {
+    content: string;
+    contentId: number;
+    targetType?: string;
+    parentId?: number;
+  };
+
   type deleteAdminAppitemsApplicationsApplicationIdParams = {
     applicationId: number;
   };
@@ -39,11 +53,23 @@ declare namespace API {
     categoryId: number;
   };
 
+  type deleteCommentIdParams = {
+    id: number;
+  };
+
   type deleteItemIdParams = {
     id: number;
   };
 
   type deleteUserContentIdParams = {
+    id: number;
+  };
+
+  type deleteUserRecordClearRecordTypeParams = {
+    recordType: RecordType;
+  };
+
+  type deleteUserRecordIdParams = {
     id: number;
   };
 
@@ -57,6 +83,14 @@ declare namespace API {
 
   type getAppItemIdParams = {
     id: number;
+  };
+
+  type getCommentParams = {
+    Page?: number;
+    Limit?: number;
+    ContentId?: number;
+    TargetType?: string;
+    ParentId?: number;
   };
 
   type getItemIdParams = {
@@ -75,6 +109,16 @@ declare namespace API {
   type getUserContentParams = {
     Page?: number;
     Limit?: number;
+  };
+
+  type getUserRecordContentIdParams = {
+    id: number;
+  };
+
+  type getUserRecordParams = {
+    Page?: number;
+    Limit?: number;
+    RecordType?: string;
   };
 
   type ItemCreateDto = {
@@ -105,6 +149,8 @@ declare namespace API {
     id: number;
   };
 
+  type RecordType = integer;
+
   type RegisterRequest = {
     name: string;
     phone: string;
@@ -125,5 +171,14 @@ declare namespace API {
     title: string;
     content?: string;
     images: string[];
+  };
+
+  type UserRecordCreateDto = {
+    recordType: RecordType;
+    title: string;
+    imageUrl?: string;
+    targetId?: number;
+    targetType?: string;
+    notes?: string;
   };
 }

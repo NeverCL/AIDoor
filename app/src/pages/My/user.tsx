@@ -69,7 +69,7 @@ export default () => {
 
     // 获取所有类型的记录数据
     const { data, loading } = useRequest(() =>
-        api.userRecord.getUserRecords({ limit: 20 })
+        api.userRecord.getUserRecord({ Limit: 20 })
     );
 
     // 处理获取到的数据

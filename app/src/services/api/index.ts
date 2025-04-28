@@ -10,14 +10,13 @@ import * as item from './item';
 import * as user from './user';
 import * as userContent from './userContent';
 import * as userRecord from './userRecord';
-
 export default {
   appItemAdmin,
   appItem,
   comment,
   file,
   item,
-  user,
   userContent,
+  user,
   userRecord,
 };

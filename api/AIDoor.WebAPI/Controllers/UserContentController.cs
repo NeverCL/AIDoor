@@ -43,6 +43,16 @@ public class UserContentController : BaseController
             return NotFound("未找到指定内容");
         }
 
+        // 获取内容的统计数据（点赞数、收藏数、评论数）
+        var stats = await _contentService.GetContentStatsAsync(id);
+
+        // 创建响应对象
+        var response = new
+        {
+            Content = content,
+            Stats = stats
+        };
+
         // 创建浏览记录
         var recordDto = new UserRecordCreateDto
         {
@@ -55,7 +65,7 @@ public class UserContentController : BaseController
 
         await _recordService.CreateRecordAsync(recordDto);
 
-        return Ok(content);
+        return Ok(response);
     }
 
     [HttpPost]
