@@ -1,3 +1,4 @@
+using AIDoor.WebAPI.Domain;
 using AIDoor.WebAPI.Models.Dtos;
 using AIDoor.WebAPI.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -9,10 +10,13 @@ namespace AIDoor.WebAPI.Controllers;
 public class UserContentController : BaseController
 {
     private readonly UserContentService _contentService;
+    private readonly UserRecordService _recordService;
 
-    public UserContentController(UserContentService contentService)
+
+    public UserContentController(UserContentService contentService, UserRecordService recordService)
     {
         _contentService = contentService;
+        _recordService = recordService;
     }
 
     [HttpGet]
@@ -38,6 +42,18 @@ public class UserContentController : BaseController
         {
             return NotFound("未找到指定内容");
         }
+
+        // 创建浏览记录
+        var recordDto = new UserRecordCreateDto
+        {
+            RecordType = RecordType.Footprint,
+            Title = content.Title,
+            ImageUrl = content.Images.Length > 0 ? $"https://cdn.thedoorofai.com/{content.Images[0]}" : string.Empty,
+            TargetId = id,
+            TargetType = "Content"
+        };
+
+        await _recordService.CreateRecordAsync(recordDto);
 
         return Ok(content);
     }

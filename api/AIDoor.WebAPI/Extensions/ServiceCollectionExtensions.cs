@@ -112,6 +112,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<AppItemService>();
         services.AddScoped<ItemService>();
         services.AddScoped<UserContentService>();
+        services.AddScoped<UserRecordService>();
 
         return services;
     }

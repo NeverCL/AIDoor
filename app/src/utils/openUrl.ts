@@ -1,11 +1,34 @@
-export default (url, id = 'externalPage') => {
+import api from '@/services/api';
 
+interface AppInfo {
+    id: number;
+    title: string;
+    imageUrl?: string;
+    link: string;
+}
+
+export default (url: string, appInfo?: AppInfo) => {
+    // 如果提供了应用信息，记录访问
+    if (appInfo && appInfo.id) {
+        // 异步记录应用访问，不等待结果
+        api.userRecord.recordAppVisit({
+            appId: appInfo.id,
+            title: appInfo.title,
+            imageUrl: appInfo.imageUrl,
+            link: url
+        }).catch(error => {
+            console.error('记录应用访问失败:', error);
+        });
+    }
+
+    // 在本地浏览器中打开
     if (typeof plus === 'undefined') {
         location.assign(url);
         return;
     }
 
-    const wv = plus.webview.create(url, id, {
+    // 在 App 中使用 WebView 打开
+    const wv = plus.webview.create(url, 'externalPage', {
         bounce: 'vertical',
         top: '0px',
         bottom: '0px'

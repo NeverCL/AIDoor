@@ -118,7 +118,12 @@ const HomePage: React.FC = () => {
           {
             currentApplications.map((app: Application) => (
               <div key={app.id} className='flex items-center'>
-                <div className='flex flex-1 items-center' onClick={() => openUrl(app.link)}>
+                <div className='flex flex-1 items-center' onClick={() => openUrl(app.link, {
+                  id: app.id,
+                  title: app.title,
+                  imageUrl: app.imageUrl,
+                  link: app.link
+                })}>
                   <img className='w-20 h-20 rounded-lg' src={app.imageUrl} alt={app.title} />
 
                   <div className='flex flex-col flex-1 mx-2'>
