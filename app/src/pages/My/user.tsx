@@ -1,6 +1,7 @@
-import { Icon, NavLink, useModel } from "@umijs/max"
+import { Icon, NavLink, useModel, useRequest } from "@umijs/max"
 import { List } from "antd-mobile";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import api from '@/services/api';
 
 const url = 'https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418';
 
@@ -13,8 +14,12 @@ interface NavItem {
 
 // 记录项类型
 interface RecordItem {
-    img: string;
+    id: number;
+    imageUrl: string;
     title: string;
+    targetId?: number;
+    targetType?: string;
+    typeString: string;
 }
 
 // 记录区域类型
@@ -22,6 +27,7 @@ interface RecordSectionProps {
     name: string;
     icon: React.ReactNode;
     path: string;
+    type: string;
     data?: RecordItem[];
 }
 
@@ -39,7 +45,7 @@ const navs: NavItem[] = [
 ]
 
 // 记录类型配置映射
-const recordTypeConfig = {
+const recordTypeConfig: { [key: string]: { name: string; icon: React.ReactNode; path: string; } } = {
     like: {
         name: '我的点赞',
         icon: <Icon icon='local:like' className='mr-2 text-[1.13rem]' />,
@@ -58,59 +64,54 @@ const recordTypeConfig = {
 }
 
 export default () => {
-    // 用于存储处理后的数据
-    const [processedData, setProcessedData] = useState<RecordSectionProps[]>([
-        {
-            type: 'like',
-            data: [
-                {
-                    img: url,
-                    title: '2025看过最好的新剧院1232'
-                },
-                {
-                    img: url,
-                    title: '2025看过最好的新剧院1232'
-                },
-                {
-                    img: url,
-                    title: '2025看过最好的新剧院1233'
-                },
-                {
-                    img: url,
-                    title: '2025看过最好的新剧院1234'
+    // 存储各类型的记录数据
+    const [recordSections, setRecordSections] = useState<RecordSectionProps[]>([]);
+
+    // 获取所有类型的记录数据
+    const { data, loading } = useRequest(() =>
+        api.userRecord.getUserRecords({ limit: 20 })
+    );
+
+    // 处理获取到的数据
+    useEffect(() => {
+        if (data && data.records) {
+            // 按照类型对记录进行分组
+            const recordsByType: { [key: string]: RecordItem[] } = {
+                like: [],
+                favorite: [],
+                footprint: []
+            };
+
+            // 对记录按类型进行分类
+            data.records.forEach((record: any) => {
+                const type = record.typeString;
+                if (recordsByType[type]) {
+                    recordsByType[type].push({
+                        id: record.id,
+                        imageUrl: record.imageUrl,
+                        title: record.title,
+                        targetId: record.targetId,
+                        targetType: record.targetType,
+                        typeString: record.typeString
+                    });
                 }
-            ]
-        },
-        {
-            type: 'favorite',
-            data: [
-                {
-                    img: url,
-                    title: '收藏的内容示例'
-                },
-                {
-                    img: url,
-                    title: '收藏的内容示例'
-                }
-            ]
-        },
-        {
-            type: 'footprint',
-            data: [
-                {
-                    img: url,
-                    title: '浏览过的内容示例'
-                },
-                {
-                    img: url,
-                    title: '浏览过的内容示例'
-                }
-            ]
+            });
+
+            // 构建记录区域数据
+            const sections: RecordSectionProps[] = [];
+            Object.keys(recordTypeConfig).forEach(type => {
+                const records = recordsByType[type] || [];
+                // 取每种类型的前4条记录
+                sections.push({
+                    ...recordTypeConfig[type],
+                    type,
+                    data: records.slice(0, 4)
+                });
+            });
+
+            setRecordSections(sections);
         }
-    ].map(item => ({
-        ...recordTypeConfig[item.type],
-        data: item.data
-    })));
+    }, [data]);
 
     return (
         <>
@@ -118,9 +119,15 @@ export default () => {
                 <UserCard />
 
                 {/* 我的点赞、我的收藏、足迹 */}
-                {processedData.map((section, index) => (
-                    <RecordSection key={index} section={section} />
-                ))}
+                {loading ? (
+                    <div className="flex justify-center items-center py-8">
+                        <span>加载中...</span>
+                    </div>
+                ) : (
+                    recordSections.map((section, index) => (
+                        <RecordSection key={index} section={section} />
+                    ))
+                )}
 
                 <List className="text-white mb-28 text-base">
                     {navs.map(item => (
@@ -155,12 +162,12 @@ const UserCard = () => {
             <div className="flex items-center justify-between flex-1 *:mr-4">
                 <NavLink to='/mylist/msg' className="flex flex-col justify-center items-center">
                     <span>消息</span>
-                    <span className="text-lg">{user?.messageCount}</span>
+                    <span className="text-lg">0</span>
                 </NavLink>
                 <div className="w-[1px] bg-secondary h-3"></div>
                 <NavLink to='/mylist/follow' className="flex flex-col justify-center items-center">
                     <span className="">关注</span>
-                    <span className="text-lg">{user?.followCount}</span>
+                    <span className="text-lg">0</span>
                 </NavLink>
             </div>
         </div>
@@ -170,20 +177,30 @@ const UserCard = () => {
 // 记录卡片组件
 interface RecordCardProps {
     item: RecordItem;
-    index: number;
 }
 
-const RecordCard = ({ item, index }: RecordCardProps) => (
-    <NavLink to={`/detail/${index}`}>
-        <div className="flex flex-col">
-            <div className="h-16">
-                <img src={item.img} alt="" />
-            </div>
+const RecordCard = ({ item }: RecordCardProps) => {
+    // 根据记录类型和目标ID确定导航路径
+    const getDetailPath = () => {
+        if (item.targetType === 'Content' && item.targetId) {
+            return `/detail/content/${item.targetId}`;
+        } else if (item.targetType === 'App' && item.targetId) {
+            return `/detail/app/${item.targetId}`;
+        }
+        return '#';
+    };
 
-            <span className="mt-[0.38rem] px-[0.06rem]">{item.title}</span>
-        </div>
-    </NavLink>
-);
+    return (
+        <NavLink to={getDetailPath()}>
+            <div className="flex flex-col">
+                <div className="h-16">
+                    <img src={item.imageUrl} alt="" className="h-full w-full object-cover rounded-lg" />
+                </div>
+                <span className="mt-[0.38rem] px-[0.06rem] text-sm truncate">{item.title}</span>
+            </div>
+        </NavLink>
+    );
+};
 
 // 记录模块组件
 const RecordSection = ({ section }: { section: RecordSectionProps }) => (
@@ -197,14 +214,19 @@ const RecordSection = ({ section }: { section: RecordSectionProps }) => (
 
             <div className="flex items-center justify-center">
                 <span>全部 ＞</span>
-                {/* <Icon icon="local:enter" /> */}
             </div>
         </NavLink>
         {/* 记录列表 */}
         <div className="grid grid-cols-[repeat(auto-fill,minmax(6rem,1fr))] gap-2">
-            {section.data?.map((item, index) => (
-                <RecordCard key={index} item={item} index={index} />
-            ))}
+            {section.data && section.data.length > 0 ? (
+                section.data.map((item, index) => (
+                    <RecordCard key={index} item={item} />
+                ))
+            ) : (
+                <div className="col-span-4 text-center py-4 text-gray-500">
+                    暂无{section.name}记录
+                </div>
+            )}
         </div>
     </div>
 );

@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using AIDoor.WebAPI.Domain;
 using AIDoor.WebAPI.Models.Dtos;
 using AIDoor.WebAPI.Services;
