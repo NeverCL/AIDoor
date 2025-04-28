@@ -59,10 +59,6 @@ export default () => {
                     </Button>
                 }
             >
-                <Form.Item name="title" label="标题" rules={[{ required: true, message: '请输入标题' }]}>
-                    <Input placeholder="请输入标题" />
-                </Form.Item>
-
                 <Form.Item
                     name="image"
                     label="图片"
@@ -72,6 +68,10 @@ export default () => {
                     }}
                 >
                     <ImgUploader accept="image/*,video/*" />
+                </Form.Item>
+
+                <Form.Item name="title" label="标题" rules={[{ required: true, message: '请输入标题' }]}>
+                    <Input placeholder="请输入标题" />
                 </Form.Item>
 
                 <Form.Item name="content" label="正文">
