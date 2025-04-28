@@ -38,9 +38,9 @@ export default () => {
     // 使用 useRequest 钩子获取内容
     const { run: fetchContents } = useRequest(api.userContent.getUserContent, {
         manual: true,
-        onSuccess: (response) => {
+        onSuccess: (data) => {
             // 解析返回数据
-            const newData = response.data?.contents || [];
+            const newData = data?.contents || [];
 
             if (newData.length === 0) {
                 setHasMore(false);

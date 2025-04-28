@@ -23,9 +23,9 @@ export default () => {
     // 使用useRequest获取内容详情
     const { run } = useRequest(api.userContent.getUserContentId, {
         manual: true,
-        onSuccess: (response) => {
-            if (response && response.data) {
-                setContent(response.data);
+        onSuccess: (data) => {
+            if (data) {
+                setContent(data);
             } else {
                 Toast.show({
                     icon: 'fail',
@@ -71,6 +71,24 @@ export default () => {
                     </div>
                 ) : content ? (
                     <div className="p-4">
+                        {content.images && content.images.length > 0 && (
+                            <div className="mb-4">
+                                <Swiper>
+                                    {content.images.map((image, index) => (
+                                        <Swiper.Item key={index}>
+                                            <div className="flex justify-center">
+                                                <Image
+                                                    src={getImageUrl(image)}
+                                                    fit="cover"
+                                                    style={{ borderRadius: 8 }}
+                                                />
+                                            </div>
+                                        </Swiper.Item>
+                                    ))}
+                                </Swiper>
+                            </div>
+                        )}
+
                         <h1 className="text-xl font-bold mb-2">{content.title}</h1>
 
                         <div className="flex items-center mb-4">
@@ -90,24 +108,6 @@ export default () => {
                                 </div>
                             </div>
                         </div>
-
-                        {content.images && content.images.length > 0 && (
-                            <div className="mb-4">
-                                <Swiper>
-                                    {content.images.map((image, index) => (
-                                        <Swiper.Item key={index}>
-                                            <div className="flex justify-center">
-                                                <Image
-                                                    src={getImageUrl(image)}
-                                                    fit="cover"
-                                                    style={{ borderRadius: 8 }}
-                                                />
-                                            </div>
-                                        </Swiper.Item>
-                                    ))}
-                                </Swiper>
-                            </div>
-                        )}
 
                         {content.content && (
                             <Card>
