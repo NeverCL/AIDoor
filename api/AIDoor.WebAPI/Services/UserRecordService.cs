@@ -3,6 +3,7 @@ using AIDoor.WebAPI.Domain;
 using AIDoor.WebAPI.Models.Dtos;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using System.Linq.Expressions;
 
 namespace AIDoor.WebAPI.Services;
 
@@ -109,47 +110,71 @@ public class UserRecordService
             var query = _context.UserRecords
                 .Where(r => r.UserId == userId);
 
-            // 应用筛选条件
-            if (queryParams.RecordType.HasValue)
-            {
-                query = query.Where(r => r.RecordType == queryParams.RecordType.Value);
-            }
-
             // 获取总记录数
             int totalCount = await query.CountAsync();
 
-            // 应用分页并获取数据
-            var records = await query
-                .OrderByDescending(r => r.LastViewedAt ?? r.CreatedAt)
-                .Skip((queryParams.Page - 1) * queryParams.Limit)
-                .Take(queryParams.Limit)
-                .Select(r => new UserRecordDto
+            List<UserRecordDto> records;
+
+            // 应用筛选条件
+            if (queryParams.RecordType.HasValue)
+            {
+                // 有指定记录类型，按照分页参数获取数据
+                records = await query
+                    .Where(r => r.RecordType == queryParams.RecordType.Value)
+                    .OrderByDescending(r => r.LastViewedAt ?? r.CreatedAt)
+                    .Skip((queryParams.Page - 1) * queryParams.Limit)
+                    .Take(queryParams.Limit)
+                    .Select(r => new UserRecordDto
+                    {
+                        Id = r.Id,
+                        RecordType = r.RecordType,
+                        TypeString = r.TypeString,
+                        Title = r.Title,
+                        ImageUrl = r.ImageUrl,
+                        Notes = r.Notes,
+                        LastViewedAt = r.LastViewedAt,
+                        ViewCount = r.ViewCount,
+                        CreatedAt = r.CreatedAt
+                    })
+                    .ToListAsync();
+            }
+            else
+            {
+                // 没有指定记录类型，获取每种类型前6条记录
+                var recordsList = new List<UserRecordDto>();
+
+                // 获取所有记录类型的枚举值
+                var recordTypes = Enum.GetValues(typeof(RecordType)).Cast<RecordType>();
+
+                // 对每种类型单独查询前6条记录
+                foreach (var recordType in recordTypes)
                 {
-                    Id = r.Id,
-                    RecordType = r.RecordType,
-                    TypeString = r.TypeString,
-                    Title = r.Title,
-                    ImageUrl = r.ImageUrl,
-                    Notes = r.Notes,
-                    LastViewedAt = r.LastViewedAt,
-                    ViewCount = r.ViewCount,
-                    CreatedAt = r.CreatedAt
-                })
-                .ToListAsync();
+                    var typeRecords = await query
+                        .Where(r => r.RecordType == recordType)
+                        .OrderByDescending(r => r.LastViewedAt ?? r.CreatedAt)
+                        .Take(6)
+                        .Select(r => new UserRecordDto
+                        {
+                            Id = r.Id,
+                            RecordType = r.RecordType,
+                            TypeString = r.TypeString,
+                            Title = r.Title,
+                            ImageUrl = r.ImageUrl,
+                            Notes = r.Notes,
+                            LastViewedAt = r.LastViewedAt,
+                            ViewCount = r.ViewCount,
+                            CreatedAt = r.CreatedAt
+                        })
+                        .ToListAsync();
+
+                    recordsList.AddRange(typeRecords);
+                }
+
+                records = recordsList;
+            }
 
             // 解析目标ID和类型
-            foreach (var record in records)
-            {
-                if (!string.IsNullOrEmpty(record.Notes) && record.Notes.Contains(':'))
-                {
-                    var parts = record.Notes.Split(':');
-                    if (parts.Length == 2 && int.TryParse(parts[1], out int targetId))
-                    {
-                        record.TargetType = parts[0];
-                        record.TargetId = targetId;
-                    }
-                }
-            }
+            ProcessRecords(records);
 
             return (records, totalCount);
         }
@@ -157,6 +182,25 @@ public class UserRecordService
         {
             _logger.LogError(ex, "获取用户记录失败");
             return (new List<UserRecordDto>(), 0);
+        }
+    }
+
+    /// <summary>
+    /// 处理记录，解析目标ID和类型
+    /// </summary>
+    private void ProcessRecords(List<UserRecordDto> records)
+    {
+        foreach (var record in records)
+        {
+            if (!string.IsNullOrEmpty(record.Notes) && record.Notes.Contains(':'))
+            {
+                var parts = record.Notes.Split(':');
+                if (parts.Length == 2 && int.TryParse(parts[1], out int targetId))
+                {
+                    record.TargetType = parts[0];
+                    record.TargetId = targetId;
+                }
+            }
         }
     }
 
