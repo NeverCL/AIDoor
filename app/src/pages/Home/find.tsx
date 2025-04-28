@@ -42,9 +42,11 @@ export default () => {
             // 解析返回数据
             const newData = data?.contents || [];
 
-            if (newData.length === 0) {
+            if (newData.length === 0 || newData.length < limit) {
                 setHasMore(false);
-            } else {
+            }
+
+            if (newData) {
                 setData(prev => [...prev, ...newData]);
                 setPage(prevPage => prevPage + 1);
             }
@@ -89,7 +91,7 @@ export default () => {
                     next={loadMore}
                     hasMore={hasMore}
                     loader={<div className="text-center py-4">加载中...</div>}
-                    endMessage={<div className="text-center py-4">到底了</div>}
+                    endMessage={<div className="text-center py-4 text-gray-500">到底了</div>}
                     scrollableTarget="scrollableMasonry"
                 >
                     <Masonry
