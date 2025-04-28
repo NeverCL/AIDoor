@@ -54,7 +54,7 @@ public class UserRecordController : BaseController
             return BadRequest(result.Message);
         }
 
-        return Ok(new { message = result.Message, recordId = result.RecordId });
+        return Ok();
     }
 
     /// <summary>
