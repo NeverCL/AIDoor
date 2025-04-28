@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "aidoor.fullname" . }}-keys
+  labels:
+    {{- include "aidoor.labels" . | nindent 4 }}
+data:
+  key-d8a9f8cf-dbe9-4cd5-b479-30b469092538.xml: |-
+    <?xml version="1.0" encoding="utf-8"?>
+    <key id="d8a9f8cf-dbe9-4cd5-b479-30b469092538" version="1">
+        <creationDate>2025-04-28T02:06:10.6987911Z</creationDate>
+        <activationDate>2025-04-28T02:06:10.6987911Z</activationDate>
+        <expirationDate>2027-04-28T02:06:10.6987911Z</expirationDate>
+        <descriptor deserializerType="Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.ConfigurationModel.AuthenticatedEncryptorDescriptorDeserializer, Microsoft.AspNetCore.DataProtection, Version=9.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60">
+            <descriptor>
+            <encryption algorithm="AES_256_CBC" />
+            <validation algorithm="HMACSHA256" />
+            <masterKey p4:requiresEncryption="true" xmlns:p4="http://schemas.asp.net/2015/03/dataProtection">
+                <!-- Warning: the key below is in an unencrypted form. -->
+                <value>Jju18d6/nVufMAnmRbxzJ6EwnBJfA+tYMUDNJtmzahqYWOi7l74MMqE/LZjJT+qLx2CO7mmqU79MPWQFdOBzXg==</value>
+            </masterKey>
+            </descriptor>
+        </descriptor>
+    </key>

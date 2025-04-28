@@ -36,6 +36,8 @@ spec:
               subPath: appsettings.json
             - name: uploads-volume
               mountPath: {{ .Values.config.fileStorage.uploadDirectory }}
+            - name: keys-volume
+              mountPath: /app/keys
           livenessProbe:
             {{- toYaml .Values.livenessProbe | nindent 12 }}
           readinessProbe:
@@ -50,4 +52,7 @@ spec:
             claimName: {{ include "aidoor.fullname" . }}-uploads-pvc
           {{- else }}
           emptyDir: {}
-          {{- end }} 
+          {{- end }}
+        - name: keys-volume
+          configMap:
+            name: {{ include "aidoor.fullname" . }}-keys 
