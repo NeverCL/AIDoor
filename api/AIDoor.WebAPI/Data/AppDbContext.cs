@@ -21,6 +21,9 @@ public class AppDbContext : DbContext
     // 用户内容表
     public DbSet<UserContent> UserContents { get; set; }
 
+    // 评论表
+    public DbSet<Comment> Comments { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -50,6 +53,19 @@ public class AppDbContext : DbContext
             .HasForeignKey(ur => ur.UserId)
             .OnDelete(DeleteBehavior.Restrict);
 
+        // 评论配置
+        modelBuilder.Entity<Comment>()
+            .HasOne(c => c.User)
+            .WithMany()
+            .HasForeignKey(c => c.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Comment>()
+            .HasOne(c => c.Parent)
+            .WithMany()
+            .HasForeignKey(c => c.ParentId)
+            .OnDelete(DeleteBehavior.Restrict);
+
         // 索引配置
         modelBuilder.Entity<AppCategory>()
             .HasIndex(c => c.Name);
@@ -75,5 +91,18 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<UserContent>()
             .HasIndex(uc => uc.Title);
+
+        // Comment 索引配置
+        modelBuilder.Entity<Comment>()
+            .HasIndex(c => c.TargetId);
+
+        modelBuilder.Entity<Comment>()
+            .HasIndex(c => c.TargetType);
+
+        modelBuilder.Entity<Comment>()
+            .HasIndex(c => c.UserId);
+
+        modelBuilder.Entity<Comment>()
+            .HasIndex(c => c.CreatedAt);
     }
 }
