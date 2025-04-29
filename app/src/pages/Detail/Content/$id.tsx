@@ -441,7 +441,11 @@ export default () => {
 
                         {/* 评论区 */}
                         <div className="mt-8 mb-20">
-                            <Divider className="bg-gray-600">
+                            <Divider style={{
+                                color: 'gray',
+                                borderColor: 'gray',
+                                // borderStyle: 'dashed',
+                            }}>
                                 <MessageOutline className="mr-2" />
                                 评论区 ({stats.commentsCount})
                             </Divider>
