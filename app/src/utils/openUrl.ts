@@ -11,11 +11,12 @@ export default (url: string, appInfo?: AppInfo) => {
     // 如果提供了应用信息，记录访问
     if (appInfo && appInfo.id) {
         // 异步记录应用访问，不等待结果
-        api.userRecord.recordAppVisit({
-            appId: appInfo.id,
+        api.userRecord.postUserRecord({
+            recordType: 1,
             title: appInfo.title,
             imageUrl: appInfo.imageUrl,
-            link: url
+            targetId: appInfo.id,
+            targetType: 'App',
         }).catch(error => {
             console.error('记录应用访问失败:', error);
         });
