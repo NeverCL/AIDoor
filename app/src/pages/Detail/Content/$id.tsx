@@ -439,37 +439,8 @@ export default () => {
                             </Card>
                         )}
 
-                        {/* 添加点赞和收藏按钮 */}
-                        <div className="flex justify-center mt-6 space-x-8">
-                            <Button
-                                onClick={handleLike}
-                                loading={likeLoading}
-                                disabled={likeLoading}
-                                className={`flex items-center px-6 py-2 rounded-full ${isLiked ? 'bg-[#f5222d] text-white' : 'bg-[#525252]'}`}
-                            >
-                                {isLiked ?
-                                    <HeartFill className="mr-1" color="#fff" /> :
-                                    <HeartOutline className="mr-1" />
-                                }
-                                {isLiked ? `已点赞 ${stats.likesCount}` : `点赞 ${stats.likesCount}`}
-                            </Button>
-
-                            <Button
-                                onClick={handleFavorite}
-                                loading={favoriteLoading}
-                                disabled={favoriteLoading}
-                                className={`flex items-center px-6 py-2 rounded-full ${isFavorite ? 'bg-[#faad14] text-white' : 'bg-[#525252]'}`}
-                            >
-                                {isFavorite ?
-                                    <StarFill className="mr-1" color="#fff" /> :
-                                    <StarOutline className="mr-1" />
-                                }
-                                {isFavorite ? `已收藏 ${stats.favoritesCount}` : `收藏 ${stats.favoritesCount}`}
-                            </Button>
-                        </div>
-
                         {/* 评论区 */}
-                        <div className="mt-8">
+                        <div className="mt-8 mb-20">
                             <Divider className="bg-gray-600">
                                 <MessageOutline className="mr-2" />
                                 评论区 ({stats.commentsCount})
@@ -515,24 +486,61 @@ export default () => {
 
             {/* 底部固定的评论输入框 */}
             <div className="fixed bottom-0 left-0 right-0 bg-[#1f1f1f] border-t border-gray-700 p-2 flex items-center">
-                <TextArea
-                    className="flex-1 bg-[#333333] rounded-full px-4 py-2"
-                    value={commentText}
-                    onChange={setCommentText}
-                    placeholder="写下你的评论..."
-                    onKeyDown={handleKeyDown}
-                    rows={1}
-                    autoSize={{ minRows: 1, maxRows: 3 }}
-                />
-                <Button
-                    className="ml-2 rounded-full px-4"
-                    loading={submittingComment}
-                    disabled={submittingComment || !commentText.trim()}
-                    color="primary"
-                    onClick={submitComment}
-                >
-                    发送
-                </Button>
+                <div className="flex-1 bg-[#333333] rounded-full px-4 py-2 flex items-center text-gray-400">
+                    <TextArea
+                        className="flex-1 bg-transparent border-none"
+                        value={commentText}
+                        onChange={setCommentText}
+                        placeholder="说点什么..."
+                        onKeyDown={handleKeyDown}
+                        rows={1}
+                        autoSize={{ minRows: 1, maxRows: 3 }}
+                    />
+                    <div className="flex items-center">
+                        <Button
+                            className={`ml-2 border-none px-0 text-primary bg-transparent ${!commentText.trim() ? 'opacity-50' : ''}`}
+                            loading={submittingComment}
+                            disabled={submittingComment || !commentText.trim()}
+                            onClick={submitComment}
+                        >
+                            发送
+                        </Button>
+                    </div>
+                </div>
+                <div className="flex ml-2 space-x-3">
+                    <div className="flex items-center">
+                        {isLiked ? (
+                            <HeartFill
+                                className="text-xl text-[#f5222d]"
+                                onClick={!likeLoading ? handleLike : undefined}
+                            />
+                        ) : (
+                            <HeartOutline
+                                className="text-xl text-gray-400"
+                                onClick={!likeLoading ? handleLike : undefined}
+                            />
+                        )}
+                        <span className="ml-1 text-xs text-gray-400">{stats.likesCount}</span>
+                    </div>
+                    <div className="flex items-center">
+                        {isFavorite ? (
+                            <StarFill
+                                className="text-xl text-[#faad14]"
+                                onClick={!favoriteLoading ? handleFavorite : undefined}
+                            />
+                        ) : (
+                            <StarOutline
+                                className="text-xl text-gray-400"
+                                onClick={!favoriteLoading ? handleFavorite : undefined}
+                            />
+                        )}
+                        <span className="ml-1 text-xs text-gray-400">{stats.favoritesCount}</span>
+                    </div>
+                    <div className="flex items-center">
+                        <MessageOutline className="text-xl text-gray-400" />
+                        <span className="ml-1 text-xs text-gray-400">{stats.commentsCount}</span>
+                    </div>
+                </div>
             </div>
         </div>
     );
