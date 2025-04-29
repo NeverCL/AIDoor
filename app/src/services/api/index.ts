@@ -9,6 +9,7 @@ import * as file from './file';
 import * as item from './item';
 import * as user from './user';
 import * as userContent from './userContent';
+import * as userFollow from './userFollow';
 import * as userRecord from './userRecord';
 export default {
   appItemAdmin,
@@ -18,5 +19,6 @@ export default {
   item,
   userContent,
   user,
+  userFollow,
   userRecord,
 };

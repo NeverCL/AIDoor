@@ -117,7 +117,8 @@ public class UserContentService
             Images = content.Images,
             CreatedBy = content.User.Username,
             CreatedByAvatar = content.User.AvatarUrl,
-            CreatedAt = content.CreatedAt
+            CreatedAt = content.CreatedAt,
+            UserId = content.UserId
         };
     }
 

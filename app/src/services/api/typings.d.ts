@@ -65,6 +65,10 @@ declare namespace API {
     id: number;
   };
 
+  type deleteUserFollowIdParams = {
+    id: number;
+  };
+
   type deleteUserRecordClearRecordTypeParams = {
     recordType: RecordType;
   };
@@ -107,6 +111,15 @@ declare namespace API {
   };
 
   type getUserContentParams = {
+    Page?: number;
+    Limit?: number;
+  };
+
+  type getUserFollowCheckIdParams = {
+    id: number;
+  };
+
+  type getUserFollowParams = {
     Page?: number;
     Limit?: number;
   };
@@ -171,6 +184,10 @@ declare namespace API {
     title: string;
     content?: string;
     images: string[];
+  };
+
+  type UserFollowCreateDto = {
+    followingId: number;
   };
 
   type UserRecordCreateDto = {

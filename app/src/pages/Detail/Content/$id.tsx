@@ -1,7 +1,7 @@
 import { useParams, useRequest } from "@umijs/max";
 import { useState, useEffect } from "react";
-import { Swiper, Image, NavBar, Card, Skeleton, ImageViewer, Button, TextArea, Divider, List, Avatar, InfiniteScroll } from "antd-mobile";
-import { HeartOutline, HeartFill, StarOutline, StarFill, MessageOutline, EyeOutline } from 'antd-mobile-icons';
+import { Swiper, Image, NavBar, Card, Skeleton, ImageViewer, Button, TextArea, Divider, List, Avatar, InfiniteScroll, Toast } from "antd-mobile";
+import { HeartOutline, HeartFill, StarOutline, StarFill, MessageOutline, EyeOutline, CheckOutline, AddOutline } from 'antd-mobile-icons';
 import api from '@/services/api';
 import dayjs from 'dayjs';
 
@@ -14,6 +14,7 @@ interface UserContent {
     createdBy: string;
     createdByAvatar?: string;
     createdAt: string;
+    userId: number; // 作者ID
 }
 
 // 内容统计数据接口
@@ -48,8 +49,10 @@ export default () => {
     const [loading, setLoading] = useState(true);
     const [isLiked, setIsLiked] = useState(false);
     const [isFavorite, setIsFavorite] = useState(false);
+    const [isFollowing, setIsFollowing] = useState(false);
     const [likeLoading, setLikeLoading] = useState(false);
     const [favoriteLoading, setFavoriteLoading] = useState(false);
+    const [followLoading, setFollowLoading] = useState(false);
 
     // 评论相关状态
     const [commentText, setCommentText] = useState('');
@@ -72,6 +75,11 @@ export default () => {
                 // 设置统计数据
                 if (data.stats) {
                     setStats(data.stats);
+                }
+
+                // 设置关注状态
+                if (data.isFollowing !== undefined) {
+                    setIsFollowing(data.isFollowing);
                 }
             }
             setLoading(false);
@@ -210,6 +218,45 @@ export default () => {
             console.error('收藏操作失败', error);
         } finally {
             setFavoriteLoading(false);
+        }
+    };
+
+    // 处理关注/取消关注作者操作
+    const handleFollow = async () => {
+        if (!content || followLoading || !content.userId) return;
+
+        setFollowLoading(true);
+
+        try {
+            if (isFollowing) {
+                // 如果已关注，则取消关注
+                const result = await api.userFollow.deleteUserFollowId({ id: content.userId });
+                if (result) {
+                    setIsFollowing(false);
+                    Toast.show({
+                        icon: 'success',
+                        content: '已取消关注',
+                    });
+                }
+            } else {
+                // 关注作者
+                const result = await api.userFollow.postUserFollow({ followingId: content.userId });
+                if (result && result.data) {
+                    setIsFollowing(true);
+                    Toast.show({
+                        icon: 'success',
+                        content: '关注成功',
+                    });
+                }
+            }
+        } catch (error) {
+            console.error('关注操作失败', error);
+            Toast.show({
+                icon: 'fail',
+                content: '操作失败，请稍后重试',
+            });
+        } finally {
+            setFollowLoading(false);
         }
     };
 

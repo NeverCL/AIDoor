@@ -3,6 +3,7 @@ using AIDoor.WebAPI.Models.Dtos;
 using AIDoor.WebAPI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace AIDoor.WebAPI.Controllers;
 
@@ -46,11 +47,29 @@ public class UserContentController : BaseController
         // 获取内容的统计数据（点赞数、收藏数、评论数）
         var stats = await _contentService.GetContentStatsAsync(id);
 
+        // 检查当前用户是否已关注内容作者
+        bool isFollowing = false;
+        try
+        {
+            var userFollowService = HttpContext.RequestServices.GetRequiredService<UserFollowService>();
+            if (content.UserId != 0) // 确保有有效的作者ID
+            {
+                isFollowing = await userFollowService.IsFollowingAsync(content.UserId);
+            }
+        }
+        catch (Exception ex)
+        {
+            // 记录错误但不中断流程
+            var logger = HttpContext.RequestServices.GetRequiredService<ILogger<UserContentController>>();
+            logger.LogError(ex, "检查关注状态失败");
+        }
+
         // 创建响应对象
         var response = new
         {
             Content = content,
-            Stats = stats
+            Stats = stats,
+            IsFollowing = isFollowing
         };
 
         // 创建浏览记录

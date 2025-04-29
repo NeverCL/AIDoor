@@ -114,6 +114,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<UserContentService>();
         services.AddScoped<UserRecordService>();
         services.AddScoped<CommentService>();
+        services.AddScoped<UserFollowService>();
 
         return services;
     }

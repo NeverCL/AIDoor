@@ -24,6 +24,9 @@ public class AppDbContext : DbContext
     // 评论表
     public DbSet<Comment> Comments { get; set; }
 
+    // 用户关注关系表
+    public DbSet<UserFollow> UserFollows { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -51,6 +54,23 @@ public class AppDbContext : DbContext
             .HasOne(ur => ur.User)
             .WithMany()
             .HasForeignKey(ur => ur.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        // 用户关注关系配置
+        modelBuilder.Entity<UserFollow>()
+            .HasIndex(uf => new { uf.FollowerId, uf.FollowingId })
+            .IsUnique(); // 确保同一用户不能重复关注同一个人
+
+        modelBuilder.Entity<UserFollow>()
+            .HasOne(uf => uf.Follower)
+            .WithMany()
+            .HasForeignKey(uf => uf.FollowerId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<UserFollow>()
+            .HasOne(uf => uf.Following)
+            .WithMany()
+            .HasForeignKey(uf => uf.FollowingId)
             .OnDelete(DeleteBehavior.Restrict);
 
         // 评论配置
