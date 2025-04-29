@@ -48,7 +48,8 @@ export default () => {
     const [loading, setLoading] = useState(true);
     const [isLiked, setIsLiked] = useState(false);
     const [isFavorite, setIsFavorite] = useState(false);
-    const [actionLoading, setActionLoading] = useState(false);
+    const [likeLoading, setLikeLoading] = useState(false);
+    const [favoriteLoading, setFavoriteLoading] = useState(false);
 
     // 评论相关状态
     const [commentText, setCommentText] = useState('');
@@ -122,86 +123,94 @@ export default () => {
 
     // 处理点赞操作
     const handleLike = async () => {
-        if (!content || actionLoading) return;
+        if (!content || likeLoading) return;
 
-        setActionLoading(true);
+        setLikeLoading(true);
 
-        if (isLiked) {
-            // 如果已点赞，则取消点赞（需要先获取记录ID，然后删除）
-            const response = await api.userRecord.getUserRecord({});
-            if (response && response.records) {
-                const likeRecord = response.records.find(
-                    (record: any) =>
-                        record.typeString === 'like' &&
-                        record.targetType === 'Content' &&
-                        record.targetId === content.id
-                );
+        try {
+            if (isLiked) {
+                // 如果已点赞，则取消点赞（需要先获取记录ID，然后删除）
+                const response = await api.userRecord.getUserRecord({});
+                if (response && response.records) {
+                    const likeRecord = response.records.find(
+                        (record: any) =>
+                            record.typeString === 'like' &&
+                            record.targetType === 'Content' &&
+                            record.targetId === content.id
+                    );
 
-                if (likeRecord) {
-                    await api.userRecord.deleteUserRecordId({ id: likeRecord.id });
-                    setIsLiked(false);
-                    // 更新点赞数
-                    setStats(prev => ({ ...prev, likesCount: Math.max(0, prev.likesCount - 1) }));
+                    if (likeRecord) {
+                        await api.userRecord.deleteUserRecordId({ id: likeRecord.id });
+                        setIsLiked(false);
+                        // 更新点赞数
+                        setStats(prev => ({ ...prev, likesCount: Math.max(0, prev.likesCount - 1) }));
+                    }
                 }
+            } else {
+                // 添加点赞记录
+                await api.userRecord.postUserRecord({
+                    recordType: 0, // 0 表示点赞
+                    title: content.title,
+                    imageUrl: content.images.length > 0 ? `https://cdn.thedoorofai.com/${content.images[0]}` : '',
+                    targetId: content.id,
+                    targetType: 'Content'
+                });
+
+                setIsLiked(true);
+                // 更新点赞数
+                setStats(prev => ({ ...prev, likesCount: prev.likesCount + 1 }));
             }
-        } else {
-            // 添加点赞记录
-            await api.userRecord.postUserRecord({
-                recordType: 0, // 0 表示点赞
-                title: content.title,
-                imageUrl: content.images.length > 0 ? `https://cdn.thedoorofai.com/${content.images[0]}` : '',
-                targetId: content.id,
-                targetType: 'Content'
-            });
-
-            setIsLiked(true);
-            // 更新点赞数
-            setStats(prev => ({ ...prev, likesCount: prev.likesCount + 1 }));
+        } catch (error) {
+            console.error('点赞操作失败', error);
+        } finally {
+            setLikeLoading(false);
         }
-
-        setActionLoading(false);
     };
 
     // 处理收藏操作
     const handleFavorite = async () => {
-        if (!content || actionLoading) return;
+        if (!content || favoriteLoading) return;
 
-        setActionLoading(true);
+        setFavoriteLoading(true);
 
-        if (isFavorite) {
-            // 如果已收藏，则取消收藏
-            const response = await api.userRecord.getUserRecord({});
-            if (response && response.records) {
-                const favoriteRecord = response.records.find(
-                    (record: any) =>
-                        record.typeString === 'favorite' &&
-                        record.targetType === 'Content' &&
-                        record.targetId === content.id
-                );
+        try {
+            if (isFavorite) {
+                // 如果已收藏，则取消收藏
+                const response = await api.userRecord.getUserRecord({});
+                if (response && response.records) {
+                    const favoriteRecord = response.records.find(
+                        (record: any) =>
+                            record.typeString === 'favorite' &&
+                            record.targetType === 'Content' &&
+                            record.targetId === content.id
+                    );
 
-                if (favoriteRecord) {
-                    await api.userRecord.deleteUserRecordId({ id: favoriteRecord.id });
-                    setIsFavorite(false);
-                    // 更新收藏数
-                    setStats(prev => ({ ...prev, favoritesCount: Math.max(0, prev.favoritesCount - 1) }));
+                    if (favoriteRecord) {
+                        await api.userRecord.deleteUserRecordId({ id: favoriteRecord.id });
+                        setIsFavorite(false);
+                        // 更新收藏数
+                        setStats(prev => ({ ...prev, favoritesCount: Math.max(0, prev.favoritesCount - 1) }));
+                    }
                 }
+            } else {
+                // 添加收藏记录
+                await api.userRecord.postUserRecord({
+                    recordType: 1, // 1 表示收藏
+                    title: content.title,
+                    imageUrl: content.images.length > 0 ? `https://cdn.thedoorofai.com/${content.images[0]}` : '',
+                    targetId: content.id,
+                    targetType: 'Content'
+                });
+
+                setIsFavorite(true);
+                // 更新收藏数
+                setStats(prev => ({ ...prev, favoritesCount: prev.favoritesCount + 1 }));
             }
-        } else {
-            // 添加收藏记录
-            await api.userRecord.postUserRecord({
-                recordType: 1, // 1 表示收藏
-                title: content.title,
-                imageUrl: content.images.length > 0 ? `https://cdn.thedoorofai.com/${content.images[0]}` : '',
-                targetId: content.id,
-                targetType: 'Content'
-            });
-
-            setIsFavorite(true);
-            // 更新收藏数
-            setStats(prev => ({ ...prev, favoritesCount: prev.favoritesCount + 1 }));
+        } catch (error) {
+            console.error('收藏操作失败', error);
+        } finally {
+            setFavoriteLoading(false);
         }
-
-        setActionLoading(false);
     };
 
     // 加载评论
@@ -265,6 +274,8 @@ export default () => {
                 setCommentPage(page);
                 setHasMoreComments(page < 3); // 模拟3页数据
             }
+        } catch (error) {
+            console.error('加载评论失败', error);
         } finally {
             setCommentLoading(false);
         }
@@ -324,6 +335,8 @@ export default () => {
             }
 
             setCommentText('');
+        } catch (error) {
+            console.error('提交评论失败', error);
         } finally {
             setSubmittingComment(false);
         }
@@ -430,8 +443,8 @@ export default () => {
                         <div className="flex justify-center mt-6 space-x-8">
                             <Button
                                 onClick={handleLike}
-                                loading={actionLoading}
-                                disabled={actionLoading}
+                                loading={likeLoading}
+                                disabled={likeLoading}
                                 className={`flex items-center px-6 py-2 rounded-full ${isLiked ? 'bg-[#f5222d] text-white' : 'bg-[#525252]'}`}
                             >
                                 {isLiked ?
@@ -443,8 +456,8 @@ export default () => {
 
                             <Button
                                 onClick={handleFavorite}
-                                loading={actionLoading}
-                                disabled={actionLoading}
+                                loading={favoriteLoading}
+                                disabled={favoriteLoading}
                                 className={`flex items-center px-6 py-2 rounded-full ${isFavorite ? 'bg-[#faad14] text-white' : 'bg-[#525252]'}`}
                             >
                                 {isFavorite ?
