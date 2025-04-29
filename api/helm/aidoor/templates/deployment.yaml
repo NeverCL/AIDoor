@@ -30,6 +30,8 @@ spec:
                 secretKeyRef:
                   name: {{ include "aidoor.fullname" . }}-auth-keys
                   key: dataProtectionKey
+            - name: TZ
+              value: "Asia/Shanghai"
           volumeMounts:
             - name: config-volume
               mountPath: /app/appsettings.json
