@@ -37,10 +37,10 @@ export default () => {
 
     // 加载记录数据
     const { run: fetchRecords, loading } = useRequest(
-        (currentPage: number) => api.userRecord.getUserRecords({
-            recordType: recordTypes[type]?.type,
-            page: currentPage,
-            limit: 10
+        (currentPage: number) => api.userRecord.getUserRecord({
+            RecordType: recordTypes[type]?.type,
+            Page: currentPage,
+            Limit: 10
         }),
         {
             manual: true,
