@@ -62,6 +62,24 @@ export default () => {
     const [commentLoading, setCommentLoading] = useState(false);
     const [submittingComment, setSubmittingComment] = useState(false);
 
+    // 检查是否是当前用户自己的内容
+    const [isOwnContent, setIsOwnContent] = useState(false);
+
+    // 获取当前用户ID并检查是否是自己的内容
+    const checkIsOwnContent = async () => {
+        try {
+            const userProfile = await api.user.getUserProfile();
+            if (userProfile && content && userProfile.id === content.userId) {
+                setIsOwnContent(true);
+            } else {
+                setIsOwnContent(false);
+            }
+        } catch (error) {
+            console.error('获取用户信息失败', error);
+            setIsOwnContent(false);
+        }
+    };
+
     // 使用useRequest获取内容详情
     const { run } = useRequest(api.userContent.getUserContentId, {
         manual: true,
@@ -129,6 +147,12 @@ export default () => {
         }
     }, [id]);
 
+    useEffect(() => {
+        if (content) {
+            checkIsOwnContent();
+        }
+    }, [content]);
+
     // 处理点赞操作
     const handleLike = async () => {
         if (!content || likeLoading) return;
@@ -168,8 +192,6 @@ export default () => {
                 // 更新点赞数
                 setStats(prev => ({ ...prev, likesCount: prev.likesCount + 1 }));
             }
-        } catch (error) {
-            console.error('点赞操作失败', error);
         } finally {
             setLikeLoading(false);
         }
@@ -214,8 +236,6 @@ export default () => {
                 // 更新收藏数
                 setStats(prev => ({ ...prev, favoritesCount: prev.favoritesCount + 1 }));
             }
-        } catch (error) {
-            console.error('收藏操作失败', error);
         } finally {
             setFavoriteLoading(false);
         }
@@ -249,12 +269,6 @@ export default () => {
                     });
                 }
             }
-        } catch (error) {
-            console.error('关注操作失败', error);
-            Toast.show({
-                icon: 'fail',
-                content: '操作失败，请稍后重试',
-            });
         } finally {
             setFollowLoading(false);
         }
@@ -450,7 +464,7 @@ export default () => {
                                 fit="cover"
                                 style={{ borderRadius: 16 }}
                             />
-                            <div className="ml-2">
+                            <div className="ml-2 flex-1">
                                 <div>{content.createdBy}</div>
                                 <div className="text-xs text-gray-500">
                                     {
@@ -458,6 +472,30 @@ export default () => {
                                     }
                                 </div>
                             </div>
+                            {!isOwnContent && (
+                                <Button
+                                    loading={followLoading}
+                                    disabled={followLoading}
+                                    onClick={handleFollow}
+                                    className={`px-4 py-1 rounded-full text-sm flex items-center ${isFollowing
+                                        ? 'bg-gray-600 text-white'
+                                        : 'bg-blue-500 text-white'
+                                        }`}
+                                    size="small"
+                                >
+                                    {isFollowing ? (
+                                        <>
+                                            <CheckOutline className="mr-1" />
+                                            已关注
+                                        </>
+                                    ) : (
+                                        <>
+                                            <AddOutline className="mr-1" />
+                                            关注
+                                        </>
+                                    )}
+                                </Button>
+                            )}
                         </div>
 
                         {/* 内容统计信息 */}
