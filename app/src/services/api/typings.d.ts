@@ -77,6 +77,17 @@ declare namespace API {
     id: number;
   };
 
+  type DeveloperApplicationCreateDto = {
+    name: string;
+    logo: string[];
+    description: string;
+    website?: string;
+    company?: string;
+    category: string;
+    userType: string;
+    stage: string;
+  };
+
   type getAdminAppitemsApplicationsApplicationIdParams = {
     applicationId: number;
   };
@@ -95,6 +106,10 @@ declare namespace API {
     ContentId?: number;
     TargetType?: string;
     ParentId?: number;
+  };
+
+  type getDeveloperApplicationIdParams = {
+    id: number;
   };
 
   type getItemIdParams = {

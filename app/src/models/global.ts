@@ -47,6 +47,7 @@ const useUser = () => {
   return {
     user,
     isLoading,
+    switchUserMode,
     refreshUser,
     switchUser,
   };

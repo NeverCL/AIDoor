@@ -5,6 +5,7 @@ import { postUserLogout, postUserDeleteAccount } from "@/services/api/user";
 import api from "@/services/api";
 
 const routes = [
+    { text: "开发者申请", path: '/setting/developerapplication' },
     { text: "开发者社群", path: '/qrcode' },
     { text: "关于我们", path: '/setting/about' },
     { text: "用户协议", path: '/setting/useragreement' },

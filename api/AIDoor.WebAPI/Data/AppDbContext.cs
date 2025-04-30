@@ -27,6 +27,9 @@ public class AppDbContext : DbContext
     // 用户关注关系表
     public DbSet<UserFollow> UserFollows { get; set; }
 
+    // 开发者申请表
+    public DbSet<DeveloperApplication> DeveloperApplications { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -124,5 +127,18 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<Comment>()
             .HasIndex(c => c.CreatedAt);
+
+        // DeveloperApplication 配置
+        modelBuilder.Entity<DeveloperApplication>()
+            .HasOne(da => da.User)
+            .WithMany()
+            .HasForeignKey(da => da.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<DeveloperApplication>()
+            .HasIndex(da => da.Status);
+
+        modelBuilder.Entity<DeveloperApplication>()
+            .HasIndex(da => da.UserId);
     }
 }

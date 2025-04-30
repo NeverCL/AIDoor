@@ -3,7 +3,7 @@ import { useModel, history } from "@umijs/max"
 import { Button, Toast } from "antd-mobile";
 
 export default () => {
-    const { user, switchUser } = useModel('global');
+    const { user, switchUserMode } = useModel('global');
 
     const handleSwitchMode = async () => {
         try {
@@ -13,11 +13,17 @@ export default () => {
                 duration: 0,
             });
 
-            await switchUser();
+            const result = await switchUserMode();
 
             Toast.clear();
 
-            history.replace('/');
+            if (result.success) {
+                history.replace('/');
+            }
+
+            if (result.requireApplication) {
+                history.replace('/Account/Develop');
+            }
         } catch (error) {
             Toast.clear();
             Toast.show({
@@ -33,14 +39,14 @@ export default () => {
             <div className="flex flex-col justify-center items-center h-full *:mb-8">
                 <div>
                     <span className="text-8xl">
-                        {user.isDevMode ? '👨‍💻' : '🧑‍💼'}
+                        {user?.isDevMode ? '👨‍💻' : '🧑‍💼'}
                     </span>
                 </div>
 
                 <div className="text-center">
                     <div>你当前的身份是
                         <span className="font-bold mt-2">
-                            {user.isDevMode ? '"开发者"' : '"使用者"'}
+                            {user?.isDevMode ? '"开发者"' : '"使用者"'}
                         </span>
                     </div>
                 </div>

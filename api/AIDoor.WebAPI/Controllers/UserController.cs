@@ -6,6 +6,7 @@ using System.Text.Json.Serialization;
 using AIDoor.WebAPI.Dtos;
 using AIDoor.WebAPI.Models;
 using Microsoft.AspNetCore.Authorization;
+using AIDoor.WebAPI.Domain;
 namespace AIDoor.WebAPI.Controllers;
 
 public class UserController : BaseController
@@ -194,6 +195,37 @@ public class UserController : BaseController
             isDevMode = devModeCookie.ToLower() == "true";
         }
 
+        // 如果当前是用户模式，想切换到开发者模式，需要检查开发者申请状态
+        if (!isDevMode)
+        {
+            // 获取开发者申请状态
+            var applicationStatus = await _userService.GetDeveloperApplicationStatusAsync(UserId);
+
+            // 如果没有申请过或者被拒绝，则返回需要先申请
+            if (applicationStatus == null || !applicationStatus.HasApplied)
+            {
+                return Ok(new { success = false, message = "需要先提交开发者申请", requireApplication = true });
+            }
+
+            // 如果申请状态是待审核，则返回提示信息
+            if (applicationStatus.Status == DeveloperApplicationStatus.Pending)
+            {
+                return Ok(new { success = false, message = "您的开发者申请正在审核中，请耐心等待", applicationStatus = "pending" });
+            }
+
+            // 如果申请状态是被拒绝，则返回提示信息
+            if (applicationStatus.Status == DeveloperApplicationStatus.Rejected)
+            {
+                return Ok(new { success = false, message = "您的开发者申请已被拒绝，请重新提交申请", requireApplication = true });
+            }
+
+            // 只有申请状态为已通过，才允许切换到开发者模式
+            if (applicationStatus.Status != DeveloperApplicationStatus.Approved)
+            {
+                return Ok(new { success = false, message = "未知的申请状态，请联系客服" });
+            }
+        }
+
         // 切换开发者模式
         bool newDevMode = !isDevMode;
 
@@ -205,7 +237,7 @@ public class UserController : BaseController
         // 更新认证信息和Cookie
         await SignInUserAsync(user);
 
-        return Ok($"已切换为{(newDevMode ? "开发者" : "使用者")}模式");
+        return Ok(new { success = true, message = $"已切换为{(newDevMode ? "开发者" : "使用者")}模式" });
     }
 
     [HttpPut("profile")]
