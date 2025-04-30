@@ -65,6 +65,8 @@ public class AliFileService
         }
     }
 
+    static HashSet<string> videoExtensions = new HashSet<string> { ".mp4", ".avi", ".mov", ".wmv", ".flv", ".mpeg", ".mpg", ".m4v", ".webm", ".mkv" };
+
     public async Task<string> UploadFileAsync(IFormFile file)
     {
         if (file == null || file.Length == 0)
@@ -80,8 +82,17 @@ public class AliFileService
 
         // 生成唯一的文件名
         string fileExtension = Path.GetExtension(file.FileName);
+
         string objectKey = $"{DateTime.Now:yyyyMMdd}/{Guid.NewGuid()}{fileExtension}";
 
+        // isVideo
+
+        var isVideo = videoExtensions.Contains(fileExtension);
+
+        if (isVideo)
+        {
+            objectKey = "video/" + objectKey;
+        }
 
         using (var stream = file.OpenReadStream())
         {
@@ -89,7 +100,7 @@ public class AliFileService
             _ossClient.PutObject(_bucketName, objectKey, stream);
         }
 
-        return objectKey;
+        return isVideo ? "imm/" + objectKey : objectKey;
     }
 
     public (bool Success, string Url, string ErrorMessage) GetFileUrl(string objectKey, int expireMinutes = 60)
