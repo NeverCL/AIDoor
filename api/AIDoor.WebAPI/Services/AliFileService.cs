@@ -100,7 +100,13 @@ public class AliFileService
             _ossClient.PutObject(_bucketName, objectKey, stream);
         }
 
-        return isVideo ? "imm/" + objectKey : objectKey;
+        // isVideo 文件扩展名更换为mp4
+        if (isVideo)
+        {
+            objectKey = "imm/" + objectKey.Replace(fileExtension, ".mp4");
+        }
+
+        return objectKey;
     }
 
     public (bool Success, string Url, string ErrorMessage) GetFileUrl(string objectKey, int expireMinutes = 60)
