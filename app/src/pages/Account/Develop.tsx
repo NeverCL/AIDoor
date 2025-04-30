@@ -1,13 +1,14 @@
 import { Form, Input, Button, Toast, Radio, ImageUploader, TextArea, Picker, ImageUploadItem } from 'antd-mobile';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import BackNavBar from '@/components/BackNavBar';
 import type { PickerColumnItem, PickerActions } from 'antd-mobile/es/components/picker';
 import { useRequest } from '@umijs/max';
 import api from '@/services/api';
 import ImgUploader from '@/components/ImgUploader';
+import { FormInstance } from 'antd-mobile/es/components/form';
 
 export default () => {
-
+    const formRef = useRef<FormInstance>(null);
     const { run: uploadFile } = useRequest(api.file.postFileUpload);
 
     const onFinish = (values: any) => {
@@ -32,6 +33,7 @@ export default () => {
                 <Form
                     layout="vertical"
                     onFinish={onFinish}
+                    ref={formRef}
                     footer={
                         <div className="rounded-3xl">
                             <Button block color="primary" type="submit" className="mt-8">
@@ -94,6 +96,10 @@ export default () => {
                                     { label: '其他', value: 'other' },
                                 ],
                             ]}
+                            value={formRef.current?.getFieldValue('category') ? [formRef.current?.getFieldValue('category')] : []}
+                            onConfirm={(val) => {
+                                formRef.current?.setFieldValue('category', val);
+                            }}
                         >
                             {(items: (PickerColumnItem | null)[], actions: PickerActions) => (
                                 <div onClick={() => actions.open()} className="py-2 px-3 border border-gray-300 rounded-md">
