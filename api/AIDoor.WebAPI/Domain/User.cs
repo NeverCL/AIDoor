@@ -12,6 +12,7 @@ public class User : BaseEntity
     public string PhoneNumber { get; set; } = string.Empty;
     public string AvatarUrl { get; set; } = string.Empty;
     public DateTime? LastLoginAt { get; set; }
+
     public int MessageCount { get; set; }
     public int FollowCount { get; set; }
 }
