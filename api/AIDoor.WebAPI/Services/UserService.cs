@@ -159,7 +159,9 @@ public class UserService
         System.Console.WriteLine($"验证码: {code}-{phoneNumber}");
 
         // 发送验证码短信
+        #if !DEBUG
         _smsService.SendCode(phoneNumber, code);
+        #endif
     }
 
     private int GenerateRandomCode()

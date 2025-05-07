@@ -43,7 +43,7 @@ public class AliFileService
             _ossOptions.AccessKeySecret);
 
         // 确保存储桶存在
-        EnsureBucketExists();
+        // EnsureBucketExists();
     }
 
     private void EnsureBucketExists()
@@ -65,7 +65,7 @@ public class AliFileService
         }
     }
 
-    static HashSet<string> videoExtensions = new HashSet<string> { ".mp4", ".avi", ".mov", ".wmv", ".flv", ".mpeg", ".mpg", ".m4v", ".webm", ".mkv" };
+    static HashSet<string> videoExtensions = new HashSet<string> { ".avi", ".mov", ".wmv", ".flv", ".mpeg", ".mpg", ".m4v", ".webm", ".mkv" };
 
     public async Task<string> UploadFileAsync(IFormFile file)
     {
