@@ -1,4 +1,4 @@
-import { useParams, useRequest } from "@umijs/max";
+import { useParams, useRequest, history } from "@umijs/max";
 import { useState, useEffect } from "react";
 import { Swiper, Image, NavBar, Card, Skeleton, ImageViewer, Button, TextArea, Divider, List, Avatar, InfiniteScroll, Toast } from "antd-mobile";
 import { HeartOutline, HeartFill, StarOutline, StarFill, MessageOutline, EyeOutline, CheckOutline, AddOutline } from 'antd-mobile-icons';
@@ -419,6 +419,13 @@ export default () => {
     // 返回上一页
     const onBack = () => window.history.back();
 
+    // 跳转到发布者详情页
+    const goToPublisher = (userId: number) => {
+        if (userId) {
+            history.push(`/detail/publisher/${userId}`);
+        }
+    };
+
     return (
         <div className="flex flex-col h-full">
             <NavBar onBack={onBack}>{content?.title || '内容详情'}</NavBar>
@@ -463,9 +470,10 @@ export default () => {
                                 height={32}
                                 fit="cover"
                                 style={{ borderRadius: 16 }}
+                                onClick={() => goToPublisher(content.userId)}
                             />
-                            <div className="ml-2 flex-1">
-                                <div>{content.createdBy}</div>
+                            <div className="ml-2 flex-1" onClick={() => goToPublisher(content.userId)}>
+                                <div className="cursor-pointer">{content.createdBy}</div>
                                 <div className="text-xs text-gray-500">
                                     {
                                         dayjs(content.createdAt).format('YYYY-MM-DD HH:mm')

@@ -1,7 +1,7 @@
 import { useParams } from "@umijs/max";
 import BackNavBar from "@/components/BackNavBar";
 import { Avatar, Button, Card, Tabs } from "antd-mobile";
-import { LikeOutline, StarOutline, MessageOutline, PhoneOutline } from "antd-mobile-icons";
+import { LikeOutline, StarOutline, MessageOutline, PhonebookOutline } from "antd-mobile-icons";
 import { useState } from "react";
 
 export default () => {
@@ -121,10 +121,8 @@ export default () => {
                         <Card
                             key={service.id}
                             className="mb-4 rounded-lg overflow-hidden"
-                            headerClassName="p-0"
-                            bodyClassName="p-3"
-                            header={
-                                <div className="relative">
+                            title={
+                                <div className="relative p-0">
                                     <img
                                         src={service.image}
                                         alt={service.title}
@@ -171,7 +169,7 @@ export default () => {
                     <span className="text-xs">点赞</span>
                 </div>
                 <div className="flex flex-col items-center">
-                    <PhoneOutline fontSize={24} />
+                    <PhonebookOutline fontSize={24} />
                     <span className="text-xs">电话咨询</span>
                 </div>
             </div>
