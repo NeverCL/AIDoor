@@ -87,7 +87,8 @@ public class UserContentService
                 Id = uc.Id,
                 Title = uc.Title,
                 Content = uc.Content,
-                Images = uc.Images,
+                Images = uc.Images.Select(image => videoExtensions.Contains(Path.GetExtension(image)) ? $"preview/{Path.GetDirectoryName(image) ?? ""}/{Path.GetFileNameWithoutExtension(image)}.png"
+                    :  image + "?x-oss-process=image/resize,p_30").ToArray(),
                 CreatedBy = uc.User.Username,
                 CreatedByAvatar = uc.User.AvatarUrl,
                 CreatedAt = uc.CreatedAt

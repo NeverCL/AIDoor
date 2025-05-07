@@ -87,12 +87,12 @@ public class AliFileService
 
         // isVideo
 
-        var isVideo = videoExtensions.Contains(fileExtension);
+        // var isVideo = videoExtensions.Contains(fileExtension);
 
-        if (isVideo)
-        {
-            objectKey = "video/" + objectKey;
-        }
+        // if (isVideo)
+        // {
+        //     objectKey = "video/" + objectKey;
+        // }
 
         using (var stream = file.OpenReadStream())
         {
@@ -100,11 +100,11 @@ public class AliFileService
             _ossClient.PutObject(_bucketName, objectKey, stream);
         }
 
-        // isVideo 文件扩展名更换为mp4
-        if (isVideo)
-        {
-            objectKey = "imm/" + objectKey.Replace(fileExtension, ".mp4");
-        }
+        // // isVideo 文件扩展名更换为mp4
+        // if (isVideo)
+        // {
+        //     objectKey = "imm/" + objectKey.Replace(fileExtension, ".mp4");
+        // }
 
         return objectKey;
     }
