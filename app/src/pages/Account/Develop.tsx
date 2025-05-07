@@ -1,34 +1,46 @@
-import { Form, Input, Button, Toast, Radio, ImageUploader, TextArea, Picker, ImageUploadItem } from 'antd-mobile';
-import { useRef, useState } from 'react';
+import { Form, Input, Button, Radio, TextArea } from 'antd-mobile';
+import { useRef } from 'react';
 import BackNavBar from '@/components/BackNavBar';
-import type { PickerColumnItem, PickerActions } from 'antd-mobile/es/components/picker';
-import { useRequest } from '@umijs/max';
+import { useRequest, history } from '@umijs/max';
 import api from '@/services/api';
 import ImgUploader from '@/components/ImgUploader';
 import { FormInstance } from 'antd-mobile/es/components/form';
 
 export default () => {
     const formRef = useRef<FormInstance>(null);
-    const { run: uploadFile } = useRequest(api.file.postFileUpload);
 
-    const onFinish = (values: any) => {
-        Toast.show({
-            content: '提交成功',
-            icon: 'success',
-        });
-        console.log(values);
-    };
+    const { run: postPublisher, loading } = useRequest(api.publisher.postPublisher, {
+        manual: true,
+        onSuccess: (res) => {
+            console.log(res);
+        }
+    });
 
-    const handleUpload = async (file: File): Promise<ImageUploadItem> => {
-        const res = await uploadFile({}, file);
+    const onFinish = async (values: any) => {
+        // 将图片数组转换为单个URL（只取第一张图片作为头像）
+        const avatarUrl = values.avatarUrl?.[0] || '';
 
-        return {
-            url: res.data.url,
+        // 创建发布者请求
+        const createPublisherRequest = {
+            name: values.name,
+            avatarUrl: avatarUrl,
+            description: values.description,
+            type: Number(values.type), // 转换为数字类型
+            website: values.website,
+            appLink: values.appLink
         };
+
+        // 提交发布者信息
+        const response = await postPublisher(createPublisherRequest);
+
+        // 跳转到我的页面
+        setTimeout(() => {
+            history.push('/my');
+        }, 1500);
     };
 
     return (
-        <BackNavBar title="注册开发者">
+        <BackNavBar title="注册发布者">
             <div className="pb-16 overflow-y-auto">
                 <Form
                     layout="vertical"
@@ -36,7 +48,14 @@ export default () => {
                     ref={formRef}
                     footer={
                         <div className="rounded-3xl">
-                            <Button block color="primary" type="submit" className="mt-8">
+                            <Button
+                                block
+                                color="primary"
+                                type="submit"
+                                className="mt-8"
+                                loading={loading}
+                                disabled={loading}
+                            >
                                 提交
                             </Button>
                         </div>
@@ -44,99 +63,64 @@ export default () => {
                 >
                     <Form.Item
                         name="name"
-                        label="项目名称"
-                        rules={[{ required: true, message: '请输入项目名称' }]}
+                        label="发布者名称"
+                        rules={[{ required: true, message: '请输入发布者名称' }]}
                     >
-                        <Input placeholder="请输入项目名称" />
+                        <Input placeholder="请输入发布者名称" />
                     </Form.Item>
 
                     <Form.Item
-                        name="logo"
-                        label="项目Logo/产品图"
-                        rules={[{ required: true, message: '请上传Logo' }]}
+                        name="avatarUrl"
+                        label="发布者头像"
+                        rules={[{ required: true, message: '请上传头像' }]}
+                        getValueFromEvent={(value) => {
+                            return value.map((file: any) => file.extra.fileName);
+                        }}
                     >
-                        <ImgUploader accept="image/*" maxCount={3} />
+                        <ImgUploader accept="image/*" maxCount={1} />
                     </Form.Item>
 
                     <Form.Item
                         name="description"
-                        label="项目介绍"
-                        rules={[{ required: true, message: '请输入项目介绍' }]}
+                        label="发布者描述"
+                        rules={[{ required: true, message: '请输入发布者描述' }]}
                     >
-                        <TextArea placeholder="请输入项目介绍" rows={3} />
+                        <TextArea placeholder="请输入发布者描述" rows={3} />
                     </Form.Item>
 
                     <Form.Item
                         name="website"
-                        label="项目链接/网址"
+                        label="官网链接"
                     >
-                        <Input placeholder="请输入项目链接/网址（选填）" />
+                        <Input placeholder="请输入官网链接（选填）" />
                     </Form.Item>
 
                     <Form.Item
-                        name="company"
-                        label="公司名称"
+                        name="appLink"
+                        label="应用链接"
                     >
-                        <Input placeholder="请输入公司名称（选填）" />
+                        <Input placeholder="请输入应用链接（选填）" />
                     </Form.Item>
 
                     <Form.Item
-                        name="category"
-                        label="功能分类"
-                        rules={[{ required: true, message: '请选择功能分类' }]}
-                    >
-                        <Picker
-                            columns={[
-                                [
-                                    { label: 'AI应用', value: 'ai' },
-                                    { label: '开发工具', value: 'tool' },
-                                    { label: '教育培训', value: 'education' },
-                                    { label: '娱乐休闲', value: 'entertainment' },
-                                    { label: '效率提升', value: 'productivity' },
-                                    { label: '其他', value: 'other' },
-                                ],
-                            ]}
-                            value={formRef.current?.getFieldValue('category') ? [formRef.current?.getFieldValue('category')] : []}
-                            onConfirm={(val) => {
-                                formRef.current?.setFieldValue('category', val);
-                            }}
-                        >
-                            {(items: (PickerColumnItem | null)[], actions: PickerActions) => (
-                                <div onClick={() => actions.open()} className="py-2 px-3 border border-gray-300 rounded-md">
-                                    {items[0]?.label || '请选择功能分类'}
-                                </div>
-                            )}
-                        </Picker>
-                    </Form.Item>
-
-                    <Form.Item
-                        name="userType"
-                        label="用户类型"
-                        rules={[{ required: true, message: '请选择用户类型' }]}
+                        name="type"
+                        label="发布者类型"
+                        rules={[{ required: true, message: '请选择发布者类型' }]}
+                        initialValue={0} // 默认选择个人
                     >
                         <Radio.Group>
                             <div className="flex flex-col *:my-1">
-                                <Radio value="developer">开发者工具</Radio>
-                                <Radio value="user">普通用户使用</Radio>
-                                <Radio value="enterprise">企业用户使用</Radio>
+                                <Radio value={0}>个人</Radio>
+                                <Radio value={1}>企业</Radio>
                             </div>
                         </Radio.Group>
                     </Form.Item>
 
-                    <Form.Item
-                        name="pricing"
-                        label="项目阶段"
-                        rules={[{ required: true, message: '请上传Logo' }]}
-                    >
-                        <Radio.Group>
-                            <div className="flex flex-col *:my-1">
-                                <Radio value="design">设计计划阶段</Radio>
-                                <Radio value="product">产品开发阶段</Radio>
-                            </div>
-                        </Radio.Group>
-                    </Form.Item>
+                    <div className="bg-yellow-50 p-4 rounded-lg mt-4 mb-6">
+                        <p className="text-sm text-yellow-700">提交后，您的发布者信息将会进入审核流程。审核通过后，您的发布者页面将对所有用户可见。</p>
+                    </div>
                 </Form>
             </div>
-        </BackNavBar >
+        </BackNavBar>
     );
 };

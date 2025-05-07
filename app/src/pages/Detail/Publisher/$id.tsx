@@ -41,7 +41,7 @@ export default () => {
 
     // 获取发布者详情
     const { data: publisherData, loading } = useRequest<{ data: PublisherData }>(
-        () => api.publisher.getPublisherDetails({ id: Number(id) }),
+        () => api.publisher.getPublisherId({ id: Number(id) }),
         {
             refreshDeps: [id],
             // 对接口返回的数据进行处理，确保格式一致性
