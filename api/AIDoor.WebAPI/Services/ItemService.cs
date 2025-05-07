@@ -23,7 +23,7 @@ public class ItemService
             .OrderByDescending(i => i.CreatedAt);
 
         var totalCount = await query.CountAsync();
-        
+
         var items = await query
             .Skip((page - 1) * limit)
             .Take(limit)
@@ -31,7 +31,7 @@ public class ItemService
             {
                 Id = i.Id,
                 Title = i.Title,
-                ImageUrl = i.ImageUrl,
+                ImageUrl = i.ImageUrl + "?x-oss-process=image/resize,p_30",
                 Author = new UserInfoDto
                 {
                     Id = i.User.Id,
@@ -77,7 +77,7 @@ public class ItemService
         {
             return (false, "指定的用户不存在", null);
         }
-        
+
         var item = new Item
         {
             Title = itemDto.Title,
@@ -154,4 +154,4 @@ public class ItemService
             return (false, $"删除项目失败: {ex.Message}");
         }
     }
-} 
+}

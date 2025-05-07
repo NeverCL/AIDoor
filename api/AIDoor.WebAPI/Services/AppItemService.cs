@@ -36,7 +36,7 @@ public class AppItemService
                     Id = a.Id,
                     Title = a.Title,
                     Description = a.Description,
-                    ImageUrl = a.ImageUrl,
+                    ImageUrl = a.ImageUrl + "?x-oss-process=image/resize,p_30",
                     Link = a.Link,
                     DisplayOrder = a.DisplayOrder,
                     CategoryId = a.CategoryId,
