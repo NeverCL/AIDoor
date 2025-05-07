@@ -49,129 +49,67 @@ export default () => {
     return (
         <BackNavBar title="发布者详情">
             <div className="flex-1 flex flex-col overflow-y-auto pb-20">
-                {/* 头部信息 */}
-                <div className="bg-blue-500 text-white p-4 pb-6">
-                    <div className="flex items-center justify-between mb-4">
-                        <div className="flex items-center gap-3">
-                            <Avatar src={publisherData.avatar} style={{ width: 60, height: 60 }} />
+                {/* 头像 昵称 简介 */}
+                <div className="flex items-center p-4">
+                    <Avatar src={publisherData.avatar} size={48} />
+                    <div className="ml-2">
+                        <h2 className="text-lg font-bold">{publisherData.name}</h2>
+                        <p className="text-sm text-gray-600">{publisherData.description}</p>
+                    </div>
+                </div>
+
+                {/* 获赞 关注 粉丝 分值*/}
+                <div className="flex items-center p-4">
+                    <div className="flex-1 text-center">
+                        <div className="text-2xl font-bold">{publisherData.stats.likes}</div>
+                        <div className="text-sm text-gray-600">获赞</div>
+                    </div>
+                    <div className="flex-1 text-center">
+                        <div className="text-2xl font-bold">{publisherData.stats.likes}</div>
+                        <div className="text-sm text-gray-600">获赞</div>
+                    </div>
+                    <div className="flex-1 text-center">
+                        <div className="text-2xl font-bold">{publisherData.stats.likes}</div>
+                        <div className="text-sm text-gray-600">获赞</div>
+                    </div>
+                    <div className="flex-1 text-center">
+                        <div className="text-2xl font-bold">{publisherData.stats.likes}</div>
+                        <div className="text-sm text-gray-600">获赞</div>
+                    </div>
+                </div>
+
+                {/* 详细介绍 */}
+                <div className="p-4">
+                    <div className="text-sm text-gray-600">{publisherData.description}</div>
+                </div>
+
+                {/* 去官网 去App */}
+                {/* 打分 与我联系 */}
+                <div className="p-4 flex justify-between">
+                    <Button color="primary">去App</Button>
+                    <Button color="primary">去官网</Button>
+                    <Button color="primary">打分</Button>
+                    <Button color="primary">与我联系</Button>
+                </div>
+
+                {/* 关注 */}
+                <div className="p-4">
+                    <Button color="primary" block>关注</Button>
+                </div>
+
+                {/* 发布作品列表 */}
+                <div className="p-4">
+                    <div className="text-lg font-bold">发布作品</div>
+                    <div className="flex flex-col *:mb-2">
+                        {aiServices.map(service => (
                             <div>
-                                <h2 className="text-xl font-bold">{publisherData.name}</h2>
-                                <p className="text-sm">{publisherData.description}</p>
+                                <img className="h-40" src={service.image} alt="" />
+                                <div className="text-sm text-gray-600">{service.title}</div>
                             </div>
-                        </div>
-                        <div className="flex gap-2">
-                            <Button
-                                className="text-white px-4 border-white"
-                                fill="outline"
-                                size="small"
-                            >
-                                登录APP
-                            </Button>
-                            <Button
-                                className="px-4"
-                                color="primary"
-                                size="small"
-                            >
-                                去咨询
-                            </Button>
-                        </div>
-                    </div>
-
-                    {/* 统计信息 */}
-                    <div className="flex justify-between text-center">
-                        <div>
-                            <div className="text-lg font-bold">{publisherData.stats.users}</div>
-                            <div className="text-xs">粉丝</div>
-                        </div>
-                        <div>
-                            <div className="text-lg font-bold">{publisherData.stats.likes}</div>
-                            <div className="text-xs">获赞</div>
-                        </div>
-                        <div>
-                            <div className="text-lg font-bold">{publisherData.stats.comments}</div>
-                            <div className="text-xs">评论</div>
-                        </div>
-                        <div>
-                            <div className="text-lg font-bold">{publisherData.stats.rating}</div>
-                            <div className="text-xs">评分</div>
-                        </div>
+                        ))}
                     </div>
                 </div>
 
-                {/* 介绍说明 */}
-                <div className="p-4 text-sm">
-                    这是一个智能助手小应用，能够帮助用户解决日常问题，提供智能对话服务，感谢您对我服务的支持，我将不断完善的服务体验，努力为您提供更准确、更高效、更人性化的服务。
-                </div>
-
-                {/* 标签页 */}
-                <Tabs
-                    activeKey={activeTab}
-                    onChange={setActiveTab}
-                    className="pb-3"
-                >
-                    <Tabs.Tab title="发布作品" key="works" />
-                    <Tabs.Tab title="相册" key="album" />
-                    <Tabs.Tab title="个人信息" key="info" />
-                    <Tabs.Tab title="我的订单" key="orders" />
-                </Tabs>
-
-                {/* 服务内容卡片列表 */}
-                <div className="px-4">
-                    {aiServices.map((service) => (
-                        <Card
-                            key={service.id}
-                            className="mb-4 rounded-lg overflow-hidden"
-                            title={
-                                <div className="relative p-0">
-                                    <img
-                                        src={service.image}
-                                        alt={service.title}
-                                        className="w-full h-40 object-cover"
-                                    />
-                                    {service.stats && (
-                                        <div className="absolute inset-0 flex items-center justify-center">
-                                            <div className="bg-[rgba(0,0,0,0.5)] p-4 rounded-full w-32 h-32 flex items-center justify-center">
-                                                <div className="text-white text-center">
-                                                    <div className="text-xl font-bold">AI</div>
-                                                    <div className="text-xs flex flex-col gap-1 mt-2">
-                                                        <div>准确率 {service.stats.accuracy}</div>
-                                                        <div>使用率 {service.stats.usage}</div>
-                                                        <div>效率 {service.stats.efficiency}</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
-                            }
-                        >
-                            <h3 className="text-lg font-bold mb-2">{service.title}</h3>
-                            {service.description && (
-                                <p className="text-sm text-gray-600">{service.description}</p>
-                            )}
-                        </Card>
-                    ))}
-                </div>
-            </div>
-
-            {/* 底部导航 */}
-            <div className="fixed bottom-0 left-0 right-0 bg-white border-t flex justify-around p-2">
-                <div className="flex flex-col items-center">
-                    <MessageOutline fontSize={24} />
-                    <span className="text-xs">智能对话</span>
-                </div>
-                <div className="flex flex-col items-center">
-                    <StarOutline fontSize={24} />
-                    <span className="text-xs">收藏</span>
-                </div>
-                <div className="flex flex-col items-center">
-                    <LikeOutline fontSize={24} />
-                    <span className="text-xs">点赞</span>
-                </div>
-                <div className="flex flex-col items-center">
-                    <PhonebookOutline fontSize={24} />
-                    <span className="text-xs">电话咨询</span>
-                </div>
             </div>
         </BackNavBar>
     );
