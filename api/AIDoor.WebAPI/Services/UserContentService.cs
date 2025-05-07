@@ -25,10 +25,12 @@ public class UserContentService
         {
             throw new UnauthorizedAccessException("未登录或无法识别用户");
         }
+
         return userId;
     }
 
-    private readonly static string[] videoExtensions = [".mp4", ".avi", ".mov", ".wmv", ".flv", ".mpeg", ".mpg", ".m4v", ".webm", ".mkv"];
+    private readonly static string[] videoExtensions =
+        [".mp4", ".avi", ".mov", ".wmv", ".flv", ".mpeg", ".mpg", ".m4v", ".webm", ".mkv"];
 
     // 创建内容
     public async Task<(bool Success, string Message, int ContentId)> CreateContentAsync(UserContentCreateDto contentDto)
@@ -71,7 +73,8 @@ public class UserContentService
     }
 
     // 获取内容列表
-    public async Task<(List<UserContentDto> Contents, int TotalCount)> GetContentsAsync(UserContentQueryParams queryParams)
+    public async Task<(List<UserContentDto> Contents, int TotalCount)> GetContentsAsync(
+        UserContentQueryParams queryParams)
     {
         var query = _context.UserContents
             .Include(uc => uc.User)
@@ -87,14 +90,17 @@ public class UserContentService
                 Id = uc.Id,
                 Title = uc.Title,
                 Content = uc.Content,
-                Images = uc.Images.Select(image => videoExtensions.Contains(Path.GetExtension(image)) ? $"preview/{Path.GetDirectoryName(image) ?? ""}/{Path.GetFileNameWithoutExtension(image)}.png"
-                    :  image + "?x-oss-process=image/resize,p_30").ToArray(),
+                Images = uc.Images,
                 CreatedBy = uc.User.Username,
                 CreatedByAvatar = uc.User.AvatarUrl,
                 CreatedAt = uc.CreatedAt
             })
             .ToListAsync();
 
+        contents.ForEach(x => x.Images = x.Images.Select(image => videoExtensions.Contains(Path.GetExtension(image))
+            ? $"preview/{Path.GetDirectoryName(image) ?? ""}/{Path.GetFileNameWithoutExtension(image)}.png"
+            : image + "?x-oss-process=image/resize,p_30").ToArray());
+        
         return (contents, totalCount);
     }
 

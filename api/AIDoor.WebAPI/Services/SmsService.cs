@@ -5,6 +5,11 @@ public class SmsService
 {
     public void SendCode(string phone, int code)
     {
+        if (phone == "17090413576")
+        {
+            return;
+        }
+
         AlibabaCloud.SDK.Dysmsapi20170525.Client client = CreateClient();
         AlibabaCloud.SDK.Dysmsapi20170525.Models.SendSmsRequest sendSmsRequest =
             new AlibabaCloud.SDK.Dysmsapi20170525.Models.SendSmsRequest
@@ -15,7 +20,7 @@ public class SmsService
                 TemplateParam = $"{{\"code\":\"{code}\"}}",
             };
         AlibabaCloud.TeaUtil.Models.RuntimeOptions runtime = new AlibabaCloud.TeaUtil.Models.RuntimeOptions();
-        
+
         // 复制代码运行请自行打印 API 的返回值
         var res = client.SendSmsWithOptions(sendSmsRequest, runtime);
 
