@@ -30,6 +30,9 @@ public class AppDbContext : DbContext
     // 开发者申请表
     public DbSet<DeveloperApplication> DeveloperApplications { get; set; }
 
+    // 发布者表
+    public DbSet<Publisher> Publishers { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -140,5 +143,18 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<DeveloperApplication>()
             .HasIndex(da => da.UserId);
+
+        // Publisher 配置
+        modelBuilder.Entity<Publisher>()
+            .HasOne(p => p.User)
+            .WithMany()
+            .HasForeignKey(p => p.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Publisher>()
+            .HasIndex(p => p.Name);
+
+        modelBuilder.Entity<Publisher>()
+            .HasIndex(p => p.Status);
     }
 }

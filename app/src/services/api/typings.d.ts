@@ -61,6 +61,10 @@ declare namespace API {
     id: number;
   };
 
+  type deletePublisherIdParams = {
+    id: number;
+  };
+
   type deleteUserContentIdParams = {
     id: number;
   };
@@ -121,6 +125,21 @@ declare namespace API {
     Limit?: number;
   };
 
+  type getPublisherAllParams = {
+    page?: number;
+    pageSize?: number;
+    status?: string;
+  };
+
+  type getPublisherIdParams = {
+    id: number;
+  };
+
+  type getPublisherPendingParams = {
+    page?: number;
+    pageSize?: number;
+  };
+
   type getUserContentIdParams = {
     id: number;
   };
@@ -165,6 +184,25 @@ declare namespace API {
     code: string;
   };
 
+  type postPublisherIdRefreshStatsParams = {
+    id: number;
+  };
+
+  type postPublisherIdReviewParams = {
+    id: number;
+  };
+
+  type PublisherCreateUpdateRequest = {
+    name?: string;
+    avatarUrl?: string;
+    description?: string;
+    type?: PublisherType;
+    website?: string;
+    appLink?: string;
+  };
+
+  type PublisherType = integer;
+
   type putAdminAppitemsApplicationsApplicationIdParams = {
     applicationId: number;
   };
@@ -184,6 +222,11 @@ declare namespace API {
     phone: string;
     code: string;
     password?: string;
+  };
+
+  type ReviewPublisherRequest = {
+    approved?: boolean;
+    reviewNote?: string;
   };
 
   type SendCodeRequest = {

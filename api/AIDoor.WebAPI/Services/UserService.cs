@@ -414,6 +414,76 @@ public class UserService
             SubmittedAt = application.CreatedAt
         };
     }
+
+    /// <summary>
+    /// 获取发布者详情
+    /// </summary>
+    /// <param name="publisherId">发布者ID</param>
+    /// <returns>发布者详情DTO</returns>
+    public async Task<PublisherDto?> GetPublisherDetailsAsync(int publisherId)
+    {
+        // 1. 获取发布者基本信息
+        var publisher = await _context.Users.FindAsync(publisherId);
+        if (publisher == null)
+        {
+            return null;
+        }
+
+        // 2. 创建发布者DTO
+        var publisherDto = new PublisherDto
+        {
+            Id = publisher.Id,
+            Username = publisher.Username,
+            AvatarUrl = publisher.AvatarUrl,
+            Description = "专注提供智能服务", // 可以添加字段或使用默认值
+            CreatedAt = publisher.CreatedAt
+        };
+
+        // 3. 获取统计数据
+        // 获取发布者的点赞数
+        var likesCount = await _context.UserRecords
+            .CountAsync(r => r.RecordType == RecordType.Like &&
+                        r.Notes != null &&
+                        r.Notes.StartsWith("Content:") &&
+                        _context.UserContents
+                            .Any(c => c.UserId == publisherId &&
+                                  r.Notes == $"Content:{c.Id}"));
+
+        // 获取发布者的粉丝数（被关注数）
+        var followersCount = await _context.UserFollows
+            .CountAsync(f => f.FollowingId == publisherId);
+
+        // 获取发布者关注的人数
+        var followingCount = await _context.UserFollows
+            .CountAsync(f => f.FollowerId == publisherId);
+
+        // 设置统计数据
+        publisherDto.Stats = new PublisherStatsDto
+        {
+            Likes = likesCount,
+            Followers = followersCount,
+            Following = followingCount,
+            Rating = 4.9 // 可以添加评分系统或使用默认值
+        };
+
+        // 4. 获取发布者的内容列表
+        var contents = await _context.UserContents
+            .Where(c => c.UserId == publisherId)
+            .OrderByDescending(c => c.CreatedAt)
+            .Take(10) // 限制返回数量
+            .Select(c => new PublisherContentDto
+            {
+                Id = c.Id,
+                Title = c.Title,
+                ImageUrl = c.Images.Length > 0 ? c.Images[0] : null,
+                CreatedAt = c.CreatedAt
+            })
+            .ToListAsync();
+
+        publisherDto.Contents = contents;
+
+        return publisherDto;
+    }
 }
 
 /// <summary>
