@@ -8,6 +8,7 @@ export default defineConfig({
     dataField: '',
   },
   icons: {},
+  title: 'AI之门',
   npmClient: "pnpm",
   tailwindcss: {},
   metas: [
