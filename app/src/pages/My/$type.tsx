@@ -1,7 +1,7 @@
-import { useRequest, NavLink, useLocation, useParams } from '@umijs/max';
+import { useRequest, useParams } from '@umijs/max';
 import { useState, useEffect } from 'react';
-import { NavBar, List, InfiniteScroll, PullToRefresh, Avatar } from 'antd-mobile';
-import { HeartOutline, HeartFill, StarOutline, StarFill, ClockCircleOutline } from 'antd-mobile-icons';
+import { List, InfiniteScroll, PullToRefresh } from 'antd-mobile';
+import { HeartFill, StarFill, ClockCircleOutline } from 'antd-mobile-icons';
 import dayjs from 'dayjs';
 import api from '@/services/api';
 import BackNavBar from '@/components/BackNavBar';
