@@ -1,7 +1,6 @@
 import BackNavBar from '@/components/BackNavBar';
 import { history } from '@umijs/max';
-import { List, NavBar } from 'antd-mobile';
-import { RightOutline } from 'antd-mobile-icons';
+import { List } from 'antd-mobile';
 
 export default () => {
 
@@ -21,7 +20,6 @@ export default () => {
                                 </div>
                             }
                             onClick={() => navigateToDetail('follow')}
-                            arrow={<RightOutline />}
                             description="查看谁关注了你"
                         >
                             关注记录
@@ -33,7 +31,6 @@ export default () => {
                                 </div>
                             }
                             onClick={() => navigateToDetail('interaction')}
-                            arrow={<RightOutline />}
                             description="查看点赞、评论、收藏等互动"
                         >
                             互动记录
@@ -45,12 +42,33 @@ export default () => {
                                 </div>
                             }
                             onClick={() => navigateToDetail('rating')}
-                            arrow={<RightOutline />}
                             description="查看作品评分情况"
                         >
                             评分记录
                         </List.Item>
                     </List>
+                </div>
+
+                {/* 私信列表 */}
+                <div className="text-lg font-bold">私信</div>
+
+                <div className="p-2 overflow-y-auto">
+                    <div className="flex flex-col gap-2 mb-28">
+                        {
+                            [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((item) => (
+                                <div className="flex items-center gap-2">
+                                    <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+                                        <img src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg" alt="" />
+                                    </div>
+                                    <div className="flex-1">
+                                        <div className="text-base font-bold">用户名</div>
+                                        <div className="text-sm text-gray-500">最后一条消息</div>
+                                    </div>
+                                    <div className="text-sm text-gray-500">2025-05-08</div>
+                                </div>
+                            ))
+                        }
+                    </div>
                 </div>
             </BackNavBar>
         </>
