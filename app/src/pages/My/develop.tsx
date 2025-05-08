@@ -167,7 +167,7 @@ export default () => {
             {/* 发布内容 */}
             <div className="p-4">
                 <div className="flex justify-between items-center mb-4">
-                    <h3 className="text-lg font-bold">我的内容</h3>
+                    <h3 className="text-lg font-bold text-gray-200">发布内容</h3>
                 </div>
 
                 {contents.length > 0 ? (
@@ -175,11 +175,11 @@ export default () => {
                         {contents.map((content) => (
                             <div
                                 key={content.id}
-                                className="bg-secondary rounded-lg shadow-sm p-2"
+                                className="bg-[#3a3a3a] rounded-lg shadow p-3 border border-[#444444] hover:shadow-md transition-shadow"
                                 onClick={() => history.push(`/detail/content/${content.id}`)}
                             >
                                 {content.images && content.images.length > 0 && (
-                                    <div className="mb-2">
+                                    <div className="mb-3">
                                         <img
                                             src={getImageUrl(content.images[0])}
                                             alt={content.title}
@@ -188,8 +188,8 @@ export default () => {
                                     </div>
                                 )}
                                 <div className="flex justify-between items-center">
-                                    <div className="text-base font-medium">{content.title}</div>
-                                    <div className="text-xs text-gray-500">
+                                    <div className="text-base font-medium text-gray-200">{content.title}</div>
+                                    <div className="text-xs text-gray-400 bg-[#444444] px-2 py-1 rounded-full">
                                         {dayjs(content.createdAt).format('YYYY-MM-DD')}
                                     </div>
                                 </div>
@@ -198,7 +198,7 @@ export default () => {
                         <InfiniteScroll loadMore={loadMore} hasMore={hasMore} />
                     </div>
                 ) : (
-                    <div className="text-center text-gray-500 py-10">
+                    <div className="text-center text-gray-400 py-10 bg-[#3a3a3a] rounded-lg">
                         暂无内容
                     </div>
                 )}
