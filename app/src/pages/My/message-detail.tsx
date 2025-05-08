@@ -2,6 +2,7 @@ import { useRequest, useLocation, history } from '@umijs/max';
 import { List, NavBar, Image, DotLoading, Empty } from 'antd-mobile';
 import React, { useEffect, useState } from 'react';
 import api from '@/services/api';
+import BackNavBar from '@/components/BackNavBar';
 
 export default () => {
     const [messageType, setMessageType] = useState('follow');
@@ -99,9 +100,7 @@ export default () => {
     };
 
     return (
-        <div className="bg-gray-100 min-h-screen">
-            <NavBar onBack={() => history.back()}>{getTitle()}</NavBar>
-
+        <BackNavBar title={getTitle()}>
             <div className="p-2">
                 <List className="bg-white rounded-lg">
                     {loading ? (
@@ -144,6 +143,6 @@ export default () => {
                     )}
                 </List>
             </div>
-        </div>
+        </BackNavBar>
     );
 }; 
