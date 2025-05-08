@@ -245,4 +245,16 @@ declare namespace API {
     targetType?: string;
     notes?: string;
   };
+
+  type PublisherRatingDto = {
+    rating: number;
+  };
+
+  type postPublisherIdRateParams = {
+    id: number;
+  };
+
+  type getPublisherIdMyRatingParams = {
+    id: number;
+  };
 }

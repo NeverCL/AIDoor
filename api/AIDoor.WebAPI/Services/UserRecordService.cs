@@ -265,4 +265,124 @@ public class UserRecordService
             return (false, $"清空失败: {ex.Message}");
         }
     }
+
+    /// <summary>
+    /// 为发布者评分
+    /// </summary>
+    public async Task<(bool Success, string Message, int? RatingValue)> RatePublisherAsync(int publisherId, int rating)
+    {
+        try
+        {
+            int userId = GetCurrentUserId();
+
+            // 验证评分值范围
+            if (rating < 1 || rating > 5)
+            {
+                return (false, "评分必须在1-5之间", null);
+            }
+
+            // 检查发布者是否存在
+            var publisher = await _context.Publishers.FindAsync(publisherId);
+            if (publisher == null)
+            {
+                return (false, "发布者不存在", null);
+            }
+
+            // 检查发布者状态，只有已通过审核的发布者才能被评分
+            if (publisher.Status != PublisherStatus.Approved)
+            {
+                return (false, "只能对已通过审核的发布者进行评分", null);
+            }
+
+            // 检查是否已评分过
+            var existingRating = await _context.UserRecords
+                .FirstOrDefaultAsync(r => r.UserId == userId &&
+                                          r.RecordType == RecordType.Rating &&
+                                          r.Notes == $"Publisher:{publisherId}");
+
+            if (existingRating != null)
+            {
+                // 更新评分
+                existingRating.RatingValue = rating;
+                existingRating.UpdatedAt = DateTime.UtcNow;
+                await _context.SaveChangesAsync();
+                return (true, "评分已更新", rating);
+            }
+            else
+            {
+                // 创建新评分记录
+                var record = new UserRecord
+                {
+                    RecordType = RecordType.Rating,
+                    Title = publisher.Name,
+                    ImageUrl = publisher.AvatarUrl,
+                    UserId = userId,
+                    Notes = $"Publisher:{publisherId}",
+                    RatingValue = rating,
+                    CreatedAt = DateTime.UtcNow
+                };
+                _context.UserRecords.Add(record);
+                await _context.SaveChangesAsync();
+                return (true, "评分成功", rating);
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "为发布者评分失败");
+            return (false, $"评分失败: {ex.Message}", null);
+        }
+    }
+
+    /// <summary>
+    /// 获取用户对发布者的评分
+    /// </summary>
+    public async Task<int?> GetUserRatingForPublisherAsync(int publisherId)
+    {
+        try
+        {
+            int userId = GetCurrentUserId();
+
+            var ratingRecord = await _context.UserRecords
+                .Where(r => r.UserId == userId &&
+                           r.RecordType == RecordType.Rating &&
+                           r.Notes == $"Publisher:{publisherId}")
+                .FirstOrDefaultAsync();
+
+            return ratingRecord?.RatingValue;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "获取用户对发布者的评分失败");
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// 计算发布者的平均评分
+    /// </summary>
+    public async Task<(double AverageRating, int RatingsCount)> CalculatePublisherAverageRatingAsync(int publisherId)
+    {
+        try
+        {
+            // 获取所有对该发布者的评分
+            var ratings = await _context.UserRecords
+                .Where(r => r.RecordType == RecordType.Rating &&
+                            r.Notes == $"Publisher:{publisherId}" &&
+                            r.RatingValue.HasValue)
+                .ToListAsync();
+
+            if (!ratings.Any())
+            {
+                return (5.0, 0); // 默认评分为5分，评分数为0
+            }
+
+            double averageRating = Math.Round(ratings.Average(r => r.RatingValue!.Value), 1);
+            return (averageRating, ratings.Count);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "计算发布者平均评分失败");
+            return (5.0, 0);
+        }
+    }
 }

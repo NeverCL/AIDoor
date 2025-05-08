@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useRequest } from '@umijs/max';
 import api from '@/services/api';
 import dayjs from 'dayjs';
+import { StarOutline, StarFill } from 'antd-mobile-icons';
 
 interface PublisherData {
     id: number;
@@ -42,17 +43,29 @@ export default () => {
     const [contents, setContents] = useState<PublisherContent[]>([]);
     const [hasMore, setHasMore] = useState(true);
     const [page, setPage] = useState(1);
-    const [rating, setRating] = useState(0);
+    const [userRating, setUserRating] = useState<number | null>(null);
     const [isFollowing, setIsFollowing] = useState(false);
     const pageSize = 10;
 
     // 获取发布者详情
-    const { data: publisherData, loading } = useRequest<PublisherData>(
+    const { data: publisherData, loading, refresh } = useRequest<PublisherData>(
         () => api.publisher.getPublisherId({ id: Number(id) }),
         {
             onSuccess: (data) => {
-                if (data && data.stats && data.stats.rating) {
-                    setRating(data.stats.rating);
+                // 从详情中获取平均评分，但不设置为用户评分
+                // 用户评分应从另一个API获取
+            }
+        }
+    );
+
+    // 获取用户对该发布者的评分
+    const { run: getUserRating } = useRequest(
+        () => api.publisher.getPublisherIdMyRating({ id: Number(id) }),
+        {
+            manual: true,
+            onSuccess: (response) => {
+                if (response && response.rating !== undefined) {
+                    setUserRating(response.rating);
                 }
             }
         }
@@ -104,6 +117,7 @@ export default () => {
             setPage(1);
             loadContents(1);
             checkFollowStatus();
+            getUserRating(); // 获取用户自己的评分
         }
     }, [id]);
 
@@ -141,22 +155,20 @@ export default () => {
         }
     };
 
-    // 处理评分 - 使用UserRecord API记录评分
+    // 处理评分 - 使用新的评分API
     const handleRate = async (value: number) => {
         try {
             await Dialog.confirm({
                 content: `确定给该发布者 ${value} 星评分吗？`,
                 onConfirm: async () => {
-                    // 使用通用的UserRecord API创建评分记录
-                    await api.userRecord.postUserRecord({
-                        recordType: 2, // 假设2表示评分类型
-                        title: `对发布者评分`,
-                        targetId: Number(id),
-                        targetType: 'Publisher',
-                        notes: `Rating:${value}`
-                    });
+                    await api.publisher.postPublisherIdRate(
+                        { id: Number(id) },
+                        { rating: value }
+                    );
 
-                    setRating(value);
+                    setUserRating(value);
+                    // 刷新发布者详情，获取更新后的平均评分
+                    refresh();
                     Toast.show({
                         icon: 'success',
                         content: '评分成功',
@@ -255,7 +267,10 @@ export default () => {
                         <div className="text-sm text-gray-600">关注</div>
                     </div>
                     <div className="flex-1 text-center">
-                        <div className="text-2xl font-bold">{publisherData.stats.rating}</div>
+                        <div className="flex items-center justify-center">
+                            <span className="text-2xl font-bold mr-1">{publisherData.stats.rating.toFixed(1)}</span>
+                            <StarFill fontSize={16} color='#FFB700' />
+                        </div>
                         <div className="text-sm text-gray-600">评分</div>
                     </div>
                 </div>
@@ -264,6 +279,57 @@ export default () => {
                 <div className="p-4">
                     <div className="text-sm text-gray-600">{publisherData.description}</div>
                 </div>
+
+                {/* 当前用户评分 */}
+                {publisherData.status === 1 && (
+                    <div className="p-4 bg-gray-50 rounded-lg mx-4 mb-4">
+                        <div className="flex justify-between items-center">
+                            <div className="text-base font-medium">我的评分</div>
+                            <div>
+                                {userRating ? (
+                                    <div className="flex items-center">
+                                        <span className="text-lg font-bold text-amber-500 mr-1">{userRating}</span>
+                                        <StarFill fontSize={16} color='#FFB700' />
+                                    </div>
+                                ) : (
+                                    <span className="text-gray-500">未评分</span>
+                                )}
+                            </div>
+                        </div>
+                        <div className="mt-2">
+                            <Button
+                                block
+                                color="primary"
+                                size="small"
+                                onClick={() => {
+                                    Dialog.show({
+                                        content: (
+                                            <div className="py-4">
+                                                <div className="text-center mb-4">给发布者评分</div>
+                                                <div className="flex justify-center">
+                                                    <Rate
+                                                        defaultValue={userRating || 0}
+                                                        onChange={handleRate}
+                                                        allowClear={false}
+                                                    />
+                                                </div>
+                                            </div>
+                                        ),
+                                        closeOnAction: true,
+                                        actions: [
+                                            {
+                                                key: 'cancel',
+                                                text: '取消',
+                                            }
+                                        ],
+                                    });
+                                }}
+                            >
+                                {userRating ? '修改评分' : '立即评分'}
+                            </Button>
+                        </div>
+                    </div>
+                )}
 
                 {/* 去官网 去App */}
                 {/* 只有已审核通过的发布者才显示这些按钮 */}
@@ -293,31 +359,6 @@ export default () => {
                                 去官网
                             </Button>
                         )}
-                        <Button
-                            color="primary"
-                            onClick={() => {
-                                Dialog.show({
-                                    content: (
-                                        <div className="py-4">
-                                            <div className="text-center mb-4">请为发布者评分</div>
-                                            <Rate
-                                                defaultValue={rating}
-                                                onChange={handleRate}
-                                            />
-                                        </div>
-                                    ),
-                                    closeOnAction: true,
-                                    actions: [
-                                        {
-                                            key: 'cancel',
-                                            text: '取消',
-                                        }
-                                    ],
-                                });
-                            }}
-                        >
-                            打分
-                        </Button>
                         <Button color="primary">与我联系</Button>
                     </div>
                 )}

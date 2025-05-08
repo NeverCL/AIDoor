@@ -123,3 +123,36 @@ export async function getPublisherPending(
     ...(options || {}),
   });
 }
+
+/** 为发布者评分 POST /api/Publisher/${param0}/rate */
+export async function postPublisherIdRate(
+  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
+  params: API.postPublisherIdRateParams,
+  body: API.PublisherRatingDto,
+  options?: { [key: string]: any },
+) {
+  const { id: param0, ...queryParams } = params;
+  return request<any>(`/api/Publisher/${param0}/rate`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    params: { ...queryParams },
+    data: body,
+    ...(options || {}),
+  });
+}
+
+/** 获取当前用户对发布者的评分 GET /api/Publisher/${param0}/my-rating */
+export async function getPublisherIdMyRating(
+  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
+  params: API.getPublisherIdMyRatingParams,
+  options?: { [key: string]: any },
+) {
+  const { id: param0, ...queryParams } = params;
+  return request<any>(`/api/Publisher/${param0}/my-rating`, {
+    method: 'GET',
+    params: { ...queryParams },
+    ...(options || {}),
+  });
+}

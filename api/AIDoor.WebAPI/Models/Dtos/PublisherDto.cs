@@ -1,5 +1,6 @@
 using AIDoor.WebAPI.Domain;
 using System.Text.Json.Serialization;
+using System.ComponentModel.DataAnnotations;
 
 namespace AIDoor.WebAPI.Models.Dtos;
 
@@ -104,4 +105,17 @@ public class PublisherContentDto
 
     [JsonPropertyName("createdAt")]
     public DateTime CreatedAt { get; set; }
+}
+
+/// <summary>
+/// 发布者评分请求DTO
+/// </summary>
+public class PublisherRatingDto
+{
+    /// <summary>
+    /// 评分值，范围1-5
+    /// </summary>
+    [Required]
+    [Range(1, 5, ErrorMessage = "评分必须在1-5之间")]
+    public int Rating { get; set; }
 }

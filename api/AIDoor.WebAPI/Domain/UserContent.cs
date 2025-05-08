@@ -23,7 +23,12 @@ public enum RecordType
     /// <summary>
     /// 浏览足迹
     /// </summary>
-    Footprint
+    Footprint,
+
+    /// <summary>
+    /// 评分
+    /// </summary>
+    Rating
 }
 
 /// <summary>
@@ -62,6 +67,11 @@ public class UserRecord : BaseEntity
 
     // 查看计数，主要用于足迹类型
     public int ViewCount { get; set; } = 1;
+
+    /// <summary>
+    /// 评分值（1-5），仅用于Rating类型
+    /// </summary>
+    public int? RatingValue { get; set; }
 }
 
 public class UserContent

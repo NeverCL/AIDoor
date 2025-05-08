@@ -1,4 +1,5 @@
 using AIDoor.WebAPI.Domain;
+using AIDoor.WebAPI.Models.Dtos;
 using AIDoor.WebAPI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,10 +9,12 @@ namespace AIDoor.WebAPI.Controllers;
 public class PublisherController : BaseController
 {
     private readonly PublisherService _publisherService;
+    private readonly UserRecordService _userRecordService;
 
-    public PublisherController(PublisherService publisherService)
+    public PublisherController(PublisherService publisherService, UserRecordService userRecordService)
     {
         _publisherService = publisherService;
+        _userRecordService = userRecordService;
     }
 
     /// <summary>
@@ -128,6 +131,46 @@ public class PublisherController : BaseController
         }
 
         return Ok("统计数据已更新");
+    }
+
+    /// <summary>
+    /// 为发布者评分
+    /// </summary>
+    /// <param name="id">发布者ID</param>
+    /// <param name="request">评分请求</param>
+    /// <returns>评分结果</returns>
+    [HttpPost("{id:int}/rate")]
+    [Authorize]
+    public async Task<IActionResult> RatePublisher(int id, [FromBody] PublisherRatingDto request)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest("请提供有效的评分（1-5）");
+        }
+
+        var result = await _userRecordService.RatePublisherAsync(id, request.Rating);
+        if (!result.Success)
+        {
+            return BadRequest(result.Message);
+        }
+
+        // 更新发布者的平均评分
+        await _publisherService.UpdatePublisherRatingAsync(id);
+
+        return Ok(new { message = result.Message, rating = result.RatingValue });
+    }
+
+    /// <summary>
+    /// 获取当前用户对发布者的评分
+    /// </summary>
+    /// <param name="id">发布者ID</param>
+    /// <returns>用户对该发布者的评分</returns>
+    [HttpGet("{id:int}/my-rating")]
+    [Authorize]
+    public async Task<IActionResult> GetMyRating(int id)
+    {
+        var rating = await _userRecordService.GetUserRatingForPublisherAsync(id);
+        return Ok(new { rating });
     }
 
     #region 管理员接口

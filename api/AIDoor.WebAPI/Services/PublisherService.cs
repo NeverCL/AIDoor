@@ -9,10 +9,12 @@ namespace AIDoor.WebAPI.Services;
 public class PublisherService
 {
     private readonly AppDbContext _context;
+    private readonly UserRecordService _userRecordService;
 
-    public PublisherService(AppDbContext context)
+    public PublisherService(AppDbContext context, UserRecordService userRecordService)
     {
         _context = context;
+        _userRecordService = userRecordService;
     }
 
     /// <summary>
@@ -377,6 +379,35 @@ public class PublisherService
         catch (Exception ex)
         {
             return (false, $"删除失败: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// 更新发布者的评分
+    /// </summary>
+    /// <param name="publisherId">发布者ID</param>
+    /// <returns>更新是否成功</returns>
+    public async Task<bool> UpdatePublisherRatingAsync(int publisherId)
+    {
+        try
+        {
+            var publisher = await _context.Publishers.FindAsync(publisherId);
+            if (publisher == null)
+            {
+                return false;
+            }
+
+            var (averageRating, ratingsCount) = await _userRecordService.CalculatePublisherAverageRatingAsync(publisherId);
+
+            publisher.Rating = averageRating;
+            publisher.UpdatedAt = DateTime.UtcNow;
+
+            await _context.SaveChangesAsync();
+            return true;
+        }
+        catch (Exception)
+        {
+            return false;
         }
     }
 }
