@@ -21,6 +21,7 @@ interface PublisherData {
     typeText: string;
     website?: string;
     appLink?: string;
+    userId?: number;
     stats: {
         likes: number;
         followers: number;
@@ -48,6 +49,9 @@ export default () => {
     const [ratings, setRatings] = useState([]);
     const [isFollowing, setIsFollowing] = useState(false);
     const pageSize = 10;
+    const [messageVisible, setMessageVisible] = useState(false);
+    const [messageContent, setMessageContent] = useState('');
+    const [sendingMessage, setSendingMessage] = useState(false);
 
     // 获取发布者详情
     const { data: publisherData, loading, refresh } = useRequest<PublisherData>(
@@ -257,313 +261,352 @@ export default () => {
         }
     };
 
-    // 获取状态标签颜色
-    const getStatusTagColor = (status: number) => {
-        switch (status) {
-            case 0: // Pending
-                return 'warning';
-            case 1: // Approved
-                return 'success';
-            case 2: // Rejected
-                return 'danger';
-            default:
-                return 'default';
+    // 发送私信
+    const handleSendMessage = async () => {
+        if (!messageContent.trim()) {
+            Toast.show({
+                content: '消息内容不能为空',
+            });
+            return;
+        }
+
+        try {
+            setSendingMessage(true);
+
+            if (!publisherData?.userId) {
+                Toast.show({
+                    content: '无法发送消息，该发布者未关联用户账号',
+                });
+                return;
+            }
+
+            const messageDto: API.CreatePrivateMessageDto = {
+                receiverId: publisherData.userId,
+                publisherId: publisherData.id,
+                content: messageContent
+            };
+
+            await api.privateMessage.postPrivateMessage(messageDto);
+
+            Toast.show({
+                icon: 'success',
+                content: '消息发送成功',
+            });
+
+            setMessageContent('');
+            setMessageVisible(false);
+        } catch (error) {
+            Toast.show({
+                icon: 'fail',
+                content: '发送失败，请重试',
+            });
+        } finally {
+            setSendingMessage(false);
         }
     };
 
-    // 当前用户评分组件
+    // 显示发送消息对话框
+    const showMessageDialog = () => {
+        if (!publisherData) {
+            Toast.show({
+                content: '加载发布者信息中，请稍后再试',
+            });
+            return;
+        }
+
+        setMessageVisible(true);
+    };
+
+    // 获取状态标签颜色
+    const getStatusTagColor = (status: number) => {
+        switch (status) {
+            case 0: return 'warning';
+            case 1: return 'success';
+            case 2: return 'danger';
+            default: return 'default';
+        }
+    };
+
+    // 用户评分组件
     const UserRatingComponent = () => {
-        if (!publisherData || publisherData.status !== 1) return null;
+        if (!publisherData) return null;
 
         return (
-            <div className="p-4 bg-gray-50 rounded-lg mx-4 mb-4">
-                <div className="flex justify-between items-center">
-                    <div className="text-base font-medium">我的评分</div>
-                    <div>
-                        {userRating ? (
-                            <div className="flex items-center">
-                                <span className="text-lg font-bold text-amber-500 mr-1">{userRating.value}</span>
-                                <StarFill fontSize={16} color='#FFB700' />
-                            </div>
-                        ) : (
-                            <span className="text-gray-500">未评分</span>
-                        )}
-                    </div>
+            <div className="mt-4">
+                <div className="text-sm text-gray-600 mb-2">我的评分</div>
+                <div className="flex items-center">
+                    <Rate
+                        value={userRating?.value || 0}
+                        onChange={handleRate}
+                        allowClear={false}
+                    />
+                    <span className="ml-2 text-sm text-gray-600">
+                        {userRating?.value ? `${userRating.value}分` : '未评分'}
+                    </span>
                 </div>
                 {userRating?.comment && (
-                    <div className="mt-2 text-sm bg-white p-2 rounded">
-                        {userRating.comment}
+                    <div className="mt-2 text-sm p-2 bg-gray-50 rounded">
+                        "{userRating.comment}"
                     </div>
                 )}
-                <div className="mt-2">
-                    <Button
-                        block
-                        color="primary"
-                        size="small"
-                        onClick={() => {
-                            Dialog.show({
-                                content: (
-                                    <div className="py-4">
-                                        <div className="text-center mb-4">给发布者评分</div>
-                                        <div className="flex justify-center">
-                                            <Rate
-                                                defaultValue={userRating?.value || 0}
-                                                onChange={handleRate}
-                                                allowClear={false}
-                                            />
-                                        </div>
-                                    </div>
-                                ),
-                                closeOnAction: true,
-                                actions: [
-                                    {
-                                        key: 'cancel',
-                                        text: '取消',
-                                    }
-                                ],
-                            });
-                        }}
-                    >
-                        {userRating ? '修改评分' : '立即评分'}
-                    </Button>
-                </div>
             </div>
         );
     };
 
     // 评分列表组件
     const RatingsListComponent = () => {
-        if (!publisherData || publisherData.status !== 1) return null;
+        if (!publisherData) return null;
 
-        if (ratings.length === 0 && !ratingsHasMore) {
-            return (
-                <div className="p-4">
-                    <Empty
-                        image={<MessageOutline style={{ fontSize: 48 }} />}
-                        description="暂无评价"
-                    />
-                </div>
-            );
+        if (ratings.length === 0) {
+            return <Empty description="暂无评分" />;
         }
 
         return (
-            <div className="p-4">
-                <div className="text-lg font-bold mb-4">用户评价</div>
-                <List>
-                    {ratings.map(rating => (
-                        <List.Item
-                            key={rating.id}
-                            prefix={
-                                <Avatar src={rating.user.avatarUrl} />
-                            }
-                            title={
-                                <div className="flex justify-between items-center">
-                                    <span>{rating.user.username}</span>
-                                    <div className="flex items-center">
-                                        <span className="text-amber-500 mr-1">{rating.value}</span>
-                                        <StarFill fontSize={14} color='#FFB700' />
-                                    </div>
+            <List>
+                {ratings.map((rating: any) => (
+                    <List.Item
+                        key={rating.id}
+                        prefix={
+                            <Avatar
+                                src={rating.userAvatarUrl}
+                                style={{ borderRadius: 20 }}
+                            />
+                        }
+                        description={
+                            <div>
+                                <div className="flex items-center">
+                                    <Rate
+                                        value={rating.value}
+                                        readOnly
+                                        style={{ '--star-size': '14px' } as any}
+                                    />
+                                    <span className="ml-2 text-xs text-gray-400">
+                                        {dayjs(rating.createdAt).format('YYYY-MM-DD')}
+                                    </span>
                                 </div>
-                            }
-                            description={
-                                <div>
-                                    {rating.comment && (
-                                        <div className="text-sm mt-1">{rating.comment}</div>
-                                    )}
-                                    <div className="text-xs text-gray-500 mt-1">
-                                        {dayjs(rating.createdAt).format('YYYY-MM-DD HH:mm')}
+                                {rating.comment && (
+                                    <div className="mt-1 text-sm text-gray-600">
+                                        {rating.comment}
                                     </div>
-                                </div>
-                            }
-                        />
-                    ))}
-                </List>
+                                )}
+                            </div>
+                        }
+                    >
+                        {rating.userName}
+                    </List.Item>
+                ))}
                 <InfiniteScroll loadMore={loadMoreRatings} hasMore={ratingsHasMore} />
-            </div>
+            </List>
         );
     };
 
+    // 加载状态
     if (loading) {
         return (
-            <BackNavBar title="发布者详情">
-                <div className="flex items-center justify-center h-full">
+            <div className="h-screen flex justify-center items-center">
+                <div className="flex flex-col items-center">
                     <DotLoading color='primary' />
+                    <div className="mt-2 text-gray-500">加载中...</div>
                 </div>
-            </BackNavBar>
+            </div>
         );
     }
 
+    // 发布者不存在
     if (!publisherData) {
         return (
-            <BackNavBar title="发布者详情">
-                <div className="flex items-center justify-center h-full">
-                    数据加载失败
+            <div className="h-screen flex flex-col">
+                <BackNavBar title="发布者详情">发布者详情</BackNavBar>
+                <div className="flex-1 flex justify-center items-center">
+                    <Empty description="未找到该发布者" />
                 </div>
-            </BackNavBar>
+            </div>
         );
     }
 
     return (
-        <BackNavBar title="发布者详情">
-            <div className="flex-1 flex flex-col overflow-y-auto pb-20">
-                {/* 头像 昵称 简介 */}
-                <div className="flex items-center p-4">
-                    <Avatar src={publisherData.avatarUrl.startsWith('http') ? publisherData.avatarUrl : 'https://cdn.thedoorofai.com/' + publisherData.avatarUrl} style={{ width: 48, height: 48 }} />
-                    <div className="ml-2 flex-1">
-                        <div className="flex items-center">
-                            <h2 className="text-lg font-bold">{publisherData.username}</h2>
-                            <Tag
-                                className="ml-2"
-                                color={getStatusTagColor(publisherData.status)}
-                            >
-                                {publisherData.statusText}
-                            </Tag>
-                        </div>
-                        <p className="text-sm text-gray-600">{publisherData.description}</p>
-                    </div>
-                </div>
-
-                {/* 如果状态是待审核或被拒绝，显示提示信息 */}
-                {publisherData.status !== 1 && (
-                    <div className={`p-4 ${publisherData.status === 2 ? 'bg-red-50' : 'bg-yellow-50'}`}>
-                        <p className="text-sm">
-                            {publisherData.status === 0 ? '您的发布者信息正在审核中，请耐心等待。' :
-                                publisherData.status === 2 ? `审核未通过: ${publisherData.reviewNote || '无审核意见'}` : ''}
-                        </p>
-                        {publisherData.reviewedAt && (
-                            <p className="text-xs text-gray-500 mt-1">
-                                审核时间: {dayjs(publisherData.reviewedAt).format('YYYY-MM-DD HH:mm')}
-                            </p>
-                        )}
-                    </div>
-                )}
-
-                {/* 获赞 关注 粉丝 分值*/}
-                <div className="flex items-center p-4">
-                    <div className="flex-1 text-center">
-                        <div className="text-2xl font-bold">{publisherData.stats.likes}</div>
-                        <div className="text-sm text-gray-600">获赞</div>
-                    </div>
-                    <div className="flex-1 text-center">
-                        <div className="text-2xl font-bold">{publisherData.stats.followers}</div>
-                        <div className="text-sm text-gray-600">粉丝</div>
-                    </div>
-                    <div className="flex-1 text-center">
-                        <div className="text-2xl font-bold">{publisherData.stats.following}</div>
-                        <div className="text-sm text-gray-600">关注</div>
-                    </div>
-                    <div className="flex-1 text-center">
-                        <div className="flex items-center justify-center">
-                            <span className="text-2xl font-bold mr-1">{publisherData.stats.rating.toFixed(1)}</span>
-                            <StarFill fontSize={16} color='#FFB700' />
-                        </div>
-                        <div className="text-sm text-gray-600">评分</div>
-                    </div>
-                </div>
-
-                {/* 详细介绍 */}
+        <div className="h-screen flex flex-col bg-white">
+            <BackNavBar title="发布者详情">发布者详情</BackNavBar>
+            <div className="flex-1 overflow-y-auto pb-20">
+                {/* 基本信息 */}
                 <div className="p-4">
-                    <div className="text-sm text-gray-600">{publisherData.description}</div>
-                </div>
-
-                {/* 当前用户评分 */}
-                <UserRatingComponent />
-
-                {/* 发布者内容与评价选项卡 */}
-                {publisherData?.status === 1 && (
-                    <Tabs
-                        className="mx-4 mb-4"
-                        activeKey={activeTab}
-                        onChange={setActiveTab}
-                    >
-                        <Tabs.Tab title="内容作品" key="works" />
-                        <Tabs.Tab title="用户评价" key="ratings" />
-                    </Tabs>
-                )}
-
-                {/* 根据选项卡显示不同内容 */}
-                {publisherData?.status === 1 && activeTab === 'works' && (
-                    <div className="p-4">
-                        {contents.length > 0 ? (
-                            <div className="flex flex-col *:mb-4">
-                                {contents.map((content) => (
-                                    <div key={content.id} className="bg-white rounded-lg shadow-sm p-2">
-                                        {content.imageUrl && (
-                                            <div className="mb-2">
-                                                <img
-                                                    src={content.imageUrl}
-                                                    alt={content.title}
-                                                    className="w-full h-40 object-cover rounded-lg"
-                                                />
-                                            </div>
-                                        )}
-                                        <div className="flex justify-between items-center">
-                                            <div className="text-base font-medium">{content.title}</div>
-                                            <div className="text-xs text-gray-500">
-                                                {dayjs(content.createdAt).format('YYYY-MM-DD')}
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-                                <InfiniteScroll loadMore={loadMore} hasMore={hasMore} />
+                    <div className="flex items-start">
+                        <Avatar src={publisherData.avatarUrl} style={{ '--size': '60px' }} />
+                        <div className="ml-3 flex-1">
+                            <div className="text-xl font-bold flex items-center">
+                                {publisherData.username}
+                                <Tag
+                                    className="ml-2"
+                                    color={getStatusTagColor(publisherData.status)}
+                                >
+                                    {publisherData.statusText}
+                                </Tag>
+                                <Tag className="ml-1" color="primary">
+                                    {publisherData.typeText}
+                                </Tag>
                             </div>
-                        ) : (
-                            <div className="text-center text-gray-500 py-10">
-                                暂无内容
+                            <div className="flex items-center mt-1">
+                                <span className="flex items-center text-yellow-500">
+                                    <StarFill fontSize={14} />
+                                    <span className="ml-1">{publisherData.stats.rating.toFixed(1)}</span>
+                                </span>
+                                <span className="ml-3 text-gray-500 text-sm">
+                                    {dayjs(publisherData.createdAt).format('YYYY年MM月DD日')} 加入
+                                </span>
                             </div>
-                        )}
+                        </div>
                     </div>
-                )}
 
-                {publisherData?.status === 1 && activeTab === 'ratings' && (
-                    <RatingsListComponent />
-                )}
-
-                {/* 去官网 去App */}
-                {/* 只有已审核通过的发布者才显示这些按钮 */}
-                {publisherData.status === 1 && (
-                    <div className="p-4 flex justify-between">
-                        {publisherData.appLink && (
-                            <Button
-                                color="primary"
-                                onClick={() => {
-                                    if (publisherData.appLink) {
-                                        window.open(publisherData.appLink, '_blank');
-                                    }
-                                }}
-                            >
-                                去App
-                            </Button>
-                        )}
-                        {publisherData.website && (
-                            <Button
-                                color="primary"
-                                onClick={() => {
-                                    if (publisherData.website) {
-                                        window.open(publisherData.website, '_blank');
-                                    }
-                                }}
-                            >
-                                去官网
-                            </Button>
-                        )}
-                        <Button color="primary">与我联系</Button>
+                    {/* 统计信息 */}
+                    <div className="flex justify-around mt-4 text-center bg-gray-50 py-3 rounded-lg">
+                        <div>
+                            <div className="text-lg font-medium">{publisherData.stats.likes}</div>
+                            <div className="text-xs text-gray-500">获赞</div>
+                        </div>
+                        <div>
+                            <div className="text-lg font-medium">{publisherData.stats.followers}</div>
+                            <div className="text-xs text-gray-500">粉丝</div>
+                        </div>
+                        <div>
+                            <div className="text-lg font-medium">{publisherData.stats.following}</div>
+                            <div className="text-xs text-gray-500">关注</div>
+                        </div>
                     </div>
-                )}
 
-                {/* 关注 - 只有已审核通过的发布者才可以关注 */}
-                {publisherData.status === 1 && (
-                    <div className="p-4">
+                    {/* 描述信息 */}
+                    <div className="mt-4">
+                        <div className="text-sm text-gray-600">{publisherData.description}</div>
+                    </div>
+
+                    {/* 操作按钮 */}
+                    <div className="flex items-center mt-4">
                         <Button
-                            color={isFollowing ? 'default' : 'primary'}
-                            block
+                            color={isFollowing ? "default" : "primary"}
+                            fill="solid"
                             onClick={handleFollow}
+                            className="flex-1 mr-2"
                         >
                             {isFollowing ? '已关注' : '关注'}
                         </Button>
+                        <Button
+                            color="primary"
+                            fill="outline"
+                            onClick={showMessageDialog}
+                            className="flex-1"
+                        >
+                            <div className="flex items-center justify-center">
+                                <MessageOutline style={{ fontSize: 18 }} />
+                                <span className="ml-1">发私信</span>
+                            </div>
+                        </Button>
                     </div>
-                )}
+
+                    {/* 外部链接 */}
+                    {(publisherData.website || publisherData.appLink) && (
+                        <div className="mt-4 flex flex-wrap">
+                            {publisherData.website && (
+                                <a
+                                    href={publisherData.website}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-blue-500 text-sm mr-4"
+                                >
+                                    官方网站
+                                </a>
+                            )}
+                            {publisherData.appLink && (
+                                <a
+                                    href={publisherData.appLink}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-blue-500 text-sm"
+                                >
+                                    应用链接
+                                </a>
+                            )}
+                        </div>
+                    )}
+
+                    {/* 用户评分组件 */}
+                    <UserRatingComponent />
+                </div>
+
+                {/* 内容和评分标签页 */}
+                <div className="mt-4">
+                    <Tabs activeKey={activeTab} onChange={setActiveTab}>
+                        <Tabs.Tab title="作品" key="works" />
+                        <Tabs.Tab title="评分" key="ratings" />
+                    </Tabs>
+
+                    <div className="p-4">
+                        {activeTab === 'works' ? (
+                            contents.length > 0 ? (
+                                <div className="flex flex-col space-y-4">
+                                    {contents.map((content) => (
+                                        <div
+                                            key={content.id}
+                                            className="bg-gray-50 rounded-lg p-3 shadow-sm"
+                                            onClick={() => window.location.href = `/detail/content/${content.id}`}
+                                        >
+                                            {content.imageUrl && (
+                                                <div className="mb-2">
+                                                    <img
+                                                        src={content.imageUrl}
+                                                        alt={content.title}
+                                                        className="w-full h-40 object-cover rounded-lg"
+                                                    />
+                                                </div>
+                                            )}
+                                            <div className="flex justify-between items-center">
+                                                <div className="text-base font-medium">{content.title}</div>
+                                                <div className="text-xs text-gray-500">
+                                                    {dayjs(content.createdAt).format('YYYY-MM-DD')}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                    <InfiniteScroll loadMore={loadMore} hasMore={hasMore} />
+                                </div>
+                            ) : (
+                                <Empty description="暂无内容" />
+                            )
+                        ) : (
+                            <RatingsListComponent />
+                        )}
+                    </div>
+                </div>
             </div>
-        </BackNavBar>
+
+            {/* 私信对话框 */}
+            <Dialog
+                visible={messageVisible}
+                title="发送私信"
+                content={
+                    <div className="pt-4">
+                        <textarea
+                            className="w-full border p-2 rounded"
+                            placeholder="请输入消息内容..."
+                            rows={4}
+                            value={messageContent}
+                            onChange={(e) => setMessageContent(e.target.value)}
+                        />
+                    </div>
+                }
+                actions={[
+                    {
+                        key: 'cancel',
+                        text: '取消',
+                        onClick: () => setMessageVisible(false)
+                    },
+                    {
+                        key: 'confirm',
+                        text: sendingMessage ? '发送中...' : '发送',
+                        bold: true,
+                        disabled: sendingMessage || !messageContent.trim(),
+                        onClick: handleSendMessage
+                    }
+                ]}
+            />
+        </div>
     );
 }; 

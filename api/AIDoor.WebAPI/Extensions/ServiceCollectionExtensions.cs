@@ -116,6 +116,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<UserFollowService>();
         services.AddScoped<PublisherService>();
         services.AddScoped<PublisherRatingService>();
+        services.AddScoped<IPrivateMessageService, PrivateMessageService>();
 
         return services;
     }

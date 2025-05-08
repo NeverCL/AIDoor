@@ -45,6 +45,20 @@ declare namespace API {
     parentId?: number;
   };
 
+  type ConversationPartnerDto = {
+    userId?: number;
+    username?: string;
+    avatarUrl?: string;
+    lastMessage?: string;
+    lastMessageTime?: string;
+    unreadCount?: number;
+  };
+
+  type CreatePrivateMessageDto = {
+    receiverId: number;
+    content: string;
+  };
+
   type deleteAdminAppitemsApplicationsApplicationIdParams = {
     applicationId: number;
   };
@@ -55,6 +69,10 @@ declare namespace API {
 
   type deleteCommentIdParams = {
     id: number;
+  };
+
+  type deletePrivateMessageMessageIdParams = {
+    messageId: number;
   };
 
   type deletePublisherIdParams = {
@@ -95,6 +113,13 @@ declare namespace API {
     ContentId?: number;
     TargetType?: string;
     ParentId?: number;
+  };
+
+  type getPrivateMessageParams = {
+    Page?: number;
+    Limit?: number;
+    PartnerId?: number;
+    Unread?: boolean;
   };
 
   type getPublisherAllParams = {
@@ -150,11 +175,17 @@ declare namespace API {
     RecordType?: string;
   };
 
-  type IFormFile = string;
-
   type LoginRequest = {
     phone: string;
     code: string;
+  };
+
+  type PagedResultOfPrivateMessageDto = {
+    data?: PrivateMessageDto[];
+    total?: number;
+    page?: number;
+    limit?: number;
+    totalPages?: number;
   };
 
   type postPublisherIdRateParams = {
@@ -167,6 +198,20 @@ declare namespace API {
 
   type postPublisherIdReviewParams = {
     id: number;
+  };
+
+  type PrivateMessageDto = {
+    id?: number;
+    senderId?: number;
+    senderName?: string;
+    senderAvatar?: string;
+    receiverId?: number;
+    receiverName?: string;
+    receiverAvatar?: string;
+    content?: string;
+    isRead?: boolean;
+    createdAt?: string;
+    readAt?: string;
   };
 
   type PublisherCreateUpdateRequest = {
@@ -186,6 +231,14 @@ declare namespace API {
 
   type putAdminAppitemsCategoriesCategoryIdParams = {
     categoryId: number;
+  };
+
+  type putPrivateMessageMessageIdReadParams = {
+    messageId: number;
+  };
+
+  type putPrivateMessageReadAllPartnerIdParams = {
+    partnerId: number;
   };
 
   type RatePublisherRequestDto = {

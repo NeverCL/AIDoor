@@ -32,6 +32,9 @@ public class AppDbContext : DbContext
     // 发布者评分表
     public DbSet<PublisherRating> PublisherRatings { get; set; }
 
+    // 私信消息表
+    public DbSet<PrivateMessage> PrivateMessages { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -165,5 +168,30 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<PublisherRating>()
             .HasIndex(r => r.PublisherId); // 便于按发布者查询评分
+
+        // 私信消息配置
+        modelBuilder.Entity<PrivateMessage>()
+            .HasOne(pm => pm.Sender)
+            .WithMany()
+            .HasForeignKey(pm => pm.SenderId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<PrivateMessage>()
+            .HasOne(pm => pm.Receiver)
+            .WithMany()
+            .HasForeignKey(pm => pm.ReceiverId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<PrivateMessage>()
+            .HasIndex(pm => pm.SenderId);
+
+        modelBuilder.Entity<PrivateMessage>()
+            .HasIndex(pm => pm.ReceiverId);
+
+        modelBuilder.Entity<PrivateMessage>()
+            .HasIndex(pm => pm.IsRead);
+
+        modelBuilder.Entity<PrivateMessage>()
+            .HasIndex(pm => pm.CreatedAt);
     }
 }
