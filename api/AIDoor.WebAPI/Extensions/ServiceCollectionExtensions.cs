@@ -110,7 +110,6 @@ public static class ServiceCollectionExtensions
         services.AddScoped<FileService>();
         services.AddScoped<AliFileService>();
         services.AddScoped<AppItemService>();
-        services.AddScoped<ItemService>();
         services.AddScoped<UserContentService>();
         services.AddScoped<UserRecordService>();
         services.AddScoped<CommentService>();

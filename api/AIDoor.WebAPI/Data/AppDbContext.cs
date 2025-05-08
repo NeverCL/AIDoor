@@ -13,7 +13,6 @@ public class AppDbContext : DbContext
     public DbSet<User> Users { get; set; }
     public DbSet<AppCategory> ApplicationCategories { get; set; }
     public DbSet<AppItem> Applications { get; set; }
-    public DbSet<Item> Items { get; set; }
 
     // 用户记录表
     public DbSet<UserRecord> UserRecords { get; set; }
@@ -44,13 +43,6 @@ public class AppDbContext : DbContext
             .WithOne(a => a.Category)
             .HasForeignKey(a => a.CategoryId)
             .OnDelete(DeleteBehavior.Cascade); // 删除分类时级联删除应用
-
-        // Item和User之间的关系配置
-        modelBuilder.Entity<Item>()
-            .HasOne(i => i.User)
-            .WithMany()
-            .HasForeignKey(i => i.UserId)
-            .OnDelete(DeleteBehavior.Restrict); // 删除用户时不级联删除项目，而是限制删除
 
         // 用户记录和用户之间的关系配置
         modelBuilder.Entity<UserRecord>()
@@ -95,9 +87,6 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<AppItem>()
             .HasIndex(a => a.Title);
-
-        modelBuilder.Entity<Item>()
-            .HasIndex(i => i.Title);
 
         modelBuilder.Entity<UserRecord>()
             .HasIndex(ur => ur.Title);

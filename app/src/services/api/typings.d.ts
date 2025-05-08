@@ -168,17 +168,6 @@ declare namespace API {
     RecordType?: string;
   };
 
-  type ItemCreateDto = {
-    title: string;
-    imageUrl: string;
-    userId: number;
-  };
-
-  type ItemUpdateDto = {
-    title?: string;
-    imageUrl?: string;
-  };
-
   type LoginRequest = {
     phone: string;
     code: string;
