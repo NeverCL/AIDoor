@@ -47,11 +47,11 @@ export default () => {
 
     // 获取申请状态
     const { run: getStatus } = useRequest(
-        api.developerApplication.getDeveloperApplicationStatus,
+        api.user.getUserProfile,
         {
             manual: true,
             onSuccess: (data) => {
-                setIsApplied(data.hasApplied);
+                setIsApplied(true);
             },
         }
     );
@@ -62,6 +62,10 @@ export default () => {
 
     const navigateToCreate = () => {
         history.push('/usercontent/create');
+    };
+
+    const navigateToMessages = (type: string) => {
+        history.push(`/my/messages?type=${type}`);
     };
 
     return (
@@ -104,6 +108,12 @@ export default () => {
                             </div>
                         </Button>
                         <div className="flex space-x-6">
+                            <div className="flex flex-col items-center" onClick={() => navigateToMessages('follow')}>
+                                <div className="w-6 h-6 flex items-center justify-center rounded-full bg-gray-100">
+                                    <Icon icon="local:setting" className="text-gray-500" />
+                                </div>
+                                <span className="text-xs text-gray-500 mt-1">消息通知</span>
+                            </div>
                             <div className="flex flex-col items-center">
                                 <div className="w-6 h-6 flex items-center justify-center rounded-full bg-gray-100">
                                     <Icon icon="local:setting" className="text-gray-500" />
@@ -115,12 +125,6 @@ export default () => {
                                     <Icon icon="local:setting" className="text-gray-500" />
                                 </div>
                                 <span className="text-xs text-gray-500 mt-1">集成管理</span>
-                            </div>
-                            <div className="flex flex-col items-center">
-                                <div className="w-6 h-6 flex items-center justify-center rounded-full bg-gray-100">
-                                    <Icon icon="local:setting" className="text-gray-500" />
-                                </div>
-                                <span className="text-xs text-gray-500 mt-1">消息通知</span>
                             </div>
                             <div className="flex flex-col items-center">
                                 <div className="w-6 h-6 flex items-center justify-center rounded-full bg-gray-100">
