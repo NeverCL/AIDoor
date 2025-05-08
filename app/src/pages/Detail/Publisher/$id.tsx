@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useRequest } from '@umijs/max';
 import api from '@/services/api';
 import dayjs from 'dayjs';
-import { StarOutline, StarFill, MessageOutline } from 'antd-mobile-icons';
+import { StarFill, MessageOutline } from 'antd-mobile-icons';
 
 interface PublisherData {
     id: number;
@@ -45,7 +45,7 @@ export default () => {
     const [page, setPage] = useState(1);
     const [ratingsPage, setRatingsPage] = useState(1);
     const [ratingsHasMore, setRatingsHasMore] = useState(true);
-    const [ratings, setRatings] = useState<API.PublisherRatingWithUserDto[]>([]);
+    const [ratings, setRatings] = useState([]);
     const [isFollowing, setIsFollowing] = useState(false);
     const pageSize = 10;
 
@@ -60,7 +60,7 @@ export default () => {
     );
 
     // 获取用户对该发布者的评分
-    const { data: userRating, run: getUserRating } = useRequest<API.PublisherRatingDto>(
+    const { data: userRating, run: getUserRating } = useRequest(
         () => api.publisher.getPublisherIdMyRating({ id: Number(id) }),
         {
             manual: true
