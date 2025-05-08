@@ -42,11 +42,6 @@ export default () => {
     // 获取发布者详情
     const { data: publisherData, loading } = useRequest<{ data: PublisherData }>(
         () => api.publisher.getPublisherId({ id: Number(id) }),
-        {
-            refreshDeps: [id],
-            // 对接口返回的数据进行处理，确保格式一致性
-            formatResult: (res) => res.data
-        }
     );
 
     // 处理关注
@@ -94,7 +89,7 @@ export default () => {
             <div className="flex-1 flex flex-col overflow-y-auto pb-20">
                 {/* 头像 昵称 简介 */}
                 <div className="flex items-center p-4">
-                    <Avatar src={publisherData.avatarUrl} style={{ width: 48, height: 48 }} />
+                    <Avatar src={'https://cdn.thedoorofai.com/' + publisherData.avatarUrl} style={{ width: 48, height: 48 }} />
                     <div className="ml-2 flex-1">
                         <div className="flex items-center">
                             <h2 className="text-lg font-bold">{publisherData.username}</h2>

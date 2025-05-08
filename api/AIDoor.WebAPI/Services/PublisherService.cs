@@ -18,14 +18,14 @@ public class PublisherService
     /// <summary>
     /// 获取发布者详情
     /// </summary>
-    /// <param name="publisherId">发布者ID</param>
+    /// <param name="userId">发布者ID</param>
     /// <returns>发布者详情DTO</returns>
-    public async Task<PublisherDto?> GetPublisherDetailsAsync(int publisherId)
+    public async Task<PublisherDto?> GetPublisherDetailsAsync(int userId)
     {
         // 查询发布者信息
         var publisher = await _context.Publishers
             .Include(p => p.User)
-            .FirstOrDefaultAsync(p => p.Id == publisherId);
+            .FirstOrDefaultAsync(p => p.UserId == userId);
 
         if (publisher == null)
         {
@@ -60,21 +60,21 @@ public class PublisherService
             }
         };
 
-        // 获取发布者的内容列表
-        var contents = await _context.UserContents
-            .Where(c => c.UserId == publisher.UserId)
-            .OrderByDescending(c => c.CreatedAt)
-            .Take(10)
-            .Select(c => new PublisherContentDto
-            {
-                Id = c.Id,
-                Title = c.Title,
-                ImageUrl = c.Images.Length > 0 ? c.Images[0] : null,
-                CreatedAt = c.CreatedAt
-            })
-            .ToListAsync();
-
-        publisherDto.Contents = contents;
+        // // 获取发布者的内容列表
+        // var contents = await _context.UserContents
+        //     .Where(c => c.UserId == publisher.UserId)
+        //     .OrderByDescending(c => c.CreatedAt)
+        //     .Take(10)
+        //     .Select(c => new PublisherContentDto
+        //     {
+        //         Id = c.Id,
+        //         Title = c.Title,
+        //         ImageUrl = c.Images,
+        //         CreatedAt = c.CreatedAt
+        //     })
+        //     .ToListAsync();
+        //
+        // publisherDto.Contents = contents;
 
         return publisherDto;
     }
