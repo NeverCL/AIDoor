@@ -46,9 +46,12 @@ export function getImageUrl(
     const hasParams = url.includes('?');
 
     // 构建压缩参数
-    const compressParams = `${hasParams ? '&' : '?'}x-oss-process=image/resize,w_${pxWidth},m_lfit/quality,q_${quality}`;
+    const compressParams = url.includes('x-oss-process') ? '' : `${hasParams ? '&' : '?'}x-oss-process=image/resize,w_${pxWidth},m_lfit/quality,q_${quality}`;
 
-    return url + compressParams;
+    if (url.includes('http')) {
+        return url + compressParams;
+    }
+    return 'https://cdn.thedoorofai.com/' + url + compressParams;
 }
 
 /**

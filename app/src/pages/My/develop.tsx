@@ -1,10 +1,11 @@
 import { history } from "@umijs/max";
-import { InfiniteScroll, Toast } from "antd-mobile";
-import { SetOutline, StarFill } from "antd-mobile-icons";
+import { Button, InfiniteScroll, Toast } from "antd-mobile";
+import { LocationOutline, MessageOutline, SetOutline, StarFill } from "antd-mobile-icons";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { useRequest } from '@umijs/max';
 import api from '@/services/api';
+import { getImageUrl } from "@/utils";
 
 interface PublisherData {
     id: number;
@@ -107,40 +108,36 @@ export default () => {
         await loadContents(page);
     };
 
-    // 前往发布者设置页面
-    const goToPublisherSettings = () => {
-        history.push('/my/publisher-settings');
-    };
-
-    // 创建发布者资料（如果尚未创建）
-    const createPublisher = () => {
-        history.push('/my/create-publisher');
-    };
 
     return (
         <div className="h-full flex flex-col *:mt-8 overflow-y-auto">
-            {/* 头像 昵称 简介 设置图标*/}
+            {/* 头像 昵称 简介 消息|设置图标*/}
             <div className="flex items-center ">
                 <div className="w-16 h-16 rounded-full bg-gray-300">
                     {publisherData?.avatarUrl && (
                         <img
-                            src={publisherData.avatarUrl}
-                            alt={publisherData?.username}
+                            src={getImageUrl(publisherData?.avatarUrl)}
+                            alt={publisherData?.name}
                             className="w-full h-full rounded-full object-cover"
                         />
                     )}
                 </div>
                 <div className="ml-4">
-                    <div className="text-lg font-bold">{publisherData?.username || '未设置昵称'}</div>
+                    <div className="text-lg font-bold">{publisherData?.name || '未设置昵称'}</div>
                     <div className="text-sm text-gray-500">简介：{publisherData?.description || '暂无简介'}</div>
                 </div>
-                <div className="ml-auto" onClick={() => history.push('/my/setting')}>
-                    <SetOutline />
+                <div className="ml-auto flex items-center">
+                    <div className="text-2xl" onClick={() => history.push('/my/messages?type=message')}>
+                        <MessageOutline />
+                    </div>
+                    <div className="ml-4 text-2xl" onClick={() => history.push('/setting')}>
+                        <SetOutline />
+                    </div>
                 </div>
             </div>
 
             {/* 获赞 关注 粉丝 分值*/}
-            <div className="flex items-center p-4">
+            <div className="flex items-center p-4 bg-secondary rounded-lg">
                 <div className="flex-1 text-center">
                     <div className="text-2xl font-bold">{publisherData?.stats?.likes || 0}</div>
                     <div className="text-sm text-gray-600">获赞</div>
@@ -167,51 +164,10 @@ export default () => {
                 <div className="text-sm text-gray-600">{publisherData?.description || '暂无简介'}</div>
             </div>
 
-            {/* 消息管理 我的足迹 */}
-            <div className="flex items-center justify-between p-4">
-                <div className="text-base font-bold px-4 py-2 bg-blue-50 rounded-lg"
-                    onClick={() => history.push('/my/messages?type=message')}>
-                    消息管理
-                </div>
-                <div className="text-base font-bold px-4 py-2 bg-blue-50 rounded-lg"
-                    onClick={() => history.push('/my/messages?type=footprint')}>
-                    我的足迹
-                </div>
-            </div>
-
-            {/* 发布者管理 */}
-            {!publisherData && (
-                <div className="p-4">
-                    <div
-                        className="text-center py-3 bg-blue-500 text-white rounded-lg"
-                        onClick={createPublisher}
-                    >
-                        创建发布者资料
-                    </div>
-                </div>
-            )}
-
-            {publisherData && (
-                <div className="p-4">
-                    <div
-                        className="text-center py-3 bg-blue-500 text-white rounded-lg"
-                        onClick={goToPublisherSettings}
-                    >
-                        管理发布者资料
-                    </div>
-                </div>
-            )}
-
             {/* 发布内容 */}
             <div className="p-4">
                 <div className="flex justify-between items-center mb-4">
                     <h3 className="text-lg font-bold">我的内容</h3>
-                    <div
-                        className="text-sm text-blue-500"
-                        onClick={() => history.push('/my/create-content')}
-                    >
-                        发布新内容
-                    </div>
                 </div>
 
                 {contents.length > 0 ? (
@@ -219,13 +175,13 @@ export default () => {
                         {contents.map((content) => (
                             <div
                                 key={content.id}
-                                className="bg-white rounded-lg shadow-sm p-2"
+                                className="bg-secondary rounded-lg shadow-sm p-2"
                                 onClick={() => history.push(`/detail/content/${content.id}`)}
                             >
-                                {content.imageUrl && (
+                                {content.images && content.images.length > 0 && (
                                     <div className="mb-2">
                                         <img
-                                            src={content.imageUrl}
+                                            src={getImageUrl(content.images[0])}
                                             alt={content.title}
                                             className="w-full h-40 object-cover rounded-lg"
                                         />
@@ -247,6 +203,6 @@ export default () => {
                     </div>
                 )}
             </div>
-        </div>
+        </div >
     );
 };
