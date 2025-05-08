@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
 namespace AIDoor.WebAPI.Domain;
 
@@ -82,6 +83,11 @@ public class Publisher : BaseEntity
     /// </summary>
     [ForeignKey("UserId")]
     public Models.User? User { get; set; }
+
+    /// <summary>
+    /// 导航属性：发布者的所有评分
+    /// </summary>
+    public virtual ICollection<PublisherRating> Ratings { get; set; } = new List<PublisherRating>();
 }
 
 /// <summary>
@@ -119,4 +125,44 @@ public enum PublisherStatus
     /// 已拒绝
     /// </summary>
     Rejected = 2
+}
+
+/// <summary>
+/// 发布者评分实体
+/// </summary>
+public class PublisherRating : BaseEntity
+{
+    /// <summary>
+    /// 用户ID（评分者）
+    /// </summary>
+    public int UserId { get; set; }
+
+    /// <summary>
+    /// 用户外键关系
+    /// </summary>
+    [ForeignKey("UserId")]
+    public Models.User User { get; set; } = null!;
+
+    /// <summary>
+    /// 发布者ID（被评分者）
+    /// </summary>
+    public int PublisherId { get; set; }
+
+    /// <summary>
+    /// 发布者外键关系
+    /// </summary>
+    [ForeignKey("PublisherId")]
+    public Publisher Publisher { get; set; } = null!;
+
+    /// <summary>
+    /// 评分值（1-5星）
+    /// </summary>
+    [Range(1, 5)]
+    public int Value { get; set; }
+
+    /// <summary>
+    /// 评价内容（可选）
+    /// </summary>
+    [MaxLength(500)]
+    public string? Comment { get; set; }
 }

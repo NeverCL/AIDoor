@@ -1,11 +1,11 @@
 import { useParams } from "@umijs/max";
 import BackNavBar from "@/components/BackNavBar";
-import { Avatar, Button, DotLoading, Tag, Rate, InfiniteScroll, Dialog, Toast } from "antd-mobile";
+import { Avatar, Button, DotLoading, Tag, Rate, InfiniteScroll, Dialog, Toast, Tabs, List, Empty } from "antd-mobile";
 import { useEffect, useState } from "react";
 import { useRequest } from '@umijs/max';
 import api from '@/services/api';
 import dayjs from 'dayjs';
-import { StarOutline, StarFill } from 'antd-mobile-icons';
+import { StarOutline, StarFill, MessageOutline } from 'antd-mobile-icons';
 
 interface PublisherData {
     id: number;
@@ -43,7 +43,9 @@ export default () => {
     const [contents, setContents] = useState<PublisherContent[]>([]);
     const [hasMore, setHasMore] = useState(true);
     const [page, setPage] = useState(1);
-    const [userRating, setUserRating] = useState<number | null>(null);
+    const [ratingsPage, setRatingsPage] = useState(1);
+    const [ratingsHasMore, setRatingsHasMore] = useState(true);
+    const [ratings, setRatings] = useState<API.PublisherRatingWithUserDto[]>([]);
     const [isFollowing, setIsFollowing] = useState(false);
     const pageSize = 10;
 
@@ -52,20 +54,35 @@ export default () => {
         () => api.publisher.getPublisherId({ id: Number(id) }),
         {
             onSuccess: (data) => {
-                // 从详情中获取平均评分，但不设置为用户评分
-                // 用户评分应从另一个API获取
+                // 发布者详情信息加载成功
             }
         }
     );
 
     // 获取用户对该发布者的评分
-    const { run: getUserRating } = useRequest(
+    const { data: userRating, run: getUserRating } = useRequest<API.PublisherRatingDto>(
         () => api.publisher.getPublisherIdMyRating({ id: Number(id) }),
+        {
+            manual: true
+        }
+    );
+
+    // 获取发布者评分列表
+    const { run: loadRatings } = useRequest(
+        (pageNum: number) => api.publisher.getPublisherIdRatings({
+            id: Number(id),
+            page: pageNum,
+            pageSize
+        }),
         {
             manual: true,
             onSuccess: (response) => {
-                if (response && response.rating !== undefined) {
-                    setUserRating(response.rating);
+                if (response && response.items) {
+                    setRatings(prev =>
+                        ratingsPage === 1 ? response.items : [...prev, ...response.items]
+                    );
+                    setRatingsHasMore(response.items.length === pageSize && response.page < response.totalPages);
+                    setRatingsPage(prev => prev + 1);
                 }
             }
         }
@@ -115,9 +132,11 @@ export default () => {
     useEffect(() => {
         if (id) {
             setPage(1);
+            setRatingsPage(1);
             loadContents(1);
             checkFollowStatus();
-            getUserRating(); // 获取用户自己的评分
+            getUserRating();
+            loadRatings(1);
         }
     }, [id]);
 
@@ -125,6 +144,12 @@ export default () => {
     const loadMore = async () => {
         if (publisherData?.status !== 1) return; // 只有已审核通过的发布者才加载内容
         await loadContents(page);
+    };
+
+    // 加载更多评分
+    const loadMoreRatings = async () => {
+        if (publisherData?.status !== 1) return; // 只有已审核通过的发布者才加载评分
+        await loadRatings(ratingsPage);
     };
 
     // 处理关注
@@ -161,14 +186,63 @@ export default () => {
             await Dialog.confirm({
                 content: `确定给该发布者 ${value} 星评分吗？`,
                 onConfirm: async () => {
+                    // 可以选择输入评价内容
+                    let comment: string | null = null;
+
+                    try {
+                        // 尝试获取用户评论
+                        comment = await new Promise<string | null>((resolve) => {
+                            Dialog.show({
+                                title: '评价内容',
+                                content: (
+                                    <div className="py-4">
+                                        <textarea
+                                            className="w-full border p-2 rounded"
+                                            placeholder="请输入评价内容（可选）"
+                                            rows={3}
+                                            id="rating-comment"
+                                        />
+                                    </div>
+                                ),
+                                actions: [
+                                    {
+                                        key: 'skip',
+                                        text: '跳过',
+                                        onClick: () => resolve(null)
+                                    },
+                                    {
+                                        key: 'submit',
+                                        text: '提交评分',
+                                        bold: true,
+                                        onClick: () => {
+                                            const textarea = document.getElementById('rating-comment') as HTMLTextAreaElement;
+                                            resolve(textarea?.value || null);
+                                        }
+                                    }
+                                ]
+                            });
+                        });
+                    } catch (err) {
+                        comment = null;
+                    }
+
+                    const ratingRequest: API.RatePublisherRequestDto = {
+                        rating: value,
+                        comment: comment || undefined
+                    };
+
                     await api.publisher.postPublisherIdRate(
                         { id: Number(id) },
-                        { rating: value }
+                        ratingRequest
                     );
 
-                    setUserRating(value);
-                    // 刷新发布者详情，获取更新后的平均评分
+                    // 刷新用户评分和发布者详情
+                    getUserRating();
                     refresh();
+                    // 重新加载评分列表
+                    setRatingsPage(1);
+                    loadRatings(1);
+
                     Toast.show({
                         icon: 'success',
                         content: '评分成功',
@@ -195,6 +269,118 @@ export default () => {
             default:
                 return 'default';
         }
+    };
+
+    // 当前用户评分组件
+    const UserRatingComponent = () => {
+        if (!publisherData || publisherData.status !== 1) return null;
+
+        return (
+            <div className="p-4 bg-gray-50 rounded-lg mx-4 mb-4">
+                <div className="flex justify-between items-center">
+                    <div className="text-base font-medium">我的评分</div>
+                    <div>
+                        {userRating ? (
+                            <div className="flex items-center">
+                                <span className="text-lg font-bold text-amber-500 mr-1">{userRating.value}</span>
+                                <StarFill fontSize={16} color='#FFB700' />
+                            </div>
+                        ) : (
+                            <span className="text-gray-500">未评分</span>
+                        )}
+                    </div>
+                </div>
+                {userRating?.comment && (
+                    <div className="mt-2 text-sm bg-white p-2 rounded">
+                        {userRating.comment}
+                    </div>
+                )}
+                <div className="mt-2">
+                    <Button
+                        block
+                        color="primary"
+                        size="small"
+                        onClick={() => {
+                            Dialog.show({
+                                content: (
+                                    <div className="py-4">
+                                        <div className="text-center mb-4">给发布者评分</div>
+                                        <div className="flex justify-center">
+                                            <Rate
+                                                defaultValue={userRating?.value || 0}
+                                                onChange={handleRate}
+                                                allowClear={false}
+                                            />
+                                        </div>
+                                    </div>
+                                ),
+                                closeOnAction: true,
+                                actions: [
+                                    {
+                                        key: 'cancel',
+                                        text: '取消',
+                                    }
+                                ],
+                            });
+                        }}
+                    >
+                        {userRating ? '修改评分' : '立即评分'}
+                    </Button>
+                </div>
+            </div>
+        );
+    };
+
+    // 评分列表组件
+    const RatingsListComponent = () => {
+        if (!publisherData || publisherData.status !== 1) return null;
+
+        if (ratings.length === 0 && !ratingsHasMore) {
+            return (
+                <div className="p-4">
+                    <Empty
+                        image={<MessageOutline style={{ fontSize: 48 }} />}
+                        description="暂无评价"
+                    />
+                </div>
+            );
+        }
+
+        return (
+            <div className="p-4">
+                <div className="text-lg font-bold mb-4">用户评价</div>
+                <List>
+                    {ratings.map(rating => (
+                        <List.Item
+                            key={rating.id}
+                            prefix={
+                                <Avatar src={rating.user.avatarUrl} />
+                            }
+                            title={
+                                <div className="flex justify-between items-center">
+                                    <span>{rating.user.username}</span>
+                                    <div className="flex items-center">
+                                        <span className="text-amber-500 mr-1">{rating.value}</span>
+                                        <StarFill fontSize={14} color='#FFB700' />
+                                    </div>
+                                </div>
+                            }
+                            description={
+                                <div>
+                                    {rating.comment && (
+                                        <div className="text-sm mt-1">{rating.comment}</div>
+                                    )}
+                                    <div className="text-xs text-gray-500 mt-1">
+                                        {dayjs(rating.createdAt).format('YYYY-MM-DD HH:mm')}
+                                    </div>
+                                </div>
+                            }
+                        />
+                    ))}
+                </List>
+                <InfiniteScroll loadMore={loadMoreRatings} hasMore={ratingsHasMore} />
+            </div>
+        );
     };
 
     if (loading) {
@@ -281,54 +467,56 @@ export default () => {
                 </div>
 
                 {/* 当前用户评分 */}
-                {publisherData.status === 1 && (
-                    <div className="p-4 bg-gray-50 rounded-lg mx-4 mb-4">
-                        <div className="flex justify-between items-center">
-                            <div className="text-base font-medium">我的评分</div>
-                            <div>
-                                {userRating ? (
-                                    <div className="flex items-center">
-                                        <span className="text-lg font-bold text-amber-500 mr-1">{userRating}</span>
-                                        <StarFill fontSize={16} color='#FFB700' />
-                                    </div>
-                                ) : (
-                                    <span className="text-gray-500">未评分</span>
-                                )}
-                            </div>
-                        </div>
-                        <div className="mt-2">
-                            <Button
-                                block
-                                color="primary"
-                                size="small"
-                                onClick={() => {
-                                    Dialog.show({
-                                        content: (
-                                            <div className="py-4">
-                                                <div className="text-center mb-4">给发布者评分</div>
-                                                <div className="flex justify-center">
-                                                    <Rate
-                                                        defaultValue={userRating || 0}
-                                                        onChange={handleRate}
-                                                        allowClear={false}
-                                                    />
-                                                </div>
+                <UserRatingComponent />
+
+                {/* 发布者内容与评价选项卡 */}
+                {publisherData?.status === 1 && (
+                    <Tabs
+                        className="mx-4 mb-4"
+                        activeKey={activeTab}
+                        onChange={setActiveTab}
+                    >
+                        <Tabs.Tab title="内容作品" key="works" />
+                        <Tabs.Tab title="用户评价" key="ratings" />
+                    </Tabs>
+                )}
+
+                {/* 根据选项卡显示不同内容 */}
+                {publisherData?.status === 1 && activeTab === 'works' && (
+                    <div className="p-4">
+                        {contents.length > 0 ? (
+                            <div className="flex flex-col *:mb-4">
+                                {contents.map((content) => (
+                                    <div key={content.id} className="bg-white rounded-lg shadow-sm p-2">
+                                        {content.imageUrl && (
+                                            <div className="mb-2">
+                                                <img
+                                                    src={content.imageUrl}
+                                                    alt={content.title}
+                                                    className="w-full h-40 object-cover rounded-lg"
+                                                />
                                             </div>
-                                        ),
-                                        closeOnAction: true,
-                                        actions: [
-                                            {
-                                                key: 'cancel',
-                                                text: '取消',
-                                            }
-                                        ],
-                                    });
-                                }}
-                            >
-                                {userRating ? '修改评分' : '立即评分'}
-                            </Button>
-                        </div>
+                                        )}
+                                        <div className="flex justify-between items-center">
+                                            <div className="text-base font-medium">{content.title}</div>
+                                            <div className="text-xs text-gray-500">
+                                                {dayjs(content.createdAt).format('YYYY-MM-DD')}
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                                <InfiniteScroll loadMore={loadMore} hasMore={hasMore} />
+                            </div>
+                        ) : (
+                            <div className="text-center text-gray-500 py-10">
+                                暂无内容
+                            </div>
+                        )}
                     </div>
+                )}
+
+                {publisherData?.status === 1 && activeTab === 'ratings' && (
+                    <RatingsListComponent />
                 )}
 
                 {/* 去官网 去App */}
@@ -373,41 +561,6 @@ export default () => {
                         >
                             {isFollowing ? '已关注' : '关注'}
                         </Button>
-                    </div>
-                )}
-
-                {/* 发布作品列表 - 只有已审核通过的发布者才显示作品 */}
-                {publisherData.status === 1 && (
-                    <div className="p-4">
-                        <div className="text-lg font-bold mb-2">发布作品</div>
-                        {contents.length > 0 ? (
-                            <div className="flex flex-col *:mb-4">
-                                {contents.map((content) => (
-                                    <div key={content.id} className="bg-white rounded-lg shadow-sm p-2">
-                                        {content.imageUrl && (
-                                            <div className="mb-2">
-                                                <img
-                                                    src={content.imageUrl}
-                                                    alt={content.title}
-                                                    className="w-full h-40 object-cover rounded-lg"
-                                                />
-                                            </div>
-                                        )}
-                                        <div className="flex justify-between items-center">
-                                            <div className="text-base font-medium">{content.title}</div>
-                                            <div className="text-xs text-gray-500">
-                                                {dayjs(content.createdAt).format('YYYY-MM-DD')}
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-                                <InfiniteScroll loadMore={loadMore} hasMore={hasMore} />
-                            </div>
-                        ) : (
-                            <div className="text-center text-gray-500 py-10">
-                                暂无内容
-                            </div>
-                        )}
                     </div>
                 )}
             </div>

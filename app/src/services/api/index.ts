@@ -5,9 +5,7 @@
 import * as appItem from './appItem';
 import * as appItemAdmin from './appItemAdmin';
 import * as comment from './comment';
-import * as developerApplication from './developerApplication';
 import * as file from './file';
-import * as item from './item';
 import * as publisher from './publisher';
 import * as user from './user';
 import * as userContent from './userContent';
@@ -17,9 +15,7 @@ export default {
   appItemAdmin,
   appItem,
   comment,
-  developerApplication,
   file,
-  item,
   publisher,
   userContent,
   user,

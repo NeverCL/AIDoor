@@ -29,6 +29,9 @@ public class AppDbContext : DbContext
     // 发布者表
     public DbSet<Publisher> Publishers { get; set; }
 
+    // 发布者评分表
+    public DbSet<PublisherRating> PublisherRatings { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -142,5 +145,25 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<Publisher>()
             .HasIndex(p => p.Status);
+
+        // PublisherRating 配置
+        modelBuilder.Entity<PublisherRating>()
+            .HasIndex(r => new { r.UserId, r.PublisherId })
+            .IsUnique(); // 确保每个用户只能对每个发布者评分一次
+
+        modelBuilder.Entity<PublisherRating>()
+            .HasOne(r => r.User)
+            .WithMany()
+            .HasForeignKey(r => r.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<PublisherRating>()
+            .HasOne(r => r.Publisher)
+            .WithMany(p => p.Ratings)
+            .HasForeignKey(r => r.PublisherId)
+            .OnDelete(DeleteBehavior.Cascade); // 删除发布者时级联删除所有评分
+
+        modelBuilder.Entity<PublisherRating>()
+            .HasIndex(r => r.PublisherId); // 便于按发布者查询评分
     }
 }

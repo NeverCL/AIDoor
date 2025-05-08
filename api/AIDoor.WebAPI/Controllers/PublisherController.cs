@@ -10,11 +10,16 @@ public class PublisherController : BaseController
 {
     private readonly PublisherService _publisherService;
     private readonly UserRecordService _userRecordService;
+    private readonly PublisherRatingService _ratingService;
 
-    public PublisherController(PublisherService publisherService, UserRecordService userRecordService)
+    public PublisherController(
+        PublisherService publisherService,
+        UserRecordService userRecordService,
+        PublisherRatingService ratingService)
     {
         _publisherService = publisherService;
         _userRecordService = userRecordService;
+        _ratingService = ratingService;
     }
 
     /// <summary>
@@ -141,21 +146,18 @@ public class PublisherController : BaseController
     /// <returns>评分结果</returns>
     [HttpPost("{id:int}/rate")]
     [Authorize]
-    public async Task<IActionResult> RatePublisher(int id, [FromBody] PublisherRatingDto request)
+    public async Task<IActionResult> RatePublisher(int id, [FromBody] RatePublisherRequestDto request)
     {
         if (!ModelState.IsValid)
         {
-            return BadRequest("请提供有效的评分（1-5）");
+            return BadRequest("请提供有效的评分信息");
         }
 
-        var result = await _userRecordService.RatePublisherAsync(id, request.Rating);
+        var result = await _ratingService.RatePublisherAsync(id, request.Rating, request.Comment);
         if (!result.Success)
         {
             return BadRequest(result.Message);
         }
-
-        // 更新发布者的平均评分
-        await _publisherService.UpdatePublisherRatingAsync(id);
 
         return Ok(new { message = result.Message, rating = result.RatingValue });
     }
@@ -169,8 +171,34 @@ public class PublisherController : BaseController
     [Authorize]
     public async Task<IActionResult> GetMyRating(int id)
     {
-        var rating = await _userRecordService.GetUserRatingForPublisherAsync(id);
-        return Ok(new { rating });
+        var rating = await _ratingService.GetUserRatingAsync(id);
+        return Ok(rating);
+    }
+
+    /// <summary>
+    /// 获取发布者的所有评分
+    /// </summary>
+    /// <param name="id">发布者ID</param>
+    /// <param name="page">页码</param>
+    /// <param name="pageSize">每页数量</param>
+    /// <returns>评分列表</returns>
+    [HttpGet("{id:int}/ratings")]
+    [AllowAnonymous]
+    public async Task<IActionResult> GetPublisherRatings(
+        int id,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 10)
+    {
+        var (ratings, total) = await _ratingService.GetPublisherRatingsAsync(id, page, pageSize);
+
+        return Ok(new
+        {
+            items = ratings,
+            total,
+            page,
+            pageSize,
+            totalPages = (int)Math.Ceiling(total / (double)pageSize)
+        });
     }
 
     #region 管理员接口

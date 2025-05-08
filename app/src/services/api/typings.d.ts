@@ -57,10 +57,6 @@ declare namespace API {
     id: number;
   };
 
-  type deleteItemIdParams = {
-    id: number;
-  };
-
   type deletePublisherIdParams = {
     id: number;
   };
@@ -79,17 +75,6 @@ declare namespace API {
 
   type deleteUserRecordIdParams = {
     id: number;
-  };
-
-  type DeveloperApplicationCreateDto = {
-    name: string;
-    logo: string[];
-    description: string;
-    website?: string;
-    company?: string;
-    category: string;
-    userType: string;
-    stage: string;
   };
 
   type getAdminAppitemsApplicationsApplicationIdParams = {
@@ -112,27 +97,24 @@ declare namespace API {
     ParentId?: number;
   };
 
-  type getDeveloperApplicationIdParams = {
-    id: number;
-  };
-
-  type getItemIdParams = {
-    id: number;
-  };
-
-  type getItemParams = {
-    Page?: number;
-    Limit?: number;
-  };
-
   type getPublisherAllParams = {
     page?: number;
     pageSize?: number;
     status?: string;
   };
 
+  type getPublisherIdMyRatingParams = {
+    id: number;
+  };
+
   type getPublisherIdParams = {
     id: number;
+  };
+
+  type getPublisherIdRatingsParams = {
+    id: number;
+    page?: number;
+    pageSize?: number;
   };
 
   type getPublisherPendingParams = {
@@ -168,9 +150,15 @@ declare namespace API {
     RecordType?: string;
   };
 
+  type IFormFile = string;
+
   type LoginRequest = {
     phone: string;
     code: string;
+  };
+
+  type postPublisherIdRateParams = {
+    id: number;
   };
 
   type postPublisherIdRefreshStatsParams = {
@@ -200,8 +188,9 @@ declare namespace API {
     categoryId: number;
   };
 
-  type putItemIdParams = {
-    id: number;
+  type RatePublisherRequestDto = {
+    rating: number;
+    comment?: string;
   };
 
   type RecordType = integer;
@@ -244,17 +233,5 @@ declare namespace API {
     targetId?: number;
     targetType?: string;
     notes?: string;
-  };
-
-  type PublisherRatingDto = {
-    rating: number;
-  };
-
-  type postPublisherIdRateParams = {
-    id: number;
-  };
-
-  type getPublisherIdMyRatingParams = {
-    id: number;
   };
 }
