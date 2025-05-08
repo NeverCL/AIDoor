@@ -27,9 +27,6 @@ public class AppDbContext : DbContext
     // 用户关注关系表
     public DbSet<UserFollow> UserFollows { get; set; }
 
-    // 开发者申请表
-    public DbSet<DeveloperApplication> DeveloperApplications { get; set; }
-
     // 发布者表
     public DbSet<Publisher> Publishers { get; set; }
 

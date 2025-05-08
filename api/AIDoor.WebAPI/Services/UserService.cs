@@ -383,38 +383,6 @@ public class UserService
         }
     }
 
-    // 添加获取开发者应用状态的方法
-    public async Task<DeveloperApplicationStatusDto?> GetDeveloperApplicationStatusAsync(int userId)
-    {
-        var application = await _context.DeveloperApplications
-            .Where(da => da.UserId == userId)
-            .OrderByDescending(da => da.CreatedAt)
-            .FirstOrDefaultAsync();
-
-        if (application == null)
-        {
-            return new DeveloperApplicationStatusDto
-            {
-                HasApplied = false
-            };
-        }
-
-        return new DeveloperApplicationStatusDto
-        {
-            HasApplied = true,
-            Status = application.Status,
-            StatusText = application.Status switch
-            {
-                DeveloperApplicationStatus.Pending => "审核中",
-                DeveloperApplicationStatus.Approved => "已通过",
-                DeveloperApplicationStatus.Rejected => "已拒绝",
-                _ => "未知"
-            },
-            ApplicationId = application.Id,
-            SubmittedAt = application.CreatedAt
-        };
-    }
-
     /// <summary>
     /// 获取发布者详情
     /// </summary>
