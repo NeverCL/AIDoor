@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AIDoor.WebAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250508072656_Init8")]
-    partial class Init8
+    [Migration("20250509153452_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -112,6 +112,53 @@ namespace AIDoor.WebAPI.Migrations
                     b.HasIndex("Title");
 
                     b.ToTable("Applications");
+                });
+
+            modelBuilder.Entity("AIDoor.WebAPI.Domain.ChatMessage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("varchar(1000)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<DateTime?>("ReadAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("ReceiverId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SenderId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedAt");
+
+                    b.HasIndex("IsRead");
+
+                    b.HasIndex("ReceiverId");
+
+                    b.HasIndex("SenderId");
+
+                    b.ToTable("ChatMessages");
                 });
 
             modelBuilder.Entity("AIDoor.WebAPI.Domain.Comment", b =>
@@ -265,10 +312,10 @@ namespace AIDoor.WebAPI.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<int>("FollowersCount")
+                    b.Property<int>("FavoritesCount")
                         .HasColumnType("int");
 
-                    b.Property<int>("FollowingCount")
+                    b.Property<int>("FollowersCount")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsActive")
@@ -292,6 +339,10 @@ namespace AIDoor.WebAPI.Migrations
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
+
+                    b.Property<string>("Summary")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.Property<int>("Type")
                         .HasColumnType("int");
@@ -450,10 +501,10 @@ namespace AIDoor.WebAPI.Migrations
                     b.Property<string>("Notes")
                         .HasColumnType("longtext");
 
-                    b.Property<int?>("RatingValue")
+                    b.Property<int>("RecordType")
                         .HasColumnType("int");
 
-                    b.Property<int>("RecordType")
+                    b.Property<int?>("TargetUserId")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
@@ -473,6 +524,8 @@ namespace AIDoor.WebAPI.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("RecordType");
+
+                    b.HasIndex("TargetUserId");
 
                     b.HasIndex("Title");
 
@@ -539,6 +592,25 @@ namespace AIDoor.WebAPI.Migrations
                         .IsRequired();
 
                     b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("AIDoor.WebAPI.Domain.ChatMessage", b =>
+                {
+                    b.HasOne("AIDoor.WebAPI.Models.User", "Receiver")
+                        .WithMany()
+                        .HasForeignKey("ReceiverId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("AIDoor.WebAPI.Models.User", "Sender")
+                        .WithMany()
+                        .HasForeignKey("SenderId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Receiver");
+
+                    b.Navigation("Sender");
                 });
 
             modelBuilder.Entity("AIDoor.WebAPI.Domain.Comment", b =>
@@ -631,11 +703,17 @@ namespace AIDoor.WebAPI.Migrations
 
             modelBuilder.Entity("AIDoor.WebAPI.Domain.UserRecord", b =>
                 {
+                    b.HasOne("AIDoor.WebAPI.Models.User", "TargetUser")
+                        .WithMany()
+                        .HasForeignKey("TargetUserId");
+
                     b.HasOne("AIDoor.WebAPI.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("TargetUser");
 
                     b.Navigation("User");
                 });

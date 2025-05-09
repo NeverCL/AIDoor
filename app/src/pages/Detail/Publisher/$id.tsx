@@ -45,6 +45,7 @@ export default () => {
     const [isFollowed, setIsFollowed] = useState(false);
     const pageSize = 10;
     const { id } = useParams();
+    const [rating, setRating] = useState(0);
     // 获取用户发布者资料
     const { data: publisherData, loading: publisherLoading, error: publisherError } = useRequest<PublisherData>(
         () => api.publisher.getPublisherId({ id: id }),
@@ -137,10 +138,10 @@ export default () => {
         Modal.confirm({
             title: '点击评分',
             content: <div className="text-center">
-                <Rate allowHalf defaultValue={5} count={5} />
+                <Rate allowHalf defaultValue={5} count={5} onChange={(value) => setRating(value)} />
             </div>,
             onConfirm: () => {
-                console.log('确认');
+                api.publisher.postPublisherIdRate({ id: publisherData?.id }, { rating: rating });
             }
         });
     }
