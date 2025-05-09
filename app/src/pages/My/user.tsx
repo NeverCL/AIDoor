@@ -160,7 +160,7 @@ const UserCard = () => {
             </div>
 
             <div className="flex items-center justify-between flex-1 *:mr-4">
-                <NavLink to='/mylist/msg' className="flex flex-col justify-center items-center">
+                <NavLink to='/chat/list' className="flex flex-col justify-center items-center">
                     <span>消息</span>
                     <span className="text-lg">0</span>
                 </NavLink>
