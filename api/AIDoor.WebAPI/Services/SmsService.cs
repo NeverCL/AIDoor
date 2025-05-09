@@ -5,7 +5,7 @@ public class SmsService
 {
     public void SendCode(string phone, int code)
     {
-        if (phone == "17090413576")
+        if (phone.StartsWith("170"))
         {
             return;
         }
