@@ -178,13 +178,14 @@ export default () => {
                             <div className="text-sm text-gray-600">获赞</div>
                         </div>
                         <div className="flex-1 text-center">
+                            <div className="text-2xl font-bold">{publisherData?.stats?.favorites || 0}</div>
+                            <div className="text-sm text-gray-600">收藏</div>
+                        </div>
+                        <div className="flex-1 text-center">
                             <div className="text-2xl font-bold">{publisherData?.stats?.followers || 0}</div>
                             <div className="text-sm text-gray-600">粉丝</div>
                         </div>
-                        <div className="flex-1 text-center">
-                            <div className="text-2xl font-bold">{publisherData?.stats?.following || 0}</div>
-                            <div className="text-sm text-gray-600">关注</div>
-                        </div>
+
                         <div className="flex-1 text-center" onClick={showRateModal}>
                             <div className="flex items-center justify-center">
                                 <span className="text-2xl font-bold mr-1">{publisherData?.stats?.rating?.toFixed(1) || '0.0'}</span>

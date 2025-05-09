@@ -41,6 +41,23 @@ public class PublisherService
             // 这里可以添加权限校验，但在Controller中会根据角色验证
         }
 
+        // // 计算点赞数量
+        // var likesCount = await _context.UserRecords
+        //     .CountAsync(r => r.RecordType == RecordType.Like &&
+        //                     r.Notes != null &&
+        //                     r.Notes.Contains("Content:") &&
+        //                     _context.UserContents
+        //                         .Any(c => c.UserId == userId &&
+        //                                 r.Notes == $"Content:{c.Id}"));
+
+        // 计算粉丝数量
+        var followersCount = await _context.UserFollows
+            .CountAsync(f => f.FollowingId == userId && f.IsActive);
+
+        // 计算关注数量
+        var followingCount = await _context.UserFollows
+            .CountAsync(f => f.FollowerId == userId && f.IsActive);
+
         // 创建发布者DTO
         var publisherDto = new PublisherDto
         {
@@ -56,9 +73,9 @@ public class PublisherService
             ReviewedAt = publisher.ReviewedAt,
             Stats = new PublisherStatsDto
             {
-                Likes = publisher.LikesCount,
-                Followers = publisher.FollowersCount,
-                Following = publisher.FollowingCount,
+                Likes = 0,
+                Followers = followersCount,
+                Following = followingCount,
                 Rating = publisher.Rating
             }
         };
