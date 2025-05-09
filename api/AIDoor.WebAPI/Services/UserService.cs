@@ -56,7 +56,7 @@ public class UserService
         {
             cachedCode = "123123";
         }
-        
+
         if (cachedCode == null || cachedCode != verificationCode)
         {
             return (false, null, "验证码无效或已过期");
@@ -431,12 +431,21 @@ public class UserService
         var followingCount = await _context.UserFollows
             .CountAsync(f => f.FollowerId == publisherId);
 
+        // 获取发布者的收藏数
+        var favoritesCount = await _context.UserRecords
+            .CountAsync(r => r.RecordType == RecordType.Favorite &&
+                        r.Notes != null &&
+                        r.Notes.StartsWith("Content:") &&
+                        _context.UserContents
+                            .Any(c => c.UserId == publisherId &&
+                                  r.Notes == $"Content:{c.Id}"));
+
         // 设置统计数据
         publisherDto.Stats = new PublisherStatsDto
         {
             Likes = likesCount,
             Followers = followersCount,
-            Following = followingCount,
+            Favorites = favoritesCount,
             Rating = 4.9 // 可以添加评分系统或使用默认值
         };
 

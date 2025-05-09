@@ -17,7 +17,7 @@ public class PublisherDto
 
     [JsonPropertyName("avatarUrl")]
     public string AvatarUrl { get; set; } = string.Empty;
-    
+
     [JsonPropertyName("summary")]
     public string Summary { get; set; } = string.Empty;
 
@@ -81,10 +81,10 @@ public class PublisherStatsDto
     public int Followers { get; set; }
 
     /// <summary>
-    /// 关注他人数量
+    /// 收藏数量
     /// </summary>
-    [JsonPropertyName("following")]
-    public int Following { get; set; }
+    [JsonPropertyName("favorites")]
+    public int Favorites { get; set; }
 
     /// <summary>
     /// 评分

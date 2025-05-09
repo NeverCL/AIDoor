@@ -54,9 +54,14 @@ public class PublisherService
         var followersCount = await _context.UserFollows
             .CountAsync(f => f.FollowingId == userId && f.IsActive);
 
-        // 计算关注数量
-        var followingCount = await _context.UserFollows
-            .CountAsync(f => f.FollowerId == userId && f.IsActive);
+        // 计算收藏数量 (替换原来的关注数量)
+        var favoritesCount = await _context.UserRecords
+            .CountAsync(r => r.RecordType == RecordType.Favorite &&
+                           r.Notes != null &&
+                           r.Notes.StartsWith("Content:") &&
+                           _context.UserContents
+                               .Any(c => c.UserId == userId &&
+                                       r.Notes == $"Content:{c.Id}"));
 
         // 创建发布者DTO
         var publisherDto = new PublisherDto
@@ -75,7 +80,7 @@ public class PublisherService
             {
                 Likes = 0,
                 Followers = followersCount,
-                Following = followingCount,
+                Favorites = favoritesCount,
                 Rating = publisher.Rating
             }
         };
@@ -330,16 +335,21 @@ public class PublisherService
 
             // 更新粉丝数量
             var followersCount = await _context.UserFollows
-                .CountAsync(f => f.FollowingId == userId);
+                .CountAsync(f => f.FollowingId == userId && f.IsActive);
 
-            // 更新关注数量
-            var followingCount = await _context.UserFollows
-                .CountAsync(f => f.FollowerId == userId);
+            // 更新收藏数量
+            var favoritesCount = await _context.UserRecords
+                .CountAsync(r => r.RecordType == RecordType.Favorite &&
+                                r.Notes != null &&
+                                r.Notes.StartsWith("Content:") &&
+                                _context.UserContents
+                                    .Any(c => c.UserId == userId &&
+                                            r.Notes == $"Content:{c.Id}"));
 
             // 更新发布者统计数据
             publisher.LikesCount = likesCount;
             publisher.FollowersCount = followersCount;
-            publisher.FollowingCount = followingCount;
+            publisher.FavoritesCount = favoritesCount;
 
             await _context.SaveChangesAsync();
             return true;

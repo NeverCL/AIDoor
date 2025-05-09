@@ -74,9 +74,9 @@ public class Publisher : BaseEntity
     public int FollowersCount { get; set; }
 
     /// <summary>
-    /// 关注数量
+    /// 收藏数量
     /// </summary>
-    public int FollowingCount { get; set; }
+    public int FavoritesCount { get; set; }
 
     /// <summary>
     /// 关联的用户ID（可选）
