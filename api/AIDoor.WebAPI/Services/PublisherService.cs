@@ -91,7 +91,7 @@ public class PublisherService
     /// <param name="type">发布者类型</param>
     /// <returns>操作结果</returns>
     public async Task<(bool Success, string Message, Publisher Publisher)> CreateOrUpdatePublisherAsync(
-        int userId, string name, string avatarUrl, string description,
+        int userId, string name, string avatarUrl, string description, string summary,
         PublisherType type = PublisherType.Personal,
         string? website = null, string? appLink = null)
     {
@@ -115,6 +115,7 @@ public class PublisherService
                 {
                     Name = name,
                     AvatarUrl = avatarUrl,
+                    Summary = summary,
                     Description = description,
                     Type = type,
                     Website = website,
@@ -204,7 +205,8 @@ public class PublisherService
     /// <param name="page">页码</param>
     /// <param name="pageSize">每页数量</param>
     /// <returns>待审核发布者列表</returns>
-    public async Task<(List<PublisherDto> Publishers, int Total)> GetPendingPublishersAsync(int page = 1, int pageSize = 20)
+    public async Task<(List<PublisherDto> Publishers, int Total)> GetPendingPublishersAsync(int page = 1,
+        int pageSize = 20)
     {
         var query = _context.Publishers
             .Include(p => p.User)
@@ -317,11 +319,11 @@ public class PublisherService
             // 更新点赞数量
             var likesCount = await _context.UserRecords
                 .CountAsync(r => r.RecordType == RecordType.Like &&
-                            r.Notes != null &&
-                            r.Notes.StartsWith("Content:") &&
-                            _context.UserContents
-                                .Any(c => c.UserId == userId &&
-                                      r.Notes == $"Content:{c.Id}"));
+                                 r.Notes != null &&
+                                 r.Notes.StartsWith("Content:") &&
+                                 _context.UserContents
+                                     .Any(c => c.UserId == userId &&
+                                               r.Notes == $"Content:{c.Id}"));
 
             // 更新粉丝数量
             var followersCount = await _context.UserFollows
@@ -379,35 +381,6 @@ public class PublisherService
         catch (Exception ex)
         {
             return (false, $"删除失败: {ex.Message}");
-        }
-    }
-
-    /// <summary>
-    /// 更新发布者的评分
-    /// </summary>
-    /// <param name="publisherId">发布者ID</param>
-    /// <returns>更新是否成功</returns>
-    public async Task<bool> UpdatePublisherRatingAsync(int publisherId)
-    {
-        try
-        {
-            var publisher = await _context.Publishers.FindAsync(publisherId);
-            if (publisher == null)
-            {
-                return false;
-            }
-
-            var (averageRating, ratingsCount) = await _userRecordService.CalculatePublisherAverageRatingAsync(publisherId);
-
-            publisher.Rating = averageRating;
-            publisher.UpdatedAt = DateTime.UtcNow;
-
-            await _context.SaveChangesAsync();
-            return true;
-        }
-        catch (Exception)
-        {
-            return false;
         }
     }
 }

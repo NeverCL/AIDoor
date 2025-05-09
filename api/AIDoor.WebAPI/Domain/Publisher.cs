@@ -24,6 +24,11 @@ public class Publisher : BaseEntity
     public string Description { get; set; } = string.Empty;
 
     /// <summary>
+    /// 发布者简介
+    /// </summary>
+    public string Summary { get; set; } = string.Empty;
+
+    /// <summary>
     /// 发布者官网
     /// </summary>
     public string? Website { get; set; }

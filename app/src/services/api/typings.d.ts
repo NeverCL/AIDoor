@@ -218,6 +218,7 @@ declare namespace API {
     name?: string;
     avatarUrl?: string;
     description?: string;
+    summary?: string;
     type?: PublisherType;
     website?: string;
     appLink?: string;

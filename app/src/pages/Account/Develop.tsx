@@ -9,6 +9,10 @@ import { FormInstance } from 'antd-mobile/es/components/form';
 export default () => {
     const formRef = useRef<FormInstance>(null);
 
+    const { data: publisher } = useRequest(api.publisher.getPublisherMy);
+
+    formRef.current?.setFieldsValue(publisher);
+
     const { run: postPublisher, loading } = useRequest(api.publisher.postPublisher, {
         manual: true,
         onSuccess: (res) => {
@@ -78,6 +82,14 @@ export default () => {
                         }}
                     >
                         <ImgUploader accept="image/*" maxCount={1} />
+                    </Form.Item>
+
+                    <Form.Item
+                        name="summary"
+                        label="发布者简介"
+                        rules={[{ required: true, message: '请输入发布者简介' }]}
+                    >
+                        <TextArea placeholder="请输入发布者简介" rows={3} />
                     </Form.Item>
 
                     <Form.Item

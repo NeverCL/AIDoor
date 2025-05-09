@@ -9,7 +9,6 @@ namespace AIDoor.WebAPI.Controllers;
 public class PublisherController : BaseController
 {
     private readonly PublisherService _publisherService;
-    private readonly UserRecordService _userRecordService;
     private readonly PublisherRatingService _ratingService;
 
     public PublisherController(
@@ -18,7 +17,6 @@ public class PublisherController : BaseController
         PublisherRatingService ratingService)
     {
         _publisherService = publisherService;
-        _userRecordService = userRecordService;
         _ratingService = ratingService;
     }
 
@@ -67,6 +65,7 @@ public class PublisherController : BaseController
             model.Name,
             model.AvatarUrl,
             model.Description ?? "专注提供智能服务",
+            model.Summary,
             model.Type,
             model.Website,
             model.AppLink
@@ -289,7 +288,12 @@ public class PublisherCreateUpdateRequest
     /// <summary>
     /// 发布者描述
     /// </summary>
-    public string? Description { get; set; }
+    public string Description { get; set; }
+
+    /// <summary>
+    /// 发布者简介
+    /// </summary>
+    public string Summary { get; set; }
 
     /// <summary>
     /// 发布者类型
