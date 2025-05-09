@@ -47,6 +47,7 @@ public class PublisherService
             Id = publisher.Id,
             Username = publisher.Name,
             AvatarUrl = publisher.AvatarUrl,
+            Summary = publisher.Summary,
             Description = publisher.Description,
             CreatedAt = publisher.CreatedAt,
             Status = publisher.Status,
@@ -61,22 +62,6 @@ public class PublisherService
                 Rating = publisher.Rating
             }
         };
-
-        // // 获取发布者的内容列表
-        // var contents = await _context.UserContents
-        //     .Where(c => c.UserId == publisher.UserId)
-        //     .OrderByDescending(c => c.CreatedAt)
-        //     .Take(10)
-        //     .Select(c => new PublisherContentDto
-        //     {
-        //         Id = c.Id,
-        //         Title = c.Title,
-        //         ImageUrl = c.Images,
-        //         CreatedAt = c.CreatedAt
-        //     })
-        //     .ToListAsync();
-        //
-        // publisherDto.Contents = contents;
 
         return publisherDto;
     }

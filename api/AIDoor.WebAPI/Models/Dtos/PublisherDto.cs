@@ -17,6 +17,9 @@ public class PublisherDto
 
     [JsonPropertyName("avatarUrl")]
     public string AvatarUrl { get; set; } = string.Empty;
+    
+    [JsonPropertyName("summary")]
+    public string Summary { get; set; } = string.Empty;
 
     [JsonPropertyName("description")]
     public string Description { get; set; } = string.Empty;

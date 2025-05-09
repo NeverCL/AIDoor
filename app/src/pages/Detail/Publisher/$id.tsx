@@ -1,4 +1,4 @@
-import { history } from "@umijs/max";
+import { history, useParams } from "@umijs/max";
 import { Button, InfiniteScroll, Loading, Modal, Rate, Toast } from "antd-mobile";
 import { LocationOutline, MessageOutline, SetOutline, StarFill } from "antd-mobile-icons";
 import dayjs from "dayjs";
@@ -42,11 +42,12 @@ export default () => {
     const [contents, setContents] = useState<UserContent[]>([]);
     const [hasMore, setHasMore] = useState(true);
     const [page, setPage] = useState(1);
+    const [isFollowed, setIsFollowed] = useState(false);
     const pageSize = 10;
-
+    const { id } = useParams();
     // 获取用户发布者资料
     const { data: publisherData, loading: publisherLoading, error: publisherError } = useRequest<PublisherData>(
-        () => api.publisher.getPublisherMy(),
+        () => api.publisher.getPublisherId({ id: id }),
         {
             onError: (error) => {
                 // 如果没有发布者资料，可以提示用户创建
@@ -59,6 +60,9 @@ export default () => {
                         content: '获取发布者资料失败',
                     });
                 }
+            },
+            onSuccess: (response) => {
+                checkFollowStatus({ id: response.id });
             }
         }
     );
@@ -99,6 +103,15 @@ export default () => {
         }
     );
 
+    const { run: checkFollowStatus } = useRequest(api.userFollow.getUserFollowCheckId,
+        {
+            manual: true,
+            onSuccess: (response) => {
+                setIsFollowed(response.isFollowing);
+            }
+        }
+    );
+
     useEffect(() => {
         loadContents(1);
     }, []);
@@ -108,6 +121,16 @@ export default () => {
         if (contentsLoading) return;
         await loadContents(page);
     };
+
+    const handleFollow = async () => {
+        if (isFollowed) {
+            await api.userFollow.deleteUserFollowId({ id: publisherData?.id });
+        } else {
+            await api.userFollow.postUserFollow({ followingId: publisherData?.id });
+        }
+
+        await checkFollowStatus({ id: publisherData?.id });
+    }
 
 
     const showRateModal = () => {
@@ -132,13 +155,13 @@ export default () => {
                             {publisherData?.avatarUrl && (
                                 <img
                                     src={getImageUrl(publisherData?.avatarUrl)}
-                                    alt={publisherData?.name}
+                                    alt={publisherData?.username}
                                     className="w-full h-full rounded-full object-cover"
                                 />
                             )}
                         </div>
                         <div className="ml-4">
-                            <div className="text-lg font-bold">{publisherData?.name || '未设置昵称'}</div>
+                            <div className="text-lg font-bold">{publisherData?.username || '未设置昵称'}</div>
                             <div className="text-sm text-gray-500">{publisherData?.summary || '暂无简介'}</div>
                         </div>
                         <div className="ml-auto flex items-center">
@@ -178,7 +201,7 @@ export default () => {
 
                     {/* 关注 */}
                     <div className="p-4">
-                        <Button color="primary" className="w-full">{publisherData?.isFollowed ? '取消关注' : '关注'}</Button>
+                        <Button color="primary" className="w-full" onClick={handleFollow}>{isFollowed ? '取消关注' : '关注'}</Button>
                     </div>
 
                     {/* 发布内容 */}
