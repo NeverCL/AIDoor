@@ -5,7 +5,7 @@ namespace AIDoor.WebAPI.Models.Dtos
     /// <summary>
     /// 私信消息DTO
     /// </summary>
-    public class PrivateMessageDto
+    public class ChatMessageDto
     {
         /// <summary>
         /// 消息ID

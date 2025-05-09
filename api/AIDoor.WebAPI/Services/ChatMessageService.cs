@@ -8,7 +8,7 @@ namespace AIDoor.WebAPI.Services
     /// <summary>
     /// 私信服务
     /// </summary>
-    public class PrivateMessageService : IPrivateMessageService
+    public class ChatMessageService : IChatMessageService
     {
         private readonly AppDbContext _dbContext;
 
@@ -16,7 +16,7 @@ namespace AIDoor.WebAPI.Services
         /// 构造函数
         /// </summary>
         /// <param name="dbContext"></param>
-        public PrivateMessageService(AppDbContext dbContext)
+        public ChatMessageService(AppDbContext dbContext)
         {
             _dbContext = dbContext;
         }
@@ -27,7 +27,7 @@ namespace AIDoor.WebAPI.Services
         /// <param name="userId">当前用户ID</param>
         /// <param name="createDto">创建私信DTO</param>
         /// <returns></returns>
-        public async Task<PrivateMessageDto> CreatePrivateMessageAsync(int userId, CreatePrivateMessageDto createDto)
+        public async Task<ChatMessageDto> CreateChatMessageAsync(int userId, CreatePrivateMessageDto createDto)
         {
             var receiver = await _dbContext.Users.FindAsync(createDto.ReceiverId);
             if (receiver == null)
@@ -35,7 +35,7 @@ namespace AIDoor.WebAPI.Services
                 throw new ArgumentException("接收者不存在");
             }
 
-            var message = new PrivateMessage
+            var message = new ChatMessage
             {
                 SenderId = userId,
                 ReceiverId = createDto.ReceiverId,
@@ -49,7 +49,7 @@ namespace AIDoor.WebAPI.Services
 
             var sender = await _dbContext.Users.FindAsync(userId);
 
-            return new PrivateMessageDto
+            return new ChatMessageDto
             {
                 Id = message.Id,
                 SenderId = message.SenderId,
@@ -71,7 +71,7 @@ namespace AIDoor.WebAPI.Services
         /// <param name="userId">当前用户ID</param>
         /// <param name="queryParams">查询参数</param>
         /// <returns></returns>
-        public async Task<(IEnumerable<PrivateMessageDto> Messages, int Total)> GetUserPrivateMessagesAsync(int userId, PrivateMessageQueryParams queryParams)
+        public async Task<(IEnumerable<ChatMessageDto> Messages, int Total)> GetUserChatMessagesAsync(int userId, PrivateMessageQueryParams queryParams)
         {
             var query = _dbContext.PrivateMessages
                 .Include(pm => pm.Sender)
@@ -98,7 +98,7 @@ namespace AIDoor.WebAPI.Services
                 .OrderByDescending(pm => pm.CreatedAt)
                 .Skip(skip)
                 .Take(queryParams.Limit)
-                .Select(pm => new PrivateMessageDto
+                .Select(pm => new ChatMessageDto
                 {
                     Id = pm.Id,
                     SenderId = pm.SenderId,

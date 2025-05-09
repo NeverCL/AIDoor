@@ -5,7 +5,7 @@ namespace AIDoor.WebAPI.Services
     /// <summary>
     /// 私信服务接口
     /// </summary>
-    public interface IPrivateMessageService
+    public interface IChatMessageService
     {
         /// <summary>
         /// 创建私信
@@ -13,7 +13,7 @@ namespace AIDoor.WebAPI.Services
         /// <param name="userId">当前用户ID</param>
         /// <param name="createDto">创建私信DTO</param>
         /// <returns></returns>
-        Task<PrivateMessageDto> CreatePrivateMessageAsync(int userId, CreatePrivateMessageDto createDto);
+        Task<ChatMessageDto> CreateChatMessageAsync(int userId, CreatePrivateMessageDto createDto);
 
         /// <summary>
         /// 获取用户的私信列表
@@ -21,7 +21,7 @@ namespace AIDoor.WebAPI.Services
         /// <param name="userId">当前用户ID</param>
         /// <param name="queryParams">查询参数</param>
         /// <returns></returns>
-        Task<(IEnumerable<PrivateMessageDto> Messages, int Total)> GetUserPrivateMessagesAsync(int userId, PrivateMessageQueryParams queryParams);
+        Task<(IEnumerable<ChatMessageDto> Messages, int Total)> GetUserChatMessagesAsync(int userId, PrivateMessageQueryParams queryParams);
 
         /// <summary>
         /// 获取未读消息数量

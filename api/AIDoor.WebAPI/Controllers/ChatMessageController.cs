@@ -12,17 +12,17 @@ namespace AIDoor.WebAPI.Controllers
     [ApiController]
     [Route("api/[controller]")]
     [Authorize]
-    public class PrivateMessageController : ControllerBase
+    public class ChatMessageController : ControllerBase
     {
-        private readonly IPrivateMessageService _privateMessageService;
+        private readonly IChatMessageService _chatMessageService;
 
         /// <summary>
         /// 构造函数
         /// </summary>
-        /// <param name="privateMessageService">私信服务</param>
-        public PrivateMessageController(IPrivateMessageService privateMessageService)
+        /// <param name="chatMessageService">私信服务</param>
+        public ChatMessageController(IChatMessageService chatMessageService)
         {
-            _privateMessageService = privateMessageService;
+            _chatMessageService = chatMessageService;
         }
 
         /// <summary>
@@ -31,12 +31,12 @@ namespace AIDoor.WebAPI.Controllers
         /// <param name="createDto">创建私信DTO</param>
         /// <returns>创建结果</returns>
         [HttpPost]
-        public async Task<ActionResult<PrivateMessageDto>> SendMessage(CreatePrivateMessageDto createDto)
+        public async Task<ActionResult<ChatMessageDto>> SendMessage(CreatePrivateMessageDto createDto)
         {
             var userId = HttpContext.GetUserId();
             try
             {
-                var message = await _privateMessageService.CreatePrivateMessageAsync(userId, createDto);
+                var message = await _chatMessageService.CreateChatMessageAsync(userId, createDto);
                 return Ok(message);
             }
             catch (ArgumentException ex)
@@ -51,12 +51,12 @@ namespace AIDoor.WebAPI.Controllers
         /// <param name="queryParams">查询参数</param>
         /// <returns>私信列表</returns>
         [HttpGet]
-        public async Task<ActionResult<PagedResult<PrivateMessageDto>>> GetMessages([FromQuery] PrivateMessageQueryParams queryParams)
+        public async Task<ActionResult<PagedResult<ChatMessageDto>>> GetMessages([FromQuery] PrivateMessageQueryParams queryParams)
         {
             var userId = HttpContext.GetUserId();
-            var (messages, total) = await _privateMessageService.GetUserPrivateMessagesAsync(userId, queryParams);
+            var (messages, total) = await _chatMessageService.GetUserChatMessagesAsync(userId, queryParams);
 
-            return Ok(new PagedResult<PrivateMessageDto>
+            return Ok(new PagedResult<ChatMessageDto>
             {
                 Data = messages,
                 Total = total,
@@ -73,7 +73,7 @@ namespace AIDoor.WebAPI.Controllers
         public async Task<ActionResult<IEnumerable<ConversationPartnerDto>>> GetConversationPartners()
         {
             var userId = HttpContext.GetUserId();
-            var partners = await _privateMessageService.GetConversationPartnersAsync(userId);
+            var partners = await _chatMessageService.GetConversationPartnersAsync(userId);
             return Ok(partners);
         }
 
@@ -85,7 +85,7 @@ namespace AIDoor.WebAPI.Controllers
         public async Task<ActionResult<int>> GetUnreadCount()
         {
             var userId = HttpContext.GetUserId();
-            var count = await _privateMessageService.GetUnreadCountAsync(userId);
+            var count = await _chatMessageService.GetUnreadCountAsync(userId);
             return Ok(count);
         }
 
@@ -98,7 +98,7 @@ namespace AIDoor.WebAPI.Controllers
         public async Task<ActionResult> MarkAsRead(int messageId)
         {
             var userId = HttpContext.GetUserId();
-            var success = await _privateMessageService.MarkAsReadAsync(userId, messageId);
+            var success = await _chatMessageService.MarkAsReadAsync(userId, messageId);
             if (!success)
             {
                 return NotFound("消息不存在或您无权操作此消息");
@@ -115,7 +115,7 @@ namespace AIDoor.WebAPI.Controllers
         public async Task<ActionResult<int>> MarkAllAsRead(int partnerId)
         {
             var userId = HttpContext.GetUserId();
-            var count = await _privateMessageService.MarkAllAsReadAsync(userId, partnerId);
+            var count = await _chatMessageService.MarkAllAsReadAsync(userId, partnerId);
             return Ok(count);
         }
 
@@ -128,7 +128,7 @@ namespace AIDoor.WebAPI.Controllers
         public async Task<ActionResult> DeleteMessage(int messageId)
         {
             var userId = HttpContext.GetUserId();
-            var success = await _privateMessageService.DeleteMessageAsync(userId, messageId);
+            var success = await _chatMessageService.DeleteMessageAsync(userId, messageId);
             if (!success)
             {
                 return NotFound("消息不存在或您无权删除此消息");

@@ -7,7 +7,7 @@ namespace AIDoor.WebAPI.Domain
     /// <summary>
     /// 私信消息实体
     /// </summary>
-    public class PrivateMessage : BaseEntity
+    public class ChatMessage : BaseEntity
     {
         /// <summary>
         /// 发送者ID

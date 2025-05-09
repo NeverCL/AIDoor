@@ -33,7 +33,7 @@ public class AppDbContext : DbContext
     public DbSet<PublisherRating> PublisherRatings { get; set; }
 
     // 私信消息表
-    public DbSet<PrivateMessage> PrivateMessages { get; set; }
+    public DbSet<ChatMessage> PrivateMessages { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -170,28 +170,28 @@ public class AppDbContext : DbContext
             .HasIndex(r => r.PublisherId); // 便于按发布者查询评分
 
         // 私信消息配置
-        modelBuilder.Entity<PrivateMessage>()
+        modelBuilder.Entity<ChatMessage>()
             .HasOne(pm => pm.Sender)
             .WithMany()
             .HasForeignKey(pm => pm.SenderId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        modelBuilder.Entity<PrivateMessage>()
+        modelBuilder.Entity<ChatMessage>()
             .HasOne(pm => pm.Receiver)
             .WithMany()
             .HasForeignKey(pm => pm.ReceiverId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        modelBuilder.Entity<PrivateMessage>()
+        modelBuilder.Entity<ChatMessage>()
             .HasIndex(pm => pm.SenderId);
 
-        modelBuilder.Entity<PrivateMessage>()
+        modelBuilder.Entity<ChatMessage>()
             .HasIndex(pm => pm.ReceiverId);
 
-        modelBuilder.Entity<PrivateMessage>()
+        modelBuilder.Entity<ChatMessage>()
             .HasIndex(pm => pm.IsRead);
 
-        modelBuilder.Entity<PrivateMessage>()
+        modelBuilder.Entity<ChatMessage>()
             .HasIndex(pm => pm.CreatedAt);
     }
 }
