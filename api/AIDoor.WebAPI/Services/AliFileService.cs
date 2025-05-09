@@ -65,7 +65,7 @@ public class AliFileService
         }
     }
 
-    static HashSet<string> videoExtensions = new HashSet<string> { ".avi", ".mov", ".wmv", ".flv", ".mpeg", ".mpg", ".m4v", ".webm", ".mkv" };
+    static HashSet<string> videoExtensions = new HashSet<string> { ".mp4", ".avi", ".mov", ".wmv", ".flv", ".mpeg", ".mpg", ".m4v", ".webm", ".mkv" };
 
     public async Task<string> UploadFileAsync(IFormFile file)
     {
@@ -87,12 +87,12 @@ public class AliFileService
 
         // isVideo
 
-        // var isVideo = videoExtensions.Contains(fileExtension);
+        var isVideo = videoExtensions.Contains(fileExtension);
 
-        // if (isVideo)
-        // {
-        //     objectKey = "video/" + objectKey;
-        // }
+        if (isVideo)
+        {
+            objectKey = "video/" + objectKey;
+        }
 
         using (var stream = file.OpenReadStream())
         {
