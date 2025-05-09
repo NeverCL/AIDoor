@@ -19,6 +19,8 @@ export const IMAGE_SIZES = {
     CONTENT_LARGE: 20,   // 内容大图，约320px
 };
 
+const videoExt = ['.mp4', '.mov'];
+
 /**
  * 处理图片URL，获取优化后的URL
  * @param url 原始图片URL
@@ -29,9 +31,10 @@ export const IMAGE_SIZES = {
  */
 export function getImageUrl(
     url?: string,
+    noCompress: boolean = false,
     remWidth: number = IMAGE_SIZES.CONTENT_SMALL,
     defaultImg: string = DEFAULT_AVATAR,
-    quality: number = 85
+    quality: number = 85,
 ): string {
     // 如果URL为空或undefined，返回默认图片
     if (!url) return defaultImg;
@@ -45,8 +48,11 @@ export function getImageUrl(
     // 检查URL是否已包含参数
     const hasParams = url.includes('?');
 
+    // 检查URL是否已包含x-oss-process参数 或者 视频格式
+    noCompress = noCompress || url.includes('x-oss-process');
+
     // 构建压缩参数
-    const compressParams = url.includes('x-oss-process') ? '' : `${hasParams ? '&' : '?'}x-oss-process=image/resize,w_${pxWidth},m_lfit/quality,q_${quality}`;
+    const compressParams = noCompress ? '' : `${hasParams ? '&' : '?'}x-oss-process=image/resize,w_${pxWidth},m_lfit/quality,q_${quality}`;
 
     if (url.includes('http')) {
         return url + compressParams;

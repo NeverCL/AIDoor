@@ -77,9 +77,6 @@ export default () => {
                         name="avatarUrl"
                         label="发布者头像"
                         rules={[{ required: true, message: '请上传头像' }]}
-                    // getValueFromEvent={(value) => {
-                    //     return value.map((file: any) => file.extra.fileName);
-                    // }}
                     >
                         <ImgUploader accept="image/*" maxCount={1} />
                     </Form.Item>

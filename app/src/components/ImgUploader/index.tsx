@@ -36,8 +36,10 @@ const ImgUploader: FC<ImgUploaderProps> = ({
         }
 
         if (Array.isArray(value)) {
+            if (value.length === fileList.length)
+                return;
             setFileList(value.map((item) => ({
-                url: getImageUrl(item),
+                url: getImageUrl(item, true),
                 extra: item
             })));
         } else {
