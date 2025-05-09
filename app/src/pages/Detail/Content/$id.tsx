@@ -465,7 +465,7 @@ export default () => {
 
                         <div className="flex items-center mb-4">
                             <Image
-                                src={content.createdByAvatar || require('@/assets/my/icon.png')}
+                                src={getImageUrl(content.createdByAvatar)}
                                 width={32}
                                 height={32}
                                 fit="cover"

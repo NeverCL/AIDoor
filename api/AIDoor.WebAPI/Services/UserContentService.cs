@@ -116,6 +116,8 @@ public class UserContentService
             return null;
         }
 
+        var publisher = await _context.Publishers.FirstAsync(x => x.UserId == content.UserId);
+
         return new UserContentDto
         {
             Id = content.Id,
@@ -123,7 +125,7 @@ public class UserContentService
             Content = content.Content,
             Images = content.Images,
             CreatedBy = content.User.Username,
-            CreatedByAvatar = content.User.AvatarUrl,
+            CreatedByAvatar = publisher.AvatarUrl,
             CreatedAt = content.CreatedAt,
             UserId = content.UserId
         };

@@ -138,7 +138,7 @@ export default () => {
                     </div>
                     <div className="ml-4">
                         <div className="text-lg font-bold">{publisherData?.name || '未设置昵称'}</div>
-                        <div className="text-sm text-gray-500">简介：{publisherData?.description || '暂无简介'}</div>
+                        <div className="text-sm text-gray-500">{publisherData?.summary || '暂无简介'}</div>
                     </div>
                     <div className="ml-auto flex items-center">
                         <div className="text-2xl" onClick={() => history.push(`/chat/${publisherData?.id}`)}>
