@@ -44,7 +44,7 @@ namespace AIDoor.WebAPI.Services
                 CreatedAt = DateTime.UtcNow
             };
 
-            await _dbContext.PrivateMessages.AddAsync(message);
+            await _dbContext.ChatMessages.AddAsync(message);
             await _dbContext.SaveChangesAsync();
 
             var sender = await _dbContext.Users.FindAsync(userId);
@@ -73,7 +73,7 @@ namespace AIDoor.WebAPI.Services
         /// <returns></returns>
         public async Task<(IEnumerable<ChatMessageDto> Messages, int Total)> GetUserChatMessagesAsync(int userId, PrivateMessageQueryParams queryParams)
         {
-            var query = _dbContext.PrivateMessages
+            var query = _dbContext.ChatMessages
                 .Include(pm => pm.Sender)
                 .Include(pm => pm.Receiver)
                 .Where(pm => pm.SenderId == userId || pm.ReceiverId == userId);
@@ -124,7 +124,7 @@ namespace AIDoor.WebAPI.Services
         /// <returns></returns>
         public async Task<int> GetUnreadCountAsync(int userId)
         {
-            return await _dbContext.PrivateMessages
+            return await _dbContext.ChatMessages
                 .CountAsync(pm => pm.ReceiverId == userId && !pm.IsRead);
         }
 
@@ -136,7 +136,7 @@ namespace AIDoor.WebAPI.Services
         /// <returns></returns>
         public async Task<bool> MarkAsReadAsync(int userId, int messageId)
         {
-            var message = await _dbContext.PrivateMessages
+            var message = await _dbContext.ChatMessages
                 .FirstOrDefaultAsync(pm => pm.Id == messageId && pm.ReceiverId == userId);
 
             if (message == null)
@@ -162,7 +162,7 @@ namespace AIDoor.WebAPI.Services
         /// <returns></returns>
         public async Task<int> MarkAllAsReadAsync(int userId, int partnerId)
         {
-            var unreadMessages = await _dbContext.PrivateMessages
+            var unreadMessages = await _dbContext.ChatMessages
                 .Where(pm => pm.ReceiverId == userId && pm.SenderId == partnerId && !pm.IsRead)
                 .ToListAsync();
 
@@ -190,7 +190,7 @@ namespace AIDoor.WebAPI.Services
         public async Task<IEnumerable<ConversationPartnerDto>> GetConversationPartnersAsync(int userId)
         {
             // 获取与用户相关的所有私信
-            var messages = await _dbContext.PrivateMessages
+            var messages = await _dbContext.ChatMessages
                 .Include(pm => pm.Sender)
                 .Include(pm => pm.Receiver)
                 .Where(pm => pm.SenderId == userId || pm.ReceiverId == userId)
@@ -232,7 +232,7 @@ namespace AIDoor.WebAPI.Services
         /// <returns></returns>
         public async Task<bool> DeleteMessageAsync(int userId, int messageId)
         {
-            var message = await _dbContext.PrivateMessages
+            var message = await _dbContext.ChatMessages
                 .FirstOrDefaultAsync(pm => pm.Id == messageId && (pm.SenderId == userId || pm.ReceiverId == userId));
 
             if (message == null)
@@ -240,7 +240,7 @@ namespace AIDoor.WebAPI.Services
                 return false;
             }
 
-            _dbContext.PrivateMessages.Remove(message);
+            _dbContext.ChatMessages.Remove(message);
             await _dbContext.SaveChangesAsync();
             return true;
         }

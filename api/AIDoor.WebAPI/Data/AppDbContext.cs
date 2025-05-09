@@ -33,7 +33,7 @@ public class AppDbContext : DbContext
     public DbSet<PublisherRating> PublisherRatings { get; set; }
 
     // 私信消息表
-    public DbSet<ChatMessage> PrivateMessages { get; set; }
+    public DbSet<ChatMessage> ChatMessages { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
