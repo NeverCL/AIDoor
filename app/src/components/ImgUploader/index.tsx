@@ -28,23 +28,22 @@ const ImgUploader: FC<ImgUploaderProps> = ({
     onChange,
     maxCount = 3
 }) => {
-
     const [fileList, setFileList] = useState<ImageUploadItem[]>([]);
 
     useEffect(() => {
-        if (value) {
-            if (Array.isArray(value)) {
-                setFileList(value.map((item) => ({
-                    url: getImageUrl(item),
-                    extra: item
-                })));
-            } else {
-                setFileList([{
-                    url: getImageUrl(value),
-                    extra: value
-                }]);
-            }
+        if (!value) {
+            return;
         }
+
+        if (Array.isArray(value)) {
+            setFileList(value.map((item) => ({
+                url: getImageUrl(item),
+                extra: item
+            })));
+        } else {
+            onChange?.([value]);
+        }
+
     }, [value]);
 
     return (
@@ -52,7 +51,7 @@ const ImgUploader: FC<ImgUploaderProps> = ({
             value={fileList}
             onChange={(fileList) => {
                 setFileList(fileList);
-                onChange?.(fileList);
+                onChange?.(fileList.map(item => item.extra.fileName));
             }}
             accept={accept}
             upload={upload}

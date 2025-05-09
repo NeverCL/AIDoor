@@ -136,6 +136,7 @@ public class PublisherService
                 // 更新现有发布者信息
                 publisher.Name = name;
                 publisher.AvatarUrl = avatarUrl;
+                publisher.Summary = summary;
                 publisher.Description = description;
                 publisher.Type = type;
                 publisher.Website = website;

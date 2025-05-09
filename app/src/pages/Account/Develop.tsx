@@ -9,15 +9,14 @@ import { FormInstance } from 'antd-mobile/es/components/form';
 export default () => {
     const formRef = useRef<FormInstance>(null);
 
-    const { data: publisher } = useRequest(api.publisher.getPublisherMy);
-
-    formRef.current?.setFieldsValue(publisher);
+    useRequest(api.publisher.getPublisherMy, {
+        onSuccess: (res) => {
+            formRef.current?.setFieldsValue(res);
+        }
+    });
 
     const { run: postPublisher, loading } = useRequest(api.publisher.postPublisher, {
         manual: true,
-        onSuccess: (res) => {
-            console.log(res);
-        }
     });
 
     const onFinish = async (values: any) => {
@@ -29,13 +28,14 @@ export default () => {
             name: values.name,
             avatarUrl: avatarUrl,
             description: values.description,
+            summary: values.summary,
             type: Number(values.type), // 转换为数字类型
             website: values.website,
             appLink: values.appLink
         };
 
         // 提交发布者信息
-        const response = await postPublisher(createPublisherRequest);
+        await postPublisher(createPublisherRequest);
 
         // 跳转到我的页面
         setTimeout(() => {
@@ -77,9 +77,9 @@ export default () => {
                         name="avatarUrl"
                         label="发布者头像"
                         rules={[{ required: true, message: '请上传头像' }]}
-                        getValueFromEvent={(value) => {
-                            return value.map((file: any) => file.extra.fileName);
-                        }}
+                    // getValueFromEvent={(value) => {
+                    //     return value.map((file: any) => file.extra.fileName);
+                    // }}
                     >
                         <ImgUploader accept="image/*" maxCount={1} />
                     </Form.Item>
