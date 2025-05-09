@@ -73,6 +73,24 @@ public class UserRecordService
                 }
             }
 
+            // 获取目标内容的创建者ID，设置为TargetUserId
+            int? targetUserId = null;
+            if (recordDto.TargetId.HasValue && !string.IsNullOrEmpty(recordDto.TargetType))
+            {
+                if (recordDto.TargetType.Equals("Content", StringComparison.OrdinalIgnoreCase))
+                {
+                    var content = await _context.UserContents.FindAsync(recordDto.TargetId.Value);
+                    if (content != null)
+                    {
+                        targetUserId = content.UserId;
+                    }
+                }
+                else if (recordDto.TargetType.Equals("User", StringComparison.OrdinalIgnoreCase))
+                {
+                    targetUserId = recordDto.TargetId;
+                }
+            }
+
             // 创建新记录
             var userRecord = new UserRecord
             {
@@ -80,6 +98,7 @@ public class UserRecordService
                 Title = recordDto.Title,
                 ImageUrl = recordDto.ImageUrl,
                 UserId = userId,
+                TargetUserId = targetUserId,
                 Notes = recordDto.TargetId.HasValue && !string.IsNullOrEmpty(recordDto.TargetType)
                     ? $"{recordDto.TargetType}:{recordDto.TargetId}"
                     : recordDto.Notes,

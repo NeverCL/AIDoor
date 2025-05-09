@@ -52,12 +52,19 @@ public class UserRecord : BaseEntity
 
     public string ImageUrl { get; set; } = string.Empty;
 
-    // User foreign key
+    // 执行操作的用户ID（如：谁点赞、谁收藏）
     public int UserId { get; set; }
 
-    // Navigation property to User
+    // 执行操作的用户导航属性
     [ForeignKey("UserId")]
     public User User { get; set; } = null!;
+
+    // 被操作的用户ID（如：谁被点赞、谁的内容被收藏）
+    public int? TargetUserId { get; set; }
+
+    // 被操作的用户导航属性
+    [ForeignKey("TargetUserId")]
+    public User? TargetUser { get; set; }
 
     // 可选备注
     public string? Notes { get; set; }

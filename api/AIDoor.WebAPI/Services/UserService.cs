@@ -414,31 +414,21 @@ public class UserService
         };
 
         // 3. 获取统计数据
-        // 获取发布者的点赞数
+        // 使用TargetUserId获取发布者的点赞数
         var likesCount = await _context.UserRecords
             .CountAsync(r => r.RecordType == RecordType.Like &&
-                        r.Notes != null &&
-                        r.Notes.StartsWith("Content:") &&
-                        _context.UserContents
-                            .Any(c => c.UserId == publisherId &&
-                                  r.Notes == $"Content:{c.Id}"));
+                        r.TargetUserId == publisherId &&
+                        r.IsActive);
 
         // 获取发布者的粉丝数（被关注数）
         var followersCount = await _context.UserFollows
-            .CountAsync(f => f.FollowingId == publisherId);
+            .CountAsync(f => f.FollowingId == publisherId && f.IsActive);
 
-        // 获取发布者关注的人数
-        var followingCount = await _context.UserFollows
-            .CountAsync(f => f.FollowerId == publisherId);
-
-        // 获取发布者的收藏数
+        // 使用TargetUserId获取发布者的收藏数
         var favoritesCount = await _context.UserRecords
             .CountAsync(r => r.RecordType == RecordType.Favorite &&
-                        r.Notes != null &&
-                        r.Notes.StartsWith("Content:") &&
-                        _context.UserContents
-                            .Any(c => c.UserId == publisherId &&
-                                  r.Notes == $"Content:{c.Id}"));
+                        r.TargetUserId == publisherId &&
+                        r.IsActive);
 
         // 设置统计数据
         publisherDto.Stats = new PublisherStatsDto

@@ -100,7 +100,7 @@ public class UserContentService
         contents.ForEach(x => x.Images = x.Images.Select(image => videoExtensions.Contains(Path.GetExtension(image))
             ? $"preview/{Path.GetDirectoryName(image) ?? ""}/{Path.GetFileNameWithoutExtension(image)}.png"
             : image + "?x-oss-process=image/resize,p_30").ToArray());
-        
+
         return (contents, totalCount);
     }
 
@@ -134,15 +134,26 @@ public class UserContentService
     // 获取内容的统计数据（点赞数、收藏数、评论数）
     public async Task<ContentStatsDto> GetContentStatsAsync(int contentId)
     {
-        // 获取点赞数
+        // 获取内容所有者ID
+        var content = await _context.UserContents.FindAsync(contentId);
+        if (content == null)
+        {
+            return new ContentStatsDto();
+        }
+
+        int contentOwnerId = content.UserId;
+
+        // 获取点赞数 - 使用TargetUserId和Notes两种方式查询以兼容新旧数据
         int likesCount = await _context.UserRecords.CountAsync(r =>
             r.RecordType == RecordType.Like &&
-            r.Notes == $"Content:{contentId}");
+            ((r.TargetUserId == contentOwnerId && r.Notes == $"Content:{contentId}") ||
+             (r.Notes == $"Content:{contentId}")));
 
-        // 获取收藏数
+        // 获取收藏数 - 使用TargetUserId和Notes两种方式查询以兼容新旧数据
         int favoritesCount = await _context.UserRecords.CountAsync(r =>
             r.RecordType == RecordType.Favorite &&
-            r.Notes == $"Content:{contentId}");
+            ((r.TargetUserId == contentOwnerId && r.Notes == $"Content:{contentId}") ||
+             (r.Notes == $"Content:{contentId}")));
 
         // 获取评论数
         int commentsCount = await _context.Comments.CountAsync(c =>
