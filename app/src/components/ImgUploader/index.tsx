@@ -1,6 +1,7 @@
 import api from "@/services/api";
+import { getImageUrl } from "@/utils";
 import { ImageUploader, ImageUploadItem } from "antd-mobile";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 
 // 上传文件方法
 const upload = async (file: File) => {
@@ -27,7 +28,24 @@ const ImgUploader: FC<ImgUploaderProps> = ({
     onChange,
     maxCount = 3
 }) => {
-    const [fileList, setFileList] = useState(value);
+
+    const [fileList, setFileList] = useState<ImageUploadItem[]>([]);
+
+    useEffect(() => {
+        if (value) {
+            if (Array.isArray(value)) {
+                setFileList(value.map((item) => ({
+                    url: getImageUrl(item),
+                    extra: item
+                })));
+            } else {
+                setFileList([{
+                    url: getImageUrl(value),
+                    extra: value
+                }]);
+            }
+        }
+    }, [value]);
 
     return (
         <ImageUploader
