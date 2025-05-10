@@ -127,6 +127,11 @@ public class PublisherService
                 };
                 _context.Publishers.Add(publisher);
                 await _context.SaveChangesAsync();
+
+                // 更新用户的 PublisherId 属性
+                user.PublisherId = publisher.Id;
+                await _context.SaveChangesAsync();
+
                 return (true, "发布者信息已提交，等待审核", publisher);
             }
             else
@@ -153,6 +158,13 @@ public class PublisherService
                 }
 
                 await _context.SaveChangesAsync();
+
+                // 确保用户的 PublisherId 属性正确设置
+                if (user.PublisherId != publisher.Id)
+                {
+                    user.PublisherId = publisher.Id;
+                    await _context.SaveChangesAsync();
+                }
 
                 string message = needReview
                     ? "发布者信息已更新，等待重新审核"
@@ -190,6 +202,30 @@ public class PublisherService
             publisher.ReviewNote = reviewNote;
             publisher.ReviewedAt = DateTime.UtcNow;
             publisher.UpdatedAt = DateTime.UtcNow;
+
+            // 如果有关联用户，更新用户的 PublisherId
+            if (publisher.UserId.HasValue)
+            {
+                var user = await _context.Users.FindAsync(publisher.UserId.Value);
+                if (user != null)
+                {
+                    if (approved)
+                    {
+                        // 审核通过时，确保 PublisherId 设置正确
+                        if (user.PublisherId != publisherId)
+                        {
+                            user.PublisherId = publisherId;
+                        }
+                    }
+                    else
+                    {
+                        // 审核拒绝时，可以选择是否清除 PublisherId
+                        // 这里保留关联，让用户可以修改后重新提交
+                        // 如果业务需要完全解除关联，取消下面的注释
+                        // user.PublisherId = null;
+                    }
+                }
+            }
 
             await _context.SaveChangesAsync();
 
@@ -372,6 +408,17 @@ public class PublisherService
             if (publisher == null)
             {
                 return (false, "发布者不存在");
+            }
+
+            // 如果存在关联的用户，清除用户的 PublisherId
+            if (publisher.UserId.HasValue)
+            {
+                var user = await _context.Users.FindAsync(publisher.UserId.Value);
+                if (user != null && user.PublisherId == publisherId)
+                {
+                    user.PublisherId = null;
+                    await _context.SaveChangesAsync();
+                }
             }
 
             _context.Publishers.Remove(publisher);
