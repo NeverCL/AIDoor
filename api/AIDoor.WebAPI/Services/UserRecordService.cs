@@ -74,7 +74,7 @@ public class UserRecordService
             }
 
             // 获取目标内容的创建者ID，设置为TargetUserId
-            int? targetUserId = null;
+            int targetUserId = 0; // 默认值为0，表示未指定目标
             if (recordDto.TargetId.HasValue && !string.IsNullOrEmpty(recordDto.TargetType))
             {
                 if (recordDto.TargetType.Equals("Content", StringComparison.OrdinalIgnoreCase))
@@ -87,7 +87,7 @@ public class UserRecordService
                 }
                 else if (recordDto.TargetType.Equals("User", StringComparison.OrdinalIgnoreCase))
                 {
-                    targetUserId = recordDto.TargetId;
+                    targetUserId = recordDto.TargetId.Value;
                 }
             }
 

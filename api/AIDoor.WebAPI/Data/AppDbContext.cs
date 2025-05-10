@@ -13,7 +13,7 @@ public class AppDbContext : DbContext
     public DbSet<User> Users { get; set; }
 
     public DbSet<AppCategory> ApplicationCategories { get; set; }
-    
+
     public DbSet<AppItem> Applications { get; set; }
 
     // 用户记录表
@@ -57,6 +57,13 @@ public class AppDbContext : DbContext
             .HasOne(ur => ur.User)
             .WithMany()
             .HasForeignKey(ur => ur.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        // 用户记录和发布者之间的关系配置
+        modelBuilder.Entity<UserRecord>()
+            .HasOne(ur => ur.Publisher)
+            .WithMany()
+            .HasForeignKey(ur => ur.TargetUserId)
             .OnDelete(DeleteBehavior.Restrict);
 
         // 用户关注关系配置

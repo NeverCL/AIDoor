@@ -24,10 +24,16 @@ const useUser = () => {
       setIsLoading(false);
     },
     onError: (error) => {
-      setTimeout(() => {
-        location.reload();
-        // setIsLoading(false);
-      }, 1000);
+      console.log(error);
+
+      if (error.response.status === 404) {
+        setIsLoading(false);
+      }
+
+      // setTimeout(() => {
+      //   location.reload();
+      //   // setIsLoading(false);
+      // }, 1000);
     },
   });
 

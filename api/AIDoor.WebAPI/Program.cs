@@ -19,4 +19,5 @@ app.ConfigurePipeline();
 // 初始化数据库
 app.SeedDatabase();
 
+
 app.Run();

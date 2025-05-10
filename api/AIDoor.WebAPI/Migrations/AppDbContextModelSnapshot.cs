@@ -327,6 +327,61 @@ namespace AIDoor.WebAPI.Migrations
                     b.ToTable("PublisherRatings");
                 });
 
+            modelBuilder.Entity("AIDoor.WebAPI.Domain.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AvatarUrl")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("FollowCount")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("IsDevMode")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<DateTime?>("LastLoginAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("MessageCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<int?>("PublisherId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PhoneNumber")
+                        .IsUnique();
+
+                    b.HasIndex("PublisherId")
+                        .IsUnique();
+
+                    b.ToTable("Users");
+                });
+
             modelBuilder.Entity("AIDoor.WebAPI.Domain.UserContent", b =>
                 {
                     b.Property<int>("Id")
@@ -344,6 +399,9 @@ namespace AIDoor.WebAPI.Migrations
                     b.Property<string>("Images")
                         .IsRequired()
                         .HasColumnType("longtext");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<int>("PublisherId")
                         .HasColumnType("int");
@@ -424,7 +482,7 @@ namespace AIDoor.WebAPI.Migrations
                     b.Property<int>("RecordType")
                         .HasColumnType("int");
 
-                    b.Property<int?>("TargetUserId")
+                    b.Property<int>("TargetUserId")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
@@ -454,61 +512,6 @@ namespace AIDoor.WebAPI.Migrations
                     b.ToTable("UserRecords");
                 });
 
-            modelBuilder.Entity("AIDoor.WebAPI.Models.User", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AvatarUrl")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<int>("FollowCount")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<bool>("IsDevMode")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<DateTime?>("LastLoginAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<int>("MessageCount")
-                        .HasColumnType("int");
-
-                    b.Property<string>("PhoneNumber")
-                        .IsRequired()
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<int?>("PublisherId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PhoneNumber")
-                        .IsUnique();
-
-                    b.HasIndex("PublisherId")
-                        .IsUnique();
-
-                    b.ToTable("Users");
-                });
-
             modelBuilder.Entity("AIDoor.WebAPI.Domain.AppItem", b =>
                 {
                     b.HasOne("AIDoor.WebAPI.Domain.AppCategory", "Category")
@@ -522,13 +525,13 @@ namespace AIDoor.WebAPI.Migrations
 
             modelBuilder.Entity("AIDoor.WebAPI.Domain.ChatMessage", b =>
                 {
-                    b.HasOne("AIDoor.WebAPI.Models.User", "Receiver")
+                    b.HasOne("AIDoor.WebAPI.Domain.User", "Receiver")
                         .WithMany()
                         .HasForeignKey("ReceiverId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("AIDoor.WebAPI.Models.User", "Sender")
+                    b.HasOne("AIDoor.WebAPI.Domain.User", "Sender")
                         .WithMany()
                         .HasForeignKey("SenderId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -546,7 +549,7 @@ namespace AIDoor.WebAPI.Migrations
                         .HasForeignKey("ParentId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("AIDoor.WebAPI.Models.User", "User")
+                    b.HasOne("AIDoor.WebAPI.Domain.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -565,7 +568,7 @@ namespace AIDoor.WebAPI.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("AIDoor.WebAPI.Models.User", "User")
+                    b.HasOne("AIDoor.WebAPI.Domain.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -574,6 +577,16 @@ namespace AIDoor.WebAPI.Migrations
                     b.Navigation("Publisher");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("AIDoor.WebAPI.Domain.User", b =>
+                {
+                    b.HasOne("AIDoor.WebAPI.Domain.Publisher", "Publisher")
+                        .WithOne("User")
+                        .HasForeignKey("AIDoor.WebAPI.Domain.User", "PublisherId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Publisher");
                 });
 
             modelBuilder.Entity("AIDoor.WebAPI.Domain.UserContent", b =>
@@ -589,13 +602,13 @@ namespace AIDoor.WebAPI.Migrations
 
             modelBuilder.Entity("AIDoor.WebAPI.Domain.UserFollow", b =>
                 {
-                    b.HasOne("AIDoor.WebAPI.Models.User", "Follower")
+                    b.HasOne("AIDoor.WebAPI.Domain.User", "Follower")
                         .WithMany()
                         .HasForeignKey("FollowerId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("AIDoor.WebAPI.Models.User", "Following")
+                    b.HasOne("AIDoor.WebAPI.Domain.Publisher", "Following")
                         .WithMany()
                         .HasForeignKey("FollowingId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -608,29 +621,21 @@ namespace AIDoor.WebAPI.Migrations
 
             modelBuilder.Entity("AIDoor.WebAPI.Domain.UserRecord", b =>
                 {
-                    b.HasOne("AIDoor.WebAPI.Models.User", "TargetUser")
+                    b.HasOne("AIDoor.WebAPI.Domain.Publisher", "Publisher")
                         .WithMany()
-                        .HasForeignKey("TargetUserId");
+                        .HasForeignKey("TargetUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
-                    b.HasOne("AIDoor.WebAPI.Models.User", "User")
+                    b.HasOne("AIDoor.WebAPI.Domain.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("TargetUser");
+                    b.Navigation("Publisher");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("AIDoor.WebAPI.Models.User", b =>
-                {
-                    b.HasOne("AIDoor.WebAPI.Domain.Publisher", "Publisher")
-                        .WithOne("User")
-                        .HasForeignKey("AIDoor.WebAPI.Models.User", "PublisherId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("Publisher");
                 });
 
             modelBuilder.Entity("AIDoor.WebAPI.Domain.AppCategory", b =>

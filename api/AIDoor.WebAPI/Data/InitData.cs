@@ -24,11 +24,6 @@ public class InitData
             SeedUsers(context);
         }
 
-        if (!context.UserRecords.Any())
-        {
-            SeedUserRecords(context);
-        }
-
         context.SaveChanges();
     }
 

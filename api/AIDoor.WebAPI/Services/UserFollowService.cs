@@ -55,10 +55,10 @@ public class UserFollowService
             }
 
             // 检查被关注用户是否存在
-            var followingUser = await _context.Users.FindAsync(dto.FollowingId);
-            if (followingUser == null)
+            var followingPublisher = await _context.Publishers.FindAsync(dto.FollowingId);
+            if (followingPublisher == null)
             {
-                return (false, "要关注的用户不存在", null);
+                return (false, "要关注的发布者不存在", null);
             }
 
             // 检查是否已经关注过该用户
@@ -70,7 +70,7 @@ public class UserFollowService
 
             if (existingFollow != null)
             {
-                return (false, "已经关注过该用户", null);
+                return (false, "已经关注过该发布者", null);
             }
 
             // 如果之前关注过但取消了，则重新激活
@@ -94,7 +94,15 @@ public class UserFollowService
 
                 await _context.SaveChangesAsync();
 
-                return (true, "关注成功", MapToDto(inactiveFollow, followingUser));
+                return (true, "关注成功", new UserFollowResponseDto
+                {
+                    Id = inactiveFollow.Id,
+                    FollowerId = inactiveFollow.FollowerId,
+                    FollowingId = inactiveFollow.FollowingId,
+                    FollowingUsername = followingPublisher.Name,
+                    FollowingAvatarUrl = followingPublisher.AvatarUrl,
+                    CreatedAt = inactiveFollow.CreatedAt
+                });
             }
 
             // 创建新的关注关系
@@ -117,7 +125,15 @@ public class UserFollowService
 
             await _context.SaveChangesAsync();
 
-            return (true, "关注成功", MapToDto(newFollow, followingUser));
+            return (true, "关注成功", new UserFollowResponseDto
+            {
+                Id = newFollow.Id,
+                FollowerId = newFollow.FollowerId,
+                FollowingId = newFollow.FollowingId,
+                FollowingUsername = followingPublisher.Name,
+                FollowingAvatarUrl = followingPublisher.AvatarUrl,
+                CreatedAt = newFollow.CreatedAt
+            });
         }
         catch (Exception ex)
         {
@@ -199,7 +215,7 @@ public class UserFollowService
                 Id = uf.Id,
                 FollowerId = uf.FollowerId,
                 FollowingId = uf.FollowingId,
-                FollowingUsername = uf.Following.Username,
+                FollowingUsername = uf.Following.Name,
                 FollowingAvatarUrl = uf.Following.AvatarUrl,
                 CreatedAt = uf.CreatedAt
             }).ToList();
@@ -232,21 +248,5 @@ public class UserFollowService
         {
             return false;
         }
-    }
-
-    /// <summary>
-    /// 将实体映射为DTO
-    /// </summary>
-    private UserFollowResponseDto MapToDto(UserFollow entity, User followingUser)
-    {
-        return new UserFollowResponseDto
-        {
-            Id = entity.Id,
-            FollowerId = entity.FollowerId,
-            FollowingId = entity.FollowingId,
-            FollowingUsername = followingUser.Username,
-            FollowingAvatarUrl = followingUser.AvatarUrl,
-            CreatedAt = entity.CreatedAt
-        };
     }
 }

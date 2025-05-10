@@ -32,11 +32,11 @@ public class UserRecord : BaseEntity
     public User User { get; set; } = null!;
 
     // 被操作的用户ID（如：谁被点赞、谁的内容被收藏）
-    public int PublisherId { get; set; }
+    public int TargetUserId { get; set; }
 
     // 被操作的用户导航属性
     [ForeignKey("TargetUserId")]
-    public Publisher Publisher { get; set; }
+    public Publisher Publisher { get; set; } = null!;
 
     // 可选备注
     public string? Notes { get; set; }
