@@ -24,7 +24,10 @@ const useUser = () => {
       setIsLoading(false);
     },
     onError: (error) => {
-      setIsLoading(false);
+      setTimeout(() => {
+        location.reload();
+        // setIsLoading(false);
+      }, 1000);
     },
   });
 
