@@ -123,24 +123,17 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Comment>()
             .HasIndex(c => c.CreatedAt);
 
-        // DeveloperApplication 配置
-        modelBuilder.Entity<DeveloperApplication>()
-            .HasOne(da => da.User)
-            .WithMany()
-            .HasForeignKey(da => da.UserId)
-            .OnDelete(DeleteBehavior.Restrict);
-
-        modelBuilder.Entity<DeveloperApplication>()
-            .HasIndex(da => da.Status);
-
-        modelBuilder.Entity<DeveloperApplication>()
-            .HasIndex(da => da.UserId);
-
         // Publisher 配置
         modelBuilder.Entity<Publisher>()
             .HasOne(p => p.User)
-            .WithMany()
-            .HasForeignKey(p => p.UserId)
+            .WithOne(u => u.Publisher)
+            .HasForeignKey<Publisher>(p => p.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<User>()
+            .HasOne(u => u.Publisher)
+            .WithOne(p => p.User)
+            .HasForeignKey<User>(u => u.PublisherId)
             .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<Publisher>()

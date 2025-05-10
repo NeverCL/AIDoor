@@ -91,8 +91,8 @@ public class UserContentService
                 Title = uc.Title,
                 Content = uc.Content,
                 Images = uc.Images,
-                CreatedBy = uc.User.Username,
-                CreatedByAvatar = uc.User.AvatarUrl,
+                CreatedBy = uc.User.Publisher.Name,
+                CreatedByAvatar = uc.User.Publisher.AvatarUrl,
                 CreatedAt = uc.CreatedAt
             })
             .ToListAsync();

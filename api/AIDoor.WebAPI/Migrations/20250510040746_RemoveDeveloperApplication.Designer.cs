@@ -4,6 +4,7 @@ using AIDoor.WebAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AIDoor.WebAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250510040746_RemoveDeveloperApplication")]
+    partial class RemoveDeveloperApplication
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -284,6 +287,8 @@ namespace AIDoor.WebAPI.Migrations
 
                     b.HasIndex("Status");
 
+                    b.HasIndex("UserId");
+
                     b.ToTable("Publishers");
                 });
 
@@ -491,6 +496,9 @@ namespace AIDoor.WebAPI.Migrations
                     b.Property<int?>("PublisherId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("PublisherId1")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime(6)");
 
@@ -503,8 +511,7 @@ namespace AIDoor.WebAPI.Migrations
                     b.HasIndex("PhoneNumber")
                         .IsUnique();
 
-                    b.HasIndex("PublisherId")
-                        .IsUnique();
+                    b.HasIndex("PublisherId1");
 
                     b.ToTable("Users");
                 });
@@ -553,6 +560,16 @@ namespace AIDoor.WebAPI.Migrations
                         .IsRequired();
 
                     b.Navigation("Parent");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("AIDoor.WebAPI.Domain.Publisher", b =>
+                {
+                    b.HasOne("AIDoor.WebAPI.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("User");
                 });
@@ -626,9 +643,8 @@ namespace AIDoor.WebAPI.Migrations
             modelBuilder.Entity("AIDoor.WebAPI.Models.User", b =>
                 {
                     b.HasOne("AIDoor.WebAPI.Domain.Publisher", "Publisher")
-                        .WithOne("User")
-                        .HasForeignKey("AIDoor.WebAPI.Models.User", "PublisherId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .WithMany()
+                        .HasForeignKey("PublisherId1");
 
                     b.Navigation("Publisher");
                 });
@@ -641,8 +657,6 @@ namespace AIDoor.WebAPI.Migrations
             modelBuilder.Entity("AIDoor.WebAPI.Domain.Publisher", b =>
                 {
                     b.Navigation("Ratings");
-
-                    b.Navigation("User");
                 });
 #pragma warning restore 612, 618
         }
