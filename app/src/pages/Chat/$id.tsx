@@ -4,14 +4,9 @@ import api from "@/services/api";
 import { useParams } from "@umijs/max";
 import messages from "../My/messages";
 import { Input, Button } from "antd-mobile";
+import { getImageUrl } from "@/utils";
 export default () => {
     const { id } = useParams();
-
-    // const { data } = useRequest(api.chat.getChat, {
-    //     params: {
-    //         id: id
-    //     }
-    // });
 
     const mockData = {
         user: {
@@ -51,8 +46,6 @@ export default () => {
         ]
     }
 
-
-
     return (
         <BackNavBar title={mockData.user.name}>
             <div className="flex-1 flex flex-col *:mt-4 overflow-y-auto">
@@ -61,7 +54,7 @@ export default () => {
                         <div key={message.id}>
                             <div className={`flex items-center ${message.isMe ? 'flex-row-reverse' : 'flex-row'}`}>
                                 <div className="w-10 h-10 rounded-full bg-gray-300 mx-2">
-                                    <img src={mockData.user.avatar} alt="avatar" className="w-full h-full rounded-full object-cover" />
+                                    <img src={getImageUrl(mockData.user.avatar)} alt="avatar" className="w-full h-full rounded-full object-cover" />
                                 </div>
                                 <div className={`p-2 rounded-lg bg-secondary`}>
                                     {message.content}
