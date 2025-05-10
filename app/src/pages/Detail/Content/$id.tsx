@@ -463,14 +463,13 @@ export default () => {
 
                         <h1 className="text-xl font-bold mb-2">{content.title}</h1>
 
-                        <div className="flex items-center mb-4">
+                        <div className="flex items-center mb-4" onClick={() => goToPublisher(content.publisherId)}>
                             <Image
                                 src={getImageUrl(content.createdByAvatar)}
                                 width={32}
                                 height={32}
                                 fit="cover"
                                 style={{ borderRadius: 16 }}
-                                onClick={() => goToPublisher(content.publisherId)}
                             />
                             <div className="ml-2 flex-1" onClick={() => goToPublisher(content.userId)}>
                                 <div className="cursor-pointer">{content.createdBy}</div>
