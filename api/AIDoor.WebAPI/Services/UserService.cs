@@ -397,7 +397,7 @@ public class UserService
     public async Task<PublisherDto?> GetPublisherDetailsAsync(int publisherId)
     {
         // 1. 获取发布者基本信息
-        var publisher = await _context.Users.FindAsync(publisherId);
+        var publisher = await _context.Publishers.FindAsync(publisherId);
         if (publisher == null)
         {
             return null;
@@ -407,9 +407,10 @@ public class UserService
         var publisherDto = new PublisherDto
         {
             Id = publisher.Id,
-            Username = publisher.Username,
+            Username = publisher.Name,
             AvatarUrl = publisher.AvatarUrl,
-            Description = "专注提供智能服务", // 可以添加字段或使用默认值
+            Description = publisher.Description,
+            Summary = publisher.Summary,
             CreatedAt = publisher.CreatedAt
         };
 
