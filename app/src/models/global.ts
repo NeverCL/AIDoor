@@ -1,5 +1,6 @@
 // 全局共享数据示例
 import api from '@/services/api';
+import { getImageUrl } from '@/utils/imageUtils';
 import { useRequest } from '@umijs/max';
 import { useEffect, useState } from 'react';
 
@@ -20,6 +21,7 @@ const useUser = () => {
   const { run: requestUserInfo } = useRequest(api.user.getUserProfile, {
     manual: false,
     onSuccess: (response) => {
+      response.avatarUrl = getImageUrl(response.avatarUrl, true);
       setUser(response);
       setIsLoading(false);
     },

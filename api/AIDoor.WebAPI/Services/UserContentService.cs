@@ -51,12 +51,19 @@ public class UserContentService
                 }
             }
 
+            var publisher = await _context.Publishers.FirstAsync(x => x.UserId == userId);
+
+            if (publisher == null)
+            {
+                return (false, "发布者不存在", 0);
+            }
+
             var userContent = new UserContent
             {
                 Title = contentDto.Title,
                 Content = contentDto.Content,
                 Images = contentDto.Images,
-                PublisherId = userId,
+                PublisherId = publisher.Id,
                 CreatedAt = DateTime.UtcNow
             };
 

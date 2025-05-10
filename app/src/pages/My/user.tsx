@@ -1,4 +1,4 @@
-import { Icon, NavLink, useModel, useRequest } from "@umijs/max"
+import { Icon, NavLink, useModel, useRequest, history } from "@umijs/max"
 import { List } from "antd-mobile";
 import { useState, useEffect } from "react";
 import api from '@/services/api';
@@ -152,9 +152,9 @@ const UserCard = () => {
 
     return (
         <div className="h-16 rounded-xl bg-[#525252] flex justify-between items-center px-3">
-            <div className="flex items-center flex-1">
+            <div className="flex items-center flex-1" onClick={() => history.push('/user/edit')}>
                 <div className="h-[3.94rem] w-[3.94rem] relative bottom-[0.63rem]">
-                    <img className="h-full w-full rounded-full" src={require('@/assets/my/icon.png')} alt="my-header" />
+                    <img className="h-full w-full rounded-full" src={user?.avatarUrl} alt="my-header" />
                 </div>
                 <span className="text-lg font-bold ml-3">{user?.username}</span>
             </div>

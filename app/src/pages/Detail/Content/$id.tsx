@@ -470,7 +470,7 @@ export default () => {
                                 height={32}
                                 fit="cover"
                                 style={{ borderRadius: 16 }}
-                                onClick={() => goToPublisher(content.userId)}
+                                onClick={() => goToPublisher(content.publisherId)}
                             />
                             <div className="ml-2 flex-1" onClick={() => goToPublisher(content.userId)}>
                                 <div className="cursor-pointer">{content.createdBy}</div>
@@ -480,7 +480,7 @@ export default () => {
                                     }
                                 </div>
                             </div>
-                            {!isOwnContent && (
+                            {/* {!isOwnContent && (
                                 <Button
                                     loading={followLoading}
                                     disabled={followLoading}
@@ -503,7 +503,7 @@ export default () => {
                                         </>
                                     )}
                                 </Button>
-                            )}
+                            )} */}
                         </div>
 
                         {/* 内容统计信息 */}
@@ -550,7 +550,7 @@ export default () => {
                                         key={comment.id}
                                         prefix={
                                             <Avatar
-                                                src={comment.user.avatarUrl || require('@/assets/my/icon.png')}
+                                                src={getImageUrl(comment.user.avatarUrl)}
                                                 style={{ borderRadius: 20 }}
                                             />
                                         }
@@ -604,16 +604,16 @@ export default () => {
                         </Button>
                     </div>
                 </div>
-                <div className="flex ml-2 space-x-3">
+                <div className="flex ml-2 space-x-3 text-2xl">
                     <div className="flex items-center">
                         {isLiked ? (
                             <HeartFill
-                                className="text-xl text-[#f5222d]"
+                                className=" text-[#f5222d]"
                                 onClick={!likeLoading ? handleLike : undefined}
                             />
                         ) : (
                             <HeartOutline
-                                className="text-xl text-gray-400"
+                                className=" text-gray-400"
                                 onClick={!likeLoading ? handleLike : undefined}
                             />
                         )}
@@ -622,12 +622,12 @@ export default () => {
                     <div className="flex items-center">
                         {isFavorite ? (
                             <StarFill
-                                className="text-xl text-[#faad14]"
+                                className="text-[#faad14]"
                                 onClick={!favoriteLoading ? handleFavorite : undefined}
                             />
                         ) : (
                             <StarOutline
-                                className="text-xl text-gray-400"
+                                className="text-gray-400"
                                 onClick={!favoriteLoading ? handleFavorite : undefined}
                             />
                         )}

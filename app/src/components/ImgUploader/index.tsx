@@ -19,6 +19,7 @@ interface ImgUploaderProps {
     value?: ImageUploadItem[];
     onChange?: (fileList: ImageUploadItem[]) => void;
     maxCount?: number;
+    single?: boolean;
 }
 
 // 改为支持表单的组件
@@ -26,12 +27,29 @@ const ImgUploader: FC<ImgUploaderProps> = ({
     accept = "image/*",
     value = [],
     onChange,
-    maxCount = 3
+    maxCount = 3,
+    single = false
 }) => {
+
+    if (single) {
+        maxCount = 1;
+    }
+
     const [fileList, setFileList] = useState<ImageUploadItem[]>([]);
 
     useEffect(() => {
         if (!value) {
+            return;
+        }
+
+        if (single) {
+            onChange?.(value);
+            setFileList([{
+                url: getImageUrl(value, true),
+                extra: {
+                    fileName: value
+                }
+            }])
             return;
         }
 
@@ -48,12 +66,22 @@ const ImgUploader: FC<ImgUploaderProps> = ({
 
     }, [value]);
 
+    console.log(fileList);
+
     return (
         <ImageUploader
             value={fileList}
             onChange={(fileList) => {
                 setFileList(fileList);
-                onChange?.(fileList.map(item => item.extra.fileName));
+                if (single) {
+                    if (fileList.length > 0) {
+                        onChange?.(fileList[0]?.extra?.fileName);
+                    } else {
+                        onChange?.(null);
+                    }
+                } else {
+                    onChange?.(fileList.map(item => item.extra.fileName));
+                }
             }}
             accept={accept}
             upload={upload}
