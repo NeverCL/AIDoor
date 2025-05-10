@@ -7,6 +7,7 @@ import { useRequest } from '@umijs/max';
 import api from '@/services/api';
 import { getImageUrl } from "@/utils";
 import BackNavBar from "@/components/BackNavBar";
+import openUrl from "@/utils/openUrl";
 
 interface PublisherData {
     id: number;
@@ -214,6 +215,12 @@ export default () => {
                     {/* 详细介绍 */}
                     <div className="p-4">
                         <div className="text-sm text-gray-600">{publisherData?.description || '暂无简介'}</div>
+                    </div>
+
+                    {/* 去App 去官网 */}
+                    <div className="flex justify-between items-center p-4">
+                        {publisherData?.appLink && <Button color="primary" onClick={() => openUrl(publisherData?.appLink)}>去App</Button>}
+                        {publisherData?.website && <Button color="primary" onClick={() => openUrl(publisherData?.website)}>去官网</Button>}
                     </div>
 
                     {/* 关注 */}

@@ -70,6 +70,8 @@ public class PublisherService
             StatusText = GetStatusText(publisher.Status),
             ReviewNote = publisher.ReviewNote,
             ReviewedAt = publisher.ReviewedAt,
+            AppLink = publisher.AppLink,
+            Website = publisher.Website,
             Stats = new PublisherStatsDto
             {
                 Likes = likesCount,

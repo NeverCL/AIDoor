@@ -30,12 +30,12 @@ const useUser = () => {
 
       if (error.response.status === 404) {
         setIsLoading(false);
+        return;
       }
 
-      // setTimeout(() => {
-      //   location.reload();
-      //   // setIsLoading(false);
-      // }, 1000);
+      setTimeout(() => {
+        location.reload();
+      }, 3000);
     },
   });
 

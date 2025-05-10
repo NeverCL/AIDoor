@@ -22,6 +22,10 @@ export default (url: string, appInfo?: AppInfo) => {
         });
     }
 
+    if (url.indexOf('://') === -1) {
+        url = 'https://' + url;
+    }
+
     // 在本地浏览器中打开
     if (typeof plus === 'undefined') {
         location.assign(url);
