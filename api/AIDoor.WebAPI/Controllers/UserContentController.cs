@@ -52,9 +52,9 @@ public class UserContentController : BaseController
         try
         {
             var userFollowService = HttpContext.RequestServices.GetRequiredService<UserFollowService>();
-            if (content.UserId != 0) // 确保有有效的作者ID
+            if (content.PublisherId != 0) // 确保有有效的作者ID
             {
-                isFollowing = await userFollowService.IsFollowingAsync(content.UserId);
+                isFollowing = await userFollowService.IsFollowingAsync(content.PublisherId);
             }
         }
         catch (Exception ex)

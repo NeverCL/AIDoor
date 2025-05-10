@@ -24,7 +24,7 @@ public class UserContentDto
     public string CreatedBy { get; set; } = null!;
     public string? CreatedByAvatar { get; set; }
     public DateTime CreatedAt { get; set; }
-    public int UserId { get; set; }
+    public int PublisherId { get; set; }
 }
 
 public class UserContentQueryParams

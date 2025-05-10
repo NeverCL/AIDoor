@@ -98,7 +98,7 @@ public static class DataMigrations
                     var content = await dbContext.UserContents.FindAsync(contentId);
                     if (content != null)
                     {
-                        record.TargetUserId = content.UserId;
+                        record.TargetUserId = content.PublisherId;
                         updatedCount++;
                     }
                 }

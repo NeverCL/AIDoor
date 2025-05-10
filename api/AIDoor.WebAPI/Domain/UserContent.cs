@@ -85,10 +85,13 @@ public class UserContent
     // 使用字符串数组存储图片路径
     public string[] Images { get; set; } = Array.Empty<string>();
 
-    public int UserId { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
     public DateTime? UpdatedAt { get; set; }
 
-    // 导航属性
-    public User? User { get; set; }
+    // 发布者ID
+    public int PublisherId { get; set; }
+
+    // 发布者导航属性
+    public Publisher Publisher { get; set; } = null!;
 }

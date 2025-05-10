@@ -441,7 +441,7 @@ public class UserService
 
         // 4. 获取发布者的内容列表
         var contents = await _context.UserContents
-            .Where(c => c.UserId == publisherId)
+            .Where(c => c.PublisherId == publisherId)
             .OrderByDescending(c => c.CreatedAt)
             .Take(10) // 限制返回数量
             .Select(c => new PublisherContentDto

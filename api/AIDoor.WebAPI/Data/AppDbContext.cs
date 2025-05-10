@@ -11,7 +11,9 @@ public class AppDbContext : DbContext
     }
 
     public DbSet<User> Users { get; set; }
+
     public DbSet<AppCategory> ApplicationCategories { get; set; }
+    
     public DbSet<AppItem> Applications { get; set; }
 
     // 用户记录表
@@ -102,9 +104,9 @@ public class AppDbContext : DbContext
 
         // UserContent 配置
         modelBuilder.Entity<UserContent>()
-            .HasOne(uc => uc.User)
+            .HasOne(uc => uc.Publisher)
             .WithMany()
-            .HasForeignKey(uc => uc.UserId)
+            .HasForeignKey(uc => uc.PublisherId)
             .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<UserContent>()

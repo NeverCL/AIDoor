@@ -56,7 +56,7 @@ public class UserContentService
                 Title = contentDto.Title,
                 Content = contentDto.Content,
                 Images = contentDto.Images,
-                UserId = userId,
+                PublisherId = userId,
                 CreatedAt = DateTime.UtcNow
             };
 
@@ -77,7 +77,7 @@ public class UserContentService
         UserContentQueryParams queryParams)
     {
         var query = _context.UserContents
-            .Include(uc => uc.User)
+            .Include(uc => uc.Publisher)
             .OrderByDescending(uc => uc.CreatedAt);
 
         int totalCount = await query.CountAsync();
@@ -91,8 +91,8 @@ public class UserContentService
                 Title = uc.Title,
                 Content = uc.Content,
                 Images = uc.Images,
-                CreatedBy = uc.User.Publisher.Name,
-                CreatedByAvatar = uc.User.Publisher.AvatarUrl,
+                CreatedBy = uc.Publisher.Name,
+                CreatedByAvatar = uc.Publisher.AvatarUrl,
                 CreatedAt = uc.CreatedAt
             })
             .ToListAsync();
@@ -108,7 +108,7 @@ public class UserContentService
     public async Task<UserContentDto?> GetContentByIdAsync(int id)
     {
         var content = await _context.UserContents
-            .Include(uc => uc.User)
+            .Include(uc => uc.Publisher)
             .FirstOrDefaultAsync(uc => uc.Id == id);
 
         if (content == null)
@@ -116,18 +116,16 @@ public class UserContentService
             return null;
         }
 
-        var publisher = await _context.Publishers.FirstAsync(x => x.UserId == content.UserId);
-
         return new UserContentDto
         {
             Id = content.Id,
             Title = content.Title,
             Content = content.Content,
             Images = content.Images,
-            CreatedBy = content.User.Username,
-            CreatedByAvatar = publisher.AvatarUrl,
+            CreatedBy = content.Publisher.Name,
+            CreatedByAvatar = content.Publisher.AvatarUrl,
             CreatedAt = content.CreatedAt,
-            UserId = content.UserId
+            PublisherId = content.PublisherId
         };
     }
 
@@ -141,7 +139,7 @@ public class UserContentService
             return new ContentStatsDto();
         }
 
-        int contentOwnerId = content.UserId;
+        int contentOwnerId = content.PublisherId;
 
         // 获取点赞数 - 使用TargetUserId和Notes两种方式查询以兼容新旧数据
         int likesCount = await _context.UserRecords.CountAsync(r =>
@@ -187,7 +185,7 @@ public class UserContentService
                 return (false, "内容不存在");
             }
 
-            if (content.UserId != userId)
+            if (content.PublisherId != userId)
             {
                 return (false, "无权删除此内容");
             }

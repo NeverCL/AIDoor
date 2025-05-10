@@ -82,7 +82,7 @@ public class UserRecordService
                     var content = await _context.UserContents.FindAsync(recordDto.TargetId.Value);
                     if (content != null)
                     {
-                        targetUserId = content.UserId;
+                        targetUserId = content.PublisherId;
                     }
                 }
                 else if (recordDto.TargetType.Equals("User", StringComparison.OrdinalIgnoreCase))
