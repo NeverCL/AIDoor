@@ -162,8 +162,8 @@ public class PublisherRating : BaseEntity
     /// <summary>
     /// 评分值（1-5星）
     /// </summary>
-    [Range(1, 5)]
-    public int Value { get; set; }
+    [Range(1.0, 5.0)]
+    public double Value { get; set; }
 
     /// <summary>
     /// 评价内容（可选）

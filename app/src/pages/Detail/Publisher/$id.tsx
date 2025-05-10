@@ -13,6 +13,7 @@ interface PublisherData {
     username: string;
     avatarUrl: string;
     description: string;
+    summary: string;
     createdAt: string;
     status: number;
     statusText: string;
@@ -26,6 +27,7 @@ interface PublisherData {
         likes: number;
         followers: number;
         following: number;
+        favorites: number;
         rating: number;
     };
 }
@@ -45,9 +47,9 @@ export default () => {
     const [isFollowed, setIsFollowed] = useState(false);
     const pageSize = 10;
     const { id } = useParams();
-    const [rating, setRating] = useState(0);
+    const [rating, setRating] = useState(5.0);
     // 获取用户发布者资料
-    const { data: publisherData, loading: publisherLoading, error: publisherError } = useRequest<PublisherData>(
+    const { data: publisherData, loading: publisherLoading, error: publisherError, run: getPublisherData } = useRequest<PublisherData>(
         () => api.publisher.getPublisherId({ id: id }),
         {
             onError: (error) => {
@@ -131,17 +133,30 @@ export default () => {
         }
 
         await checkFollowStatus({ id: publisherData?.id });
+        await getPublisherData();
     }
 
 
     const showRateModal = () => {
+        let currentRating = rating;
         Modal.confirm({
             title: '点击评分',
             content: <div className="text-center">
-                <Rate allowHalf defaultValue={5} count={5} onChange={(value) => setRating(value)} />
+                <Rate
+                    allowHalf
+                    defaultValue={currentRating}
+                    count={5}
+                    onChange={(val) => {
+                        console.log('Rating changed to:', val);
+                        currentRating = val;
+                    }}
+                />
             </div>,
-            onConfirm: () => {
-                api.publisher.postPublisherIdRate({ id: publisherData?.id }, { rating: rating });
+            onConfirm: async () => {
+                console.log('Submitting rating:', currentRating);
+                setRating(currentRating);
+                await api.publisher.postPublisherIdRate({ id: publisherData?.id }, { rating: currentRating });
+                await getPublisherData();
             }
         });
     }

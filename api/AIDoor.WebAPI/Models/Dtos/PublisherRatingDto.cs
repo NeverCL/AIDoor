@@ -13,8 +13,8 @@ public class RatePublisherRequestDto
     /// 评分值（1-5星）
     /// </summary>
     [Required]
-    [Range(1, 5, ErrorMessage = "评分必须在1-5之间")]
-    public int Rating { get; set; }
+    [Range(1.0, 5.0, ErrorMessage = "评分必须在1-5之间")]
+    public double Rating { get; set; }
 
     /// <summary>
     /// 评价内容（可选）
@@ -32,7 +32,7 @@ public class PublisherRatingDto
     /// 评分值
     /// </summary>
     [JsonPropertyName("value")]
-    public int Value { get; set; }
+    public double Value { get; set; }
 
     /// <summary>
     /// 评价内容
@@ -68,7 +68,7 @@ public class PublisherRatingWithUserDto
     /// 评分值
     /// </summary>
     [JsonPropertyName("value")]
-    public int Value { get; set; }
+    public double Value { get; set; }
 
     /// <summary>
     /// 评价内容

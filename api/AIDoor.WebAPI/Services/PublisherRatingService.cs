@@ -41,22 +41,22 @@ public class PublisherRatingService
     /// <summary>
     /// 用户为发布者评分
     /// </summary>
-    public async Task<(bool Success, string Message, int RatingValue)> RatePublisherAsync(int publisherId, int rating, string? comment = null)
+    public async Task<(bool Success, string Message, double RatingValue)> RatePublisherAsync(int publisherId, double rating, string? comment = null)
     {
         try
         {
             int userId = GetCurrentUserId();
-            
+
             // 验证评分范围
-            if (rating < 1 || rating > 5)
+            if (rating < 1.0 || rating > 5.0)
             {
                 return (false, "评分必须在1-5之间", 0);
             }
-            
+
             // 检查发布者是否存在且已审核通过
             var publisher = await _context.Publishers
                 .FirstOrDefaultAsync(p => p.Id == publisherId && p.Status == PublisherStatus.Approved);
-                
+
             if (publisher == null)
             {
                 return (false, "发布者不存在或未通过审核", 0);
@@ -84,15 +84,15 @@ public class PublisherRatingService
                     Comment = comment,
                     CreatedAt = DateTime.UtcNow
                 };
-                
+
                 _context.PublisherRatings.Add(newRating);
             }
-            
+
             await _context.SaveChangesAsync();
-            
+
             // 更新发布者的平均评分
             await UpdatePublisherAverageRatingAsync(publisherId);
-            
+
             return (true, "评分成功", rating);
         }
         catch (Exception ex)
@@ -110,7 +110,7 @@ public class PublisherRatingService
         try
         {
             int userId = GetCurrentUserId();
-            
+
             var rating = await _context.PublisherRatings
                 .Where(r => r.UserId == userId && r.PublisherId == publisherId)
                 .Select(r => new PublisherRatingDto
@@ -121,7 +121,7 @@ public class PublisherRatingService
                     UpdatedAt = r.UpdatedAt
                 })
                 .FirstOrDefaultAsync();
-                
+
             return rating;
         }
         catch (Exception ex)
@@ -142,9 +142,9 @@ public class PublisherRatingService
             var query = _context.PublisherRatings
                 .Where(r => r.PublisherId == publisherId)
                 .OrderByDescending(r => r.CreatedAt);
-                
+
             var total = await query.CountAsync();
-            
+
             var ratings = await query
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
@@ -162,7 +162,7 @@ public class PublisherRatingService
                     }
                 })
                 .ToListAsync();
-                
+
             return (ratings, total);
         }
         catch (Exception ex)
@@ -181,12 +181,12 @@ public class PublisherRatingService
         {
             var publisher = await _context.Publishers.FindAsync(publisherId);
             if (publisher == null) return false;
-            
+
             var ratings = await _context.PublisherRatings
                 .Where(r => r.PublisherId == publisherId)
                 .Select(r => r.Value)
                 .ToListAsync();
-                
+
             if (ratings.Any())
             {
                 publisher.Rating = Math.Round(ratings.Average(), 1);
@@ -195,7 +195,7 @@ public class PublisherRatingService
             {
                 publisher.Rating = 5.0; // 默认评分
             }
-            
+
             publisher.UpdatedAt = DateTime.UtcNow;
             await _context.SaveChangesAsync();
             return true;
@@ -206,4 +206,4 @@ public class PublisherRatingService
             return false;
         }
     }
-} 
+}
