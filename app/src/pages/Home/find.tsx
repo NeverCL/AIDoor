@@ -3,6 +3,7 @@ import { NavLink, useRequest } from "@umijs/max";
 import Masonry from "react-masonry-css";
 import InfiniteScroll from "react-infinite-scroll-component";
 import api from '@/services/api';
+import { getImageUrl } from "@/utils";
 
 // Define data interface
 interface UserContent {
@@ -81,15 +82,6 @@ export default () => {
         return videoExtensions.includes(extension) || filename.includes('/video/') || filename.includes('/imm/');
     };
 
-    // 获取图片地址，使用数组中的第一张图片
-    const getImageUrl = (content: UserContent) => {
-        if (content.images && content.images.length > 0) {
-            // 假设 images 包含的是文件名，需要拼接完整 URL
-            return `https://cdn.thedoorofai.com/${content.images[0]}`;
-        }
-        return defaultImg;
-    };
-
     // 渲染媒体内容（图片或视频）
     const renderMedia = (item: UserContent) => {
         if (!item.images || item.images.length === 0) {
@@ -152,7 +144,7 @@ export default () => {
                                     <div className="flex items-center mt-1 gap-2 text-sm text-gray-500">
                                         <img
                                             className="rounded-full h-6 w-6"
-                                            src={item.createdByAvatar ? `${item.createdByAvatar}` : defaultImg}
+                                            src={getImageUrl(item.createdByAvatar)}
                                             alt="avatar"
                                         />
                                         <span>{item.createdBy}</span>
