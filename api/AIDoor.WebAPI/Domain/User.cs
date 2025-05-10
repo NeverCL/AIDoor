@@ -1,6 +1,4 @@
-using AIDoor.WebAPI.Domain;
-
-namespace AIDoor.WebAPI.Models;
+namespace AIDoor.WebAPI.Domain;
 
 public class User : BaseEntity
 {
@@ -15,8 +13,6 @@ public class User : BaseEntity
 
     public int MessageCount { get; set; }
     public int FollowCount { get; set; }
-
     public int? PublisherId { get; set; }
-
     public virtual Publisher? Publisher { get; set; }
 }

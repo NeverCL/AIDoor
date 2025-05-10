@@ -28,5 +28,5 @@ public class UserFollow : BaseEntity
     /// 被关注者用户（导航属性）
     /// </summary>
     [ForeignKey("FollowingId")]
-    public User Following { get; set; } = null!;
+    public Publisher Following { get; set; } = null!;
 }

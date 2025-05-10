@@ -87,7 +87,7 @@ public class Publisher : BaseEntity
     /// 导航属性：关联的用户（可选）
     /// </summary>
     [ForeignKey("UserId")]
-    public Models.User? User { get; set; }
+    public User? User { get; set; }
 
     /// <summary>
     /// 导航属性：发布者的所有评分
@@ -146,7 +146,7 @@ public class PublisherRating : BaseEntity
     /// 用户外键关系
     /// </summary>
     [ForeignKey("UserId")]
-    public Models.User User { get; set; } = null!;
+    public User User { get; set; } = null!;
 
     /// <summary>
     /// 发布者ID（被评分者）

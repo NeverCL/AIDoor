@@ -12,10 +12,6 @@ public class AppCategory : BaseEntity
     
     public bool IsActive { get; set; } = true;
     
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    
-    public DateTime? UpdatedAt { get; set; }
-    
     // Navigation property
     public virtual ICollection<AppItem> Applications { get; set; } = new List<AppItem>();
 } 
