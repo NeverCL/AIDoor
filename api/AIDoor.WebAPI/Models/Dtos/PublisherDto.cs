@@ -12,6 +12,9 @@ public class PublisherDto
     // 基本信息
     public int Id { get; set; }
 
+    [JsonPropertyName("userId")]
+    public int? UserId { get; set; }
+
     [JsonPropertyName("username")]
     public string Username { get; set; } = string.Empty;
 

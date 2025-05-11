@@ -61,6 +61,7 @@ public class PublisherService
         var publisherDto = new PublisherDto
         {
             Id = publisher.Id,
+            UserId = publisher.UserId,
             Username = publisher.Name,
             AvatarUrl = publisher.AvatarUrl,
             Summary = publisher.Summary,
