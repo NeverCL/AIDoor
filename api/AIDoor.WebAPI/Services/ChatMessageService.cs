@@ -407,14 +407,15 @@ namespace AIDoor.WebAPI.Services
         /// <summary>
         /// 获取发布者的对话用户列表
         /// </summary>
-        /// <param name="publisherId">当前发布者ID</param>
+        /// <param name="userId">当前发布者ID</param>
         /// <returns></returns>
-        public async Task<IEnumerable<ConversationUserDto>> GetPublisherConversationUsersAsync(int publisherId)
+        public async Task<IEnumerable<ConversationUserDto>> GetPublisherConversationUsersAsync(int userId)
         {
+            var user = await _dbContext.Users.FirstAsync(x => x.Id == userId);
             // 获取与发布者相关的所有私信
             var messages = await _dbContext.ChatMessages
                 .Include(pm => pm.User)
-                .Where(pm => pm.PublisherId == publisherId)
+                .Where(pm => pm.PublisherId == user.PublisherId)
                 .OrderByDescending(pm => pm.CreatedAt)
                 .ToListAsync();
 

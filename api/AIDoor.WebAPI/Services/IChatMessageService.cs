@@ -95,9 +95,9 @@ namespace AIDoor.WebAPI.Services
         /// <summary>
         /// 获取发布者的对话用户列表
         /// </summary>
-        /// <param name="publisherId">当前发布者ID</param>
+        /// <param name="userId">当前发布者ID</param>
         /// <returns></returns>
-        Task<IEnumerable<ConversationUserDto>> GetPublisherConversationUsersAsync(int publisherId);
+        Task<IEnumerable<ConversationUserDto>> GetPublisherConversationUsersAsync(int userId);
 
         /// <summary>
         /// 删除消息

@@ -13,7 +13,7 @@ namespace AIDoor.WebAPI.Controllers
     [ApiController]
     [Route("api/messages")]
     [Authorize]
-    public class ChatMessageController : ControllerBase
+    public class ChatMessageController : BaseController
     {
         private readonly IChatMessageService _chatMessageService;
 
@@ -50,7 +50,7 @@ namespace AIDoor.WebAPI.Controllers
         /// <param name="createDto">创建私信DTO</param>
         /// <returns>返回创建的私信</returns>
         [HttpPost("send-to-user")]
-        [Authorize(Roles = "Publisher")]
+
         public async Task<ActionResult<ChatMessageDto>> SendToUser(PublisherCreateMessageDto createDto)
         {
             var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
@@ -101,7 +101,6 @@ namespace AIDoor.WebAPI.Controllers
         /// <param name="queryParams">查询参数</param>
         /// <returns>返回私信分页列表</returns>
         [HttpGet("publisher-messages")]
-        [Authorize(Roles = "Publisher")]
         public async Task<ActionResult<PagedResult<ChatMessageDto>>> GetPublisherMessages([FromQuery] PrivateMessageQueryParams queryParams)
         {
             var publisherId = int.Parse(User.FindFirstValue("PublisherId")!);
@@ -143,16 +142,10 @@ namespace AIDoor.WebAPI.Controllers
         /// </summary>
         /// <returns>返回对话用户列表</returns>
         [HttpGet("publisher-users")]
-        [Authorize(Roles = "Publisher")]
+        // 
         public async Task<ActionResult<IEnumerable<ConversationUserDto>>> GetPublisherUsers()
         {
-            var publisherId = int.Parse(User.FindFirstValue("PublisherId")!);
-            if (publisherId <= 0)
-            {
-                return BadRequest("当前用户不是发布者");
-            }
-
-            var users = await _chatMessageService.GetPublisherConversationUsersAsync(publisherId);
+            var users = await _chatMessageService.GetPublisherConversationUsersAsync(UserId);
             return Ok(users);
         }
 
@@ -178,7 +171,7 @@ namespace AIDoor.WebAPI.Controllers
         /// </summary>
         /// <returns>返回未读消息数量</returns>
         [HttpGet("publisher-unread-count")]
-        [Authorize(Roles = "Publisher")]
+
         public async Task<ActionResult<int>> GetPublisherUnreadCount()
         {
             var publisherId = int.Parse(User.FindFirstValue("PublisherId")!);
@@ -220,7 +213,7 @@ namespace AIDoor.WebAPI.Controllers
         /// <param name="messageId">消息ID</param>
         /// <returns>成功或失败</returns>
         [HttpPut("publisher-mark-read/{messageId}")]
-        [Authorize(Roles = "Publisher")]
+
         public async Task<ActionResult> PublisherMarkAsRead(int messageId)
         {
             var publisherId = int.Parse(User.FindFirstValue("PublisherId")!);
@@ -262,7 +255,7 @@ namespace AIDoor.WebAPI.Controllers
         /// <param name="userId">用户ID</param>
         /// <returns>已读消息数量</returns>
         [HttpPut("publisher-mark-all-read/{userId}")]
-        [Authorize(Roles = "Publisher")]
+
         public async Task<ActionResult<int>> PublisherMarkAllAsRead(int userId)
         {
             var publisherId = int.Parse(User.FindFirstValue("PublisherId")!);
@@ -304,7 +297,7 @@ namespace AIDoor.WebAPI.Controllers
         /// <param name="messageId">消息ID</param>
         /// <returns>成功或失败</returns>
         [HttpDelete("publisher-delete/{messageId}")]
-        [Authorize(Roles = "Publisher")]
+
         public async Task<ActionResult> PublisherDeleteMessage(int messageId)
         {
             var publisherId = int.Parse(User.FindFirstValue("PublisherId")!);

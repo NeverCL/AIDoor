@@ -18,12 +18,12 @@ public class BaseController : ControllerBase
             : new { message, data });
     }
 
-    protected IActionResult BadRequest(string message)
+    protected BadRequestObjectResult BadRequest(string message)
     {
         return base.BadRequest(new { message });
     }
 
-    protected IActionResult NotFound(string message)
+    protected NotFoundObjectResult NotFound(string message)
     {
         return base.NotFound(new { message });
     }
