@@ -10,7 +10,9 @@ import { getImageUrl } from "@/utils";
 interface PublisherData {
     id: number;
     username: string;
+    name: string;
     avatarUrl: string;
+    summary: string;
     description: string;
     createdAt: string;
     status: number;
@@ -24,7 +26,7 @@ interface PublisherData {
     stats: {
         likes: number;
         followers: number;
-        following: number;
+        favorites: number;
         rating: number;
     };
 }
@@ -47,9 +49,9 @@ export default () => {
     const { data: publisherData, loading: publisherLoading, error: publisherError } = useRequest<PublisherData>(
         () => api.publisher.getPublisherMy(),
         {
-            onError: (error) => {
+            onError: (error: any) => {
                 // 如果没有发布者资料，可以提示用户创建
-                if (error.response?.status === 404) {
+                if (error.response && error.response.status === 404) {
                     Toast.show({
                         content: '您尚未创建发布者资料，请先创建',
                     });
@@ -108,6 +110,8 @@ export default () => {
         await loadContents(page);
     };
 
+    // 安全地获取统计数据
+    const statsData = publisherData?.stats || { likes: 0, followers: 0, favorites: 0, rating: 0 };
 
     return (
         <div className="h-full flex flex-col *:mt-8 overflow-y-auto">
@@ -116,15 +120,15 @@ export default () => {
                 <div className="w-16 h-16 rounded-full bg-gray-300">
                     {publisherData?.avatarUrl && (
                         <img
-                            src={getImageUrl(publisherData?.avatarUrl)}
-                            alt={publisherData?.name}
+                            src={getImageUrl(publisherData.avatarUrl)}
+                            alt={publisherData.name}
                             className="w-full h-full rounded-full object-cover"
                         />
                     )}
                 </div>
                 <div className="ml-4">
                     <div className="text-lg font-bold">{publisherData?.name || '未设置昵称'}</div>
-                    <div className="text-sm text-gray-500">简介：{publisherData?.description || '暂无简介'}</div>
+                    <div className="text-sm text-gray-500">简介：{publisherData?.summary || '暂无简介'}</div>
                 </div>
                 <div className="ml-auto flex items-center">
                     <div className="text-2xl" onClick={() => history.push('/my/messages?type=message')}>
@@ -139,20 +143,20 @@ export default () => {
             {/* 获赞 关注 粉丝 分值*/}
             <div className="flex items-center p-4 bg-secondary rounded-lg">
                 <div className="flex-1 text-center">
-                    <div className="text-2xl font-bold">{publisherData?.stats?.likes || 0}</div>
+                    <div className="text-2xl font-bold">{statsData.likes}</div>
                     <div className="text-sm text-gray-600">获赞</div>
                 </div>
                 <div className="flex-1 text-center">
-                    <div className="text-2xl font-bold">{publisherData?.stats?.followers || 0}</div>
+                    <div className="text-2xl font-bold">{statsData.followers}</div>
                     <div className="text-sm text-gray-600">粉丝</div>
                 </div>
                 <div className="flex-1 text-center">
-                    <div className="text-2xl font-bold">{publisherData?.stats?.following || 0}</div>
-                    <div className="text-sm text-gray-600">关注</div>
+                    <div className="text-2xl font-bold">{statsData.favorites}</div>
+                    <div className="text-sm text-gray-600">收藏</div>
                 </div>
                 <div className="flex-1 text-center">
                     <div className="flex items-center justify-center">
-                        <span className="text-2xl font-bold mr-1">{publisherData?.stats?.rating?.toFixed(1) || '0.0'}</span>
+                        <span className="text-2xl font-bold mr-1">{statsData.rating.toFixed(1)}</span>
                         <StarFill fontSize={16} color='#FFB700' />
                     </div>
                     <div className="text-sm text-gray-600">评分</div>

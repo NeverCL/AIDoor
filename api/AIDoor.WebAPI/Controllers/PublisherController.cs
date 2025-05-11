@@ -110,13 +110,21 @@ public class PublisherController : BaseController
     [HttpGet("my")]
     public async Task<IActionResult> GetMyPublisher()
     {
+        // 获取当前用户的发布者信息
         var publisher = await _publisherService.GetPublisherByUserIdAsync(UserId);
         if (publisher == null)
         {
             return NotFound("您还未创建发布者信息");
         }
 
-        return Ok(publisher);
+        // 获取包含统计信息的详细发布者DTO
+        var publisherDto = await _publisherService.GetPublisherDetailsAsync(publisher.Id);
+        if (publisherDto == null)
+        {
+            return NotFound("发布者信息获取失败");
+        }
+
+        return Ok(publisherDto);
     }
 
     /// <summary>

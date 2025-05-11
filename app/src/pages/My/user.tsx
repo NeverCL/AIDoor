@@ -150,6 +150,21 @@ export default () => {
 const UserCard = () => {
     const { user } = useModel('global');
 
+    // 获取未读消息数量
+    const { data, loading: countLoading } = useRequest(
+        () => api.chatMessage.getMessagesUserUnreadCount(),
+        {
+            refreshOnWindowFocus: true,
+            pollingInterval: 30000, // 每30秒刷新一次
+        }
+    );
+
+    // 安全地获取未读消息数量
+    const unreadCount = data !== undefined && data !== null ? String(data) : '0';
+
+    // 安全地获取关注数量
+    const followCount = user && 'followCount' in user ? String(user.followCount) : '0';
+
     return (
         <div className="h-16 rounded-xl bg-[#525252] flex justify-between items-center px-3">
             <div className="flex items-center flex-1" onClick={() => history.push('/user/edit')}>
@@ -162,12 +177,12 @@ const UserCard = () => {
             <div className="flex items-center justify-between flex-1 *:mr-4">
                 <NavLink to='/chat/list' className="flex flex-col justify-center items-center">
                     <span>消息</span>
-                    <span className="text-lg">0</span>
+                    <span className="text-lg">{countLoading ? '...' : unreadCount}</span>
                 </NavLink>
                 <div className="w-[1px] bg-secondary h-3"></div>
                 <NavLink to='/mylist/follow' className="flex flex-col justify-center items-center">
                     <span className="">关注</span>
-                    <span className="text-lg">{user?.followCount}</span>
+                    <span className="text-lg">{followCount}</span>
                 </NavLink>
             </div>
         </div>
