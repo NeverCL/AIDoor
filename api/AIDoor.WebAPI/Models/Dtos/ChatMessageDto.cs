@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using AIDoor.WebAPI.Domain;
 
 namespace AIDoor.WebAPI.Models.Dtos
 {
@@ -13,34 +14,34 @@ namespace AIDoor.WebAPI.Models.Dtos
         public int Id { get; set; }
 
         /// <summary>
-        /// 发送者ID
+        /// 用户ID
         /// </summary>
-        public int SenderId { get; set; }
+        public int UserId { get; set; }
 
         /// <summary>
-        /// 发送者名称
+        /// 用户名称
         /// </summary>
-        public string SenderName { get; set; } = string.Empty;
+        public string UserName { get; set; } = string.Empty;
 
         /// <summary>
-        /// 发送者头像
+        /// 用户头像
         /// </summary>
-        public string SenderAvatar { get; set; } = string.Empty;
+        public string UserAvatar { get; set; } = string.Empty;
 
         /// <summary>
-        /// 接收者ID
+        /// 发布者ID
         /// </summary>
-        public int ReceiverId { get; set; }
+        public int PublisherId { get; set; }
 
         /// <summary>
-        /// 接收者名称
+        /// 发布者名称
         /// </summary>
-        public string ReceiverName { get; set; } = string.Empty;
+        public string PublisherName { get; set; } = string.Empty;
 
         /// <summary>
-        /// 接收者头像
+        /// 发布者头像
         /// </summary>
-        public string ReceiverAvatar { get; set; } = string.Empty;
+        public string PublisherAvatar { get; set; } = string.Empty;
 
         /// <summary>
         /// 消息内容
@@ -61,6 +62,11 @@ namespace AIDoor.WebAPI.Models.Dtos
         /// 阅读时间
         /// </summary>
         public DateTime? ReadAt { get; set; }
+
+        /// <summary>
+        /// 发送者类型
+        /// </summary>
+        public MessageSenderType SenderType { get; set; }
     }
 
     /// <summary>
@@ -69,10 +75,29 @@ namespace AIDoor.WebAPI.Models.Dtos
     public class CreatePrivateMessageDto
     {
         /// <summary>
-        /// 接收者ID
+        /// 发布者ID
         /// </summary>
-        [Required(ErrorMessage = "接收者ID不能为空")]
-        public int ReceiverId { get; set; }
+        [Required(ErrorMessage = "发布者ID不能为空")]
+        public int PublisherId { get; set; }
+
+        /// <summary>
+        /// 消息内容
+        /// </summary>
+        [Required(ErrorMessage = "消息内容不能为空")]
+        [MaxLength(1000, ErrorMessage = "消息内容不能超过1000个字符")]
+        public string Content { get; set; } = string.Empty;
+    }
+
+    /// <summary>
+    /// 发布者创建私信请求DTO
+    /// </summary>
+    public class PublisherCreateMessageDto
+    {
+        /// <summary>
+        /// 用户ID
+        /// </summary>
+        [Required(ErrorMessage = "用户ID不能为空")]
+        public int UserId { get; set; }
 
         /// <summary>
         /// 消息内容
@@ -98,9 +123,14 @@ namespace AIDoor.WebAPI.Models.Dtos
         public int Limit { get; set; } = 20;
 
         /// <summary>
-        /// 对话伙伴ID
+        /// 发布者ID - 用户查询时使用
         /// </summary>
-        public int? PartnerId { get; set; }
+        public int? PublisherId { get; set; }
+
+        /// <summary>
+        /// 用户ID - 发布者查询时使用
+        /// </summary>
+        public int? UserId { get; set; }
 
         /// <summary>
         /// 是否只查询未读消息
@@ -109,9 +139,45 @@ namespace AIDoor.WebAPI.Models.Dtos
     }
 
     /// <summary>
-    /// 对话伙伴DTO
+    /// 对话伙伴DTO - 用户视角
     /// </summary>
-    public class ConversationPartnerDto
+    public class ConversationPublisherDto
+    {
+        /// <summary>
+        /// 发布者ID
+        /// </summary>
+        public int PublisherId { get; set; }
+
+        /// <summary>
+        /// 发布者名称
+        /// </summary>
+        public string Name { get; set; } = string.Empty;
+
+        /// <summary>
+        /// 发布者头像
+        /// </summary>
+        public string AvatarUrl { get; set; } = string.Empty;
+
+        /// <summary>
+        /// 最后一条消息内容
+        /// </summary>
+        public string LastMessage { get; set; } = string.Empty;
+
+        /// <summary>
+        /// 最后一条消息时间
+        /// </summary>
+        public DateTime LastMessageTime { get; set; }
+
+        /// <summary>
+        /// 未读消息数
+        /// </summary>
+        public int UnreadCount { get; set; }
+    }
+
+    /// <summary>
+    /// 对话伙伴DTO - 发布者视角
+    /// </summary>
+    public class ConversationUserDto
     {
         /// <summary>
         /// 用户ID

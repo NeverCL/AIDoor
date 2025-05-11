@@ -5,31 +5,31 @@ using AIDoor.WebAPI.Models;
 namespace AIDoor.WebAPI.Domain
 {
     /// <summary>
-    /// 私信消息实体
+    /// 私信消息实体 - 仅支持用户与发布者之间的消息
     /// </summary>
     public class ChatMessage : BaseEntity
     {
         /// <summary>
-        /// 发送者ID
+        /// 用户ID
         /// </summary>
-        public int SenderId { get; set; }
+        public int UserId { get; set; }
 
         /// <summary>
-        /// 发送者外键关系
+        /// 用户外键关系
         /// </summary>
-        [ForeignKey("SenderId")]
-        public User Sender { get; set; } = null!;
+        [ForeignKey("UserId")]
+        public User User { get; set; } = null!;
 
         /// <summary>
-        /// 接收者ID
+        /// 发布者ID
         /// </summary>
-        public int ReceiverId { get; set; }
+        public int PublisherId { get; set; }
 
         /// <summary>
-        /// 接收者外键关系
+        /// 发布者外键关系
         /// </summary>
-        [ForeignKey("ReceiverId")]
-        public User Receiver { get; set; } = null!;
+        [ForeignKey("PublisherId")]
+        public Publisher Publisher { get; set; } = null!;
 
         /// <summary>
         /// 消息内容
@@ -47,5 +47,26 @@ namespace AIDoor.WebAPI.Domain
         /// 阅读时间
         /// </summary>
         public DateTime? ReadAt { get; set; }
+
+        /// <summary>
+        /// 发送者类型 - 用户发送 or 发布者发送
+        /// </summary>
+        public MessageSenderType SenderType { get; set; }
+    }
+
+    /// <summary>
+    /// 消息发送者类型
+    /// </summary>
+    public enum MessageSenderType
+    {
+        /// <summary>
+        /// 用户发送
+        /// </summary>
+        User = 0,
+
+        /// <summary>
+        /// 发布者发送
+        /// </summary>
+        Publisher = 1
     }
 }

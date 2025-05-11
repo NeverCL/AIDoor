@@ -171,25 +171,6 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<PublisherRating>()
             .HasIndex(r => r.PublisherId); // 便于按发布者查询评分
 
-        // 私信消息配置
-        modelBuilder.Entity<ChatMessage>()
-            .HasOne(pm => pm.Sender)
-            .WithMany()
-            .HasForeignKey(pm => pm.SenderId)
-            .OnDelete(DeleteBehavior.Restrict);
-
-        modelBuilder.Entity<ChatMessage>()
-            .HasOne(pm => pm.Receiver)
-            .WithMany()
-            .HasForeignKey(pm => pm.ReceiverId)
-            .OnDelete(DeleteBehavior.Restrict);
-
-        modelBuilder.Entity<ChatMessage>()
-            .HasIndex(pm => pm.SenderId);
-
-        modelBuilder.Entity<ChatMessage>()
-            .HasIndex(pm => pm.ReceiverId);
-
         modelBuilder.Entity<ChatMessage>()
             .HasIndex(pm => pm.IsRead);
 
