@@ -1,8 +1,10 @@
 import { NavLink, Icon, useLocation, useModel, history } from '@umijs/max';
 import { useEffect, useRef, useState } from 'react';
-import { Button, Popup, SearchBar, SearchBarRef, Toast } from 'antd-mobile';
+import { Button, Popup, SearchBar, SearchBarRef, Toast, Badge } from 'antd-mobile';
 import { getUserRecord } from '@/services/api/userRecord';
 import { getImageUrl } from '@/utils';
+import { getUnreadCount } from '@/services/api/systemMessage';
+import SystemMessages from '@/components/SystemMessages';
 
 const isActive = 'flex flex-col justify-center items-center ';
 const notActive = 'text-secondary ';
@@ -23,6 +25,10 @@ const NavHeader: React.FC = () => {
   const [appList, setAppList] = useState<API.UserRecordDto[]>([]);
   const [loading, setLoading] = useState(false);
 
+  // 系统消息状态
+  const [showMessages, setShowMessages] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
+
   const searchRef = useRef<SearchBarRef>(null);
 
   useEffect(() => {
@@ -30,6 +36,27 @@ const NavHeader: React.FC = () => {
       searchRef.current?.focus();
     }
   }, [showSearch]);
+
+  // 获取系统消息未读数量
+  useEffect(() => {
+    const fetchUnreadCount = async () => {
+      try {
+        const count = await getUnreadCount();
+        setUnreadCount(count);
+      } catch (error) {
+        console.error('获取未读消息数量失败:', error);
+      }
+    };
+
+    // 初始加载时获取未读消息数量
+    fetchUnreadCount();
+
+    // 设置定时器，每分钟检查一次未读消息
+    const timer = setInterval(fetchUnreadCount, 60000);
+
+    // 组件卸载时清除定时器
+    return () => clearInterval(timer);
+  }, []);
 
   // 获取足迹数据，筛选targetType为App的项目
   const fetchAppFootprints = async () => {
@@ -115,7 +142,17 @@ const NavHeader: React.FC = () => {
                   {!isAI ? <div className='w-6 bg-white h-0.5'></div> : <></>}
                 </NavLink>
               </div>
-              <Icon icon="local:search" onClick={() => setShowSearch(true)} />
+              <div className="relative">
+                <Icon icon="local:search" onClick={() => setShowSearch(true)} />
+                {unreadCount > 0 && (
+                  <div onClick={() => setShowMessages(true)} className="cursor-pointer">
+                    <Badge
+                      content={unreadCount}
+                      className="absolute -top-2 -right-2"
+                    />
+                  </div>
+                )}
+              </div>
             </>
         }
       </div>
@@ -129,7 +166,21 @@ const NavHeader: React.FC = () => {
         <div className='flex w-[70vw] flex-col text-[16px] p-4 pt-12'>
           <div className='flex flex-col'>
             <span className='font-bold'>系统消息</span>
-            <span className='text-sm'>您的账号已开通...</span>
+            <div className="flex justify-between items-center">
+              <span className='text-sm'>您的账号已开通...</span>
+              <div
+                onClick={() => {
+                  setOpen(false);
+                  setShowMessages(true);
+                }}
+                className="cursor-pointer"
+              >
+                <Badge
+                  content={unreadCount > 0 ? unreadCount : null}
+                  color="#1677ff"
+                />
+              </div>
+            </div>
             <span className='text-xs text-secondary'>2025年4月6日 12:29:16</span>
           </div>
 
@@ -179,7 +230,7 @@ const NavHeader: React.FC = () => {
 
         </div>
 
-      </Popup >
+      </Popup>
     </>
   );
 };

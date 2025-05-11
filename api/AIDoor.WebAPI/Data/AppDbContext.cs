@@ -37,6 +37,9 @@ public class AppDbContext : DbContext
     // 私信消息表
     public DbSet<ChatMessage> ChatMessages { get; set; }
 
+    // 系统消息表
+    public DbSet<SystemMessage> SystemMessages { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -176,5 +179,28 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<ChatMessage>()
             .HasIndex(pm => pm.CreatedAt);
+
+        // 系统消息配置
+        modelBuilder.Entity<SystemMessage>()
+            .HasOne(sm => sm.Recipient)
+            .WithMany()
+            .HasForeignKey(sm => sm.RecipientId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        // 系统消息索引配置
+        modelBuilder.Entity<SystemMessage>()
+            .HasIndex(sm => sm.IsRead);
+
+        modelBuilder.Entity<SystemMessage>()
+            .HasIndex(sm => sm.Type);
+
+        modelBuilder.Entity<SystemMessage>()
+            .HasIndex(sm => sm.Priority);
+
+        modelBuilder.Entity<SystemMessage>()
+            .HasIndex(sm => sm.CreatedAt);
+
+        modelBuilder.Entity<SystemMessage>()
+            .HasIndex(sm => sm.RecipientId);
     }
 }
