@@ -113,7 +113,7 @@ export default () => {
                                 // 发布者模式显示用户列表
                                 users.length > 0 ? (
                                     users.map((user) => (
-                                        <div key={user.userId} className="flex items-center gap-2 p-2 hover:bg-gray-50 rounded-lg cursor-pointer" onClick={() => navigate(`/chat/user/${user.userId}`)}>
+                                        <div key={user.userId} className="flex items-center gap-2 p-2 hover:bg-gray-50 rounded-lg cursor-pointer" onClick={() => navigate(`/chat/${user.userId}?type=pub`)}>
                                             <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center overflow-hidden">
                                                 {user.avatarUrl ? (
                                                     <img src={user.avatarUrl} alt={user.username || '未知用户'} className="w-full h-full object-cover" />
