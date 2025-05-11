@@ -26,9 +26,7 @@ export default () => {
                     id: follow.id,
                     userName: follow.followerUsername || follow.followingUsername,
                     userAvatarUrl: follow.followerAvatarUrl || follow.followingAvatarUrl,
-                    createdAt: follow.createdAt,
-                    targetId: follow.followingId,
-                    targetType: 'Publisher'
+                    createdAt: follow.createdAt
                 }));
                 setMessageData(formattedData);
                 setTotalPages(data.totalPages || 1);
@@ -93,9 +91,7 @@ export default () => {
                     typeString: 'rating',
                     createdAt: rating.createdAt,
                     value: rating.value,
-                    comment: rating.comment,
-                    targetId: data.publisherId,
-                    targetType: 'Publisher'
+                    comment: rating.comment
                 }));
 
                 if (currentPage === 1) {
@@ -232,9 +228,10 @@ export default () => {
                                         {new Date(item.lastViewedAt || item.createdAt).toLocaleDateString()}
                                     </div>
                                 }
+                                arrowIcon={messageType === 'interaction'}
                                 onClick={() => {
-                                    if (item.targetId && item.targetType) {
-                                        // 根据类型跳转到不同页面
+                                    // 只有互动记录支持跳转功能，关注记录和评分记录不跳转
+                                    if (messageType === 'interaction' && item.targetId && item.targetType) {
                                         if (item.targetType === 'Content') {
                                             history.push(`/detail/content/${item.targetId}`);
                                         } else if (item.targetType === 'Publisher') {
