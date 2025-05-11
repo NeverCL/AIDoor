@@ -1,5 +1,5 @@
 import { useRequest, useLocation, history } from '@umijs/max';
-import { List, NavBar, Image, DotLoading, Empty } from 'antd-mobile';
+import { List, NavBar, Image, DotLoading, Empty, InfiniteScroll } from 'antd-mobile';
 import React, { useEffect, useState } from 'react';
 import api from '@/services/api';
 import BackNavBar from '@/components/BackNavBar';
@@ -8,6 +8,10 @@ export default () => {
     const [messageType, setMessageType] = useState('follow');
     const [messageData, setMessageData] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
+    const [hasMore, setHasMore] = useState(true);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const pageSize = 10;
     const location = useLocation();
 
     // 获取关注记录
@@ -18,9 +22,11 @@ export default () => {
             onSuccess: (data) => {
                 setMessageData(data.data || []);
                 setLoading(false);
+                setHasMore(false); // 关注记录暂不支持分页
             },
             onError: () => {
                 setLoading(false);
+                setHasMore(false);
             }
         }
     );
@@ -31,11 +37,18 @@ export default () => {
         {
             manual: true,
             onSuccess: (data) => {
-                setMessageData(data.records || []);
+                if (currentPage === 1) {
+                    setMessageData(data.records || []);
+                } else {
+                    setMessageData([...messageData, ...(data.records || [])]);
+                }
+                setTotalPages(data.totalPages || 1);
+                setHasMore(currentPage < (data.totalPages || 1));
                 setLoading(false);
             },
             onError: () => {
                 setLoading(false);
+                setHasMore(false);
             }
         }
     );
@@ -46,11 +59,18 @@ export default () => {
         {
             manual: true,
             onSuccess: (data) => {
-                setMessageData(data.data || []);
+                if (currentPage === 1) {
+                    setMessageData(data.records || []);
+                } else {
+                    setMessageData([...messageData, ...(data.records || [])]);
+                }
+                setTotalPages(data.totalPages || 1);
+                setHasMore(currentPage < (data.totalPages || 1));
                 setLoading(false);
             },
             onError: () => {
                 setLoading(false);
+                setHasMore(false);
             }
         }
     );
@@ -62,11 +82,15 @@ export default () => {
         if (type && ['follow', 'interaction', 'rating'].includes(type)) {
             setMessageType(type);
         }
+        // 重置分页状态
+        setCurrentPage(1);
+        setMessageData([]);
+        setHasMore(true);
     }, [location]);
 
     useEffect(() => {
         fetchData();
-    }, [messageType]);
+    }, [messageType, currentPage]);
 
     const fetchData = () => {
         setLoading(true);
@@ -75,14 +99,30 @@ export default () => {
                 getFollowRecords({});
                 break;
             case 'interaction':
-                getInteractionRecords({ RecordType: 'interaction' });
+                getInteractionRecords({
+                    RecordType: 'interaction',
+                    Page: currentPage,
+                    Limit: pageSize
+                });
                 break;
             case 'rating':
-                getRatingRecords({ RecordType: 'rating' });
+                getRatingRecords({
+                    RecordType: 'rating',
+                    Page: currentPage,
+                    Limit: pageSize
+                });
                 break;
             default:
                 setLoading(false);
                 break;
+        }
+    };
+
+    const loadMore = async () => {
+        if (currentPage < totalPages) {
+            setCurrentPage(prev => prev + 1);
+        } else {
+            setHasMore(false);
         }
     };
 
@@ -99,11 +139,32 @@ export default () => {
         }
     };
 
+    // 根据记录类型获取描述文本
+    const getRecordDescription = (record: any) => {
+        if (messageType === 'follow') return '关注了你';
+
+        // 处理互动记录和评分记录
+        switch (record.typeString) {
+            case 'like':
+                return `赞了你的「${record.title || '内容'}」`;
+            case 'favorite':
+                return `收藏了你的「${record.title || '内容'}」`;
+            case 'comment':
+                return `评论了你的「${record.title || '内容'}」`;
+            case 'rating':
+                return `给你的「${record.title || '内容'}」评分`;
+            case 'footprint':
+                return `浏览了你的「${record.title || '内容'}」`;
+            default:
+                return '互动了你的作品';
+        }
+    };
+
     return (
         <BackNavBar title={getTitle()}>
             <div className="p-2">
                 <List className="bg-white rounded-lg">
-                    {loading ? (
+                    {loading && currentPage === 1 ? (
                         <div className="py-10 text-center text-gray-500">
                             <span>加载中</span>
                             <DotLoading />
@@ -111,28 +172,34 @@ export default () => {
                     ) : messageData.length > 0 ? (
                         messageData.map((item, index) => (
                             <List.Item
-                                key={index}
+                                key={item.id || index}
                                 prefix={
                                     <Image
-                                        src={"https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg"}
+                                        src={item.imageUrl || "https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg"}
                                         style={{ borderRadius: 20 }}
                                         fit="cover"
                                         width={40}
                                         height={40}
                                     />
                                 }
-                                description={
-                                    messageType === 'follow' ? '关注了你' :
-                                        messageType === 'interaction' ? '互动了你的作品' :
-                                            '给你的作品评分'
-                                }
+                                description={getRecordDescription(item)}
                                 extra={
                                     <div className="text-xs text-gray-400">
-                                        {item.createTime ? new Date(item.createTime).toLocaleDateString() : ''}
+                                        {new Date(item.lastViewedAt || item.createdAt).toLocaleDateString()}
                                     </div>
                                 }
+                                onClick={() => {
+                                    if (item.targetId && item.targetType) {
+                                        // 根据类型跳转到不同页面
+                                        if (item.targetType === 'Content') {
+                                            history.push(`/detail/content/${item.targetId}`);
+                                        } else if (item.targetType === 'Publisher') {
+                                            history.push(`/publisher/${item.targetId}`);
+                                        }
+                                    }
+                                }}
                             >
-                                {item.userName || '用户'}
+                                {item.title || '内容'}
                             </List.Item>
                         ))
                     ) : (
@@ -142,6 +209,10 @@ export default () => {
                         />
                     )}
                 </List>
+
+                {messageData.length > 0 && (
+                    <InfiniteScroll loadMore={loadMore} hasMore={hasMore} />
+                )}
             </div>
         </BackNavBar>
     );
