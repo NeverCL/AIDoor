@@ -183,7 +183,7 @@ export default () => {
                             <div className="text-sm text-gray-500">{publisherData?.summary || '暂无简介'}</div>
                         </div>
                         <div className="ml-auto flex items-center">
-                            <div className="text-2xl" onClick={() => history.push(`/chat/${publisherData?.userId}`)}>
+                            <div className="text-2xl" onClick={() => history.push(`/chat/${publisherData?.id}`)}>
                                 <MessageOutline />
                             </div>
                         </div>
