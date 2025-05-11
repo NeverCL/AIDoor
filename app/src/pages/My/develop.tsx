@@ -127,7 +127,7 @@ export default () => {
                     )}
                 </div>
                 <div className="ml-4">
-                    <div className="text-lg font-bold">{publisherData?.name || '未设置昵称'}</div>
+                    <div className="text-lg font-bold">{publisherData?.username || '未设置昵称'}</div>
                     <div className="text-sm text-gray-500">简介：{publisherData?.summary || '暂无简介'}</div>
                 </div>
                 <div className="ml-auto flex items-center">
