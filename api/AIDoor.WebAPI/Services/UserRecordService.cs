@@ -129,7 +129,8 @@ public class UserRecordService
             var user = await _context.Users.FindAsync(userId);
 
             var query = _context.UserRecords
-                .Where(r => r.TargetUserId == user!.PublisherId);
+                .Where(r => r.TargetUserId == user!.PublisherId)
+                .Include(r => r.User); // Include User information
 
             // 获取总记录数
             int totalCount = await query.CountAsync();
@@ -150,7 +151,9 @@ public class UserRecordService
                         Notes = r.Notes,
                         LastViewedAt = r.LastViewedAt,
                         ViewCount = r.ViewCount,
-                        CreatedAt = r.CreatedAt
+                        CreatedAt = r.CreatedAt,
+                        UserName = r.User.Username,
+                        UserAvatarUrl = r.User.AvatarUrl
                     })
                     .ToListAsync();
 

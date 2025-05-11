@@ -58,6 +58,16 @@ public class UserRecordDto
     public DateTime? LastViewedAt { get; set; }
     public int ViewCount { get; set; }
     public DateTime CreatedAt { get; set; }
+
+    /// <summary>
+    /// 用户名称
+    /// </summary>
+    public string UserName { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 用户头像URL
+    /// </summary>
+    public string UserAvatarUrl { get; set; } = string.Empty;
 }
 
 /// <summary>

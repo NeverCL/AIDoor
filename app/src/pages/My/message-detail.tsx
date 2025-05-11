@@ -3,6 +3,7 @@ import { List, NavBar, Image, DotLoading, Empty, InfiniteScroll } from 'antd-mob
 import React, { useEffect, useState } from 'react';
 import api from '@/services/api';
 import BackNavBar from '@/components/BackNavBar';
+import { getImageUrl } from '@/utils/imageUtils';
 
 export default () => {
     const [messageType, setMessageType] = useState('follow');
@@ -175,7 +176,7 @@ export default () => {
                                 key={item.id || index}
                                 prefix={
                                     <Image
-                                        src={item.imageUrl || "https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg"}
+                                        src={getImageUrl(item.userAvatarUrl)}
                                         style={{ borderRadius: 20 }}
                                         fit="cover"
                                         width={40}
@@ -199,7 +200,7 @@ export default () => {
                                     }
                                 }}
                             >
-                                {item.title || '内容'}
+                                {item.userName || '昵称'}
                             </List.Item>
                         ))
                     ) : (
