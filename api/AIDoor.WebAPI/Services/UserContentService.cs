@@ -64,7 +64,7 @@ public class UserContentService
                 Content = contentDto.Content,
                 Images = contentDto.Images,
                 PublisherId = publisher.Id,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.Now
             };
 
             _context.UserContents.Add(userContent);

@@ -126,7 +126,7 @@ public class PublisherService
                     AppLink = appLink,
                     UserId = userId,
                     Status = PublisherStatus.Pending, // 新创建的发布者为待审核状态
-                    CreatedAt = DateTime.UtcNow
+                    CreatedAt = DateTime.Now
                 };
                 _context.Publishers.Add(publisher);
                 await _context.SaveChangesAsync();
@@ -150,7 +150,7 @@ public class PublisherService
                 publisher.Type = type;
                 publisher.Website = website;
                 publisher.AppLink = appLink;
-                publisher.UpdatedAt = DateTime.UtcNow;
+                publisher.UpdatedAt = DateTime.Now;
 
                 // 如果之前被拒绝，更新后需要重新审核
                 if (needReview)
@@ -203,8 +203,8 @@ public class PublisherService
             // 设置审核状态
             publisher.Status = approved ? PublisherStatus.Approved : PublisherStatus.Rejected;
             publisher.ReviewNote = reviewNote;
-            publisher.ReviewedAt = DateTime.UtcNow;
-            publisher.UpdatedAt = DateTime.UtcNow;
+            publisher.ReviewedAt = DateTime.Now;
+            publisher.UpdatedAt = DateTime.Now;
 
             // 如果有关联用户，更新用户的 PublisherId
             if (publisher.UserId.HasValue)

@@ -41,7 +41,7 @@ namespace AIDoor.WebAPI.Services
                 ReceiverId = createDto.ReceiverId,
                 Content = createDto.Content,
                 IsRead = false,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.Now
             };
 
             await _dbContext.ChatMessages.AddAsync(message);
@@ -147,7 +147,7 @@ namespace AIDoor.WebAPI.Services
             if (!message.IsRead)
             {
                 message.IsRead = true;
-                message.ReadAt = DateTime.UtcNow;
+                message.ReadAt = DateTime.Now;
                 await _dbContext.SaveChangesAsync();
             }
 
@@ -171,7 +171,7 @@ namespace AIDoor.WebAPI.Services
                 return 0;
             }
 
-            var now = DateTime.UtcNow;
+            var now = DateTime.Now;
             foreach (var message in unreadMessages)
             {
                 message.IsRead = true;

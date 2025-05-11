@@ -90,7 +90,7 @@ public class UserFollowService
             if (inactiveFollow != null)
             {
                 inactiveFollow.IsActive = true;
-                inactiveFollow.UpdatedAt = DateTime.UtcNow;
+                inactiveFollow.UpdatedAt = DateTime.Now;
 
                 // 更新用户的关注计数
                 if (follower != null)
@@ -118,7 +118,7 @@ public class UserFollowService
             {
                 FollowerId = currentUserId,
                 FollowingId = dto.FollowingId,
-                CreatedAt = DateTime.UtcNow,
+                CreatedAt = DateTime.Now,
                 IsActive = true
             };
 
@@ -174,7 +174,7 @@ public class UserFollowService
 
             // 软删除，将状态设为不活跃
             followRelation.IsActive = false;
-            followRelation.UpdatedAt = DateTime.UtcNow;
+            followRelation.UpdatedAt = DateTime.Now;
 
             // 更新用户的关注计数
             var currentUser = await _context.Users.FindAsync(currentUserId);

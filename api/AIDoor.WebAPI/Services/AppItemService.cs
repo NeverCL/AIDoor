@@ -110,7 +110,7 @@ public class AppItemService
                 Name = categoryDto.Name,
                 DisplayOrder = categoryDto.DisplayOrder,
                 IsActive = true,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.Now
             };
 
             _dbContext.ApplicationCategories.Add(category);
@@ -138,7 +138,7 @@ public class AppItemService
             category.Name = categoryDto.Name;
             category.DisplayOrder = categoryDto.DisplayOrder;
             category.IsActive = categoryDto.IsActive;
-            category.UpdatedAt = DateTime.UtcNow;
+            category.UpdatedAt = DateTime.Now;
 
             await _dbContext.SaveChangesAsync();
 
@@ -162,7 +162,7 @@ public class AppItemService
             }
 
             category.IsActive = false;
-            category.UpdatedAt = DateTime.UtcNow;
+            category.UpdatedAt = DateTime.Now;
 
             // 同时将该分类下的所有应用标记为非活动
             var applications = await _dbContext.Applications
@@ -172,7 +172,7 @@ public class AppItemService
             foreach (var app in applications)
             {
                 app.IsActive = false;
-                app.UpdatedAt = DateTime.UtcNow;
+                app.UpdatedAt = DateTime.Now;
             }
 
             await _dbContext.SaveChangesAsync();
@@ -207,7 +207,7 @@ public class AppItemService
                 DisplayOrder = appDto.DisplayOrder,
                 IsActive = true,
                 CategoryId = appDto.CategoryId,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.Now
             };
 
             _dbContext.Applications.Add(application);
@@ -247,7 +247,7 @@ public class AppItemService
             application.DisplayOrder = appDto.DisplayOrder;
             application.IsActive = appDto.IsActive;
             application.CategoryId = appDto.CategoryId;
-            application.UpdatedAt = DateTime.UtcNow;
+            application.UpdatedAt = DateTime.Now;
 
             await _dbContext.SaveChangesAsync();
 
@@ -271,7 +271,7 @@ public class AppItemService
             }
 
             application.IsActive = false;
-            application.UpdatedAt = DateTime.UtcNow;
+            application.UpdatedAt = DateTime.Now;
 
             await _dbContext.SaveChangesAsync();
 

@@ -82,7 +82,7 @@ public class CommentService
                 TargetType = commentDto.TargetType,
                 UserId = userId,
                 ParentId = commentDto.ParentId,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.Now
             };
 
             _context.Comments.Add(comment);

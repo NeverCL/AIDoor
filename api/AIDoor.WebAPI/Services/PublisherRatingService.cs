@@ -71,7 +71,7 @@ public class PublisherRatingService
                 // 更新已有评分
                 existingRating.Value = rating;
                 existingRating.Comment = comment;
-                existingRating.UpdatedAt = DateTime.UtcNow;
+                existingRating.UpdatedAt = DateTime.Now;
             }
             else
             {
@@ -82,7 +82,7 @@ public class PublisherRatingService
                     PublisherId = publisherId,
                     Value = rating,
                     Comment = comment,
-                    CreatedAt = DateTime.UtcNow
+                    CreatedAt = DateTime.Now
                 };
 
                 _context.PublisherRatings.Add(newRating);
@@ -196,7 +196,7 @@ public class PublisherRatingService
                 publisher.Rating = 5.0; // 默认评分
             }
 
-            publisher.UpdatedAt = DateTime.UtcNow;
+            publisher.UpdatedAt = DateTime.Now;
             await _context.SaveChangesAsync();
             return true;
         }

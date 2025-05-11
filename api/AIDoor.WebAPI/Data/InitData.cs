@@ -37,7 +37,7 @@ public class InitData
                 Name = "大模型",
                 DisplayOrder = 1,
                 IsActive = true,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.Now
             },
             new AppCategory
             {
@@ -45,7 +45,7 @@ public class InitData
                 Name = "小模型",
                 DisplayOrder = 2,
                 IsActive = true,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.Now
             },
             new AppCategory
             {
@@ -53,7 +53,7 @@ public class InitData
                 Name = "插件",
                 DisplayOrder = 3,
                 IsActive = true,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.Now
             },
             new AppCategory
             {
@@ -61,7 +61,7 @@ public class InitData
                 Name = "工具",
                 DisplayOrder = 4,
                 IsActive = true,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.Now
             }
         };
 
@@ -83,7 +83,7 @@ public class InitData
                 DisplayOrder = 1,
                 IsActive = true,
                 CategoryId = 1,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.Now
             },
             new AppItem
             {
@@ -96,7 +96,7 @@ public class InitData
                 DisplayOrder = 1,
                 IsActive = true,
                 CategoryId = 2,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.Now
             },
             new AppItem
             {
@@ -109,7 +109,7 @@ public class InitData
                 DisplayOrder = 1,
                 IsActive = true,
                 CategoryId = 3,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.Now
             },
             new AppItem
             {
@@ -122,7 +122,7 @@ public class InitData
                 DisplayOrder = 1,
                 IsActive = true,
                 CategoryId = 4,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.Now
             }
         };
 
@@ -140,7 +140,7 @@ public class InitData
                 PhoneNumber = "13800138000",
                 // PasswordHash = "jGl25bVBBBW96Qi9Te4V37Fnqchz/Eu4qB9vKrRIqRg=", // 123456的SHA-256哈希
                 IsActive = true,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.Now
             }
         };
 
@@ -159,7 +159,7 @@ public class InitData
                 ImageUrl = "https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418",
                 UserId = 1,
                 IsActive = true,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.Now
             },
             new UserRecord
             {
@@ -169,7 +169,7 @@ public class InitData
                 ImageUrl = "https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418",
                 UserId = 1,
                 IsActive = true,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.Now
             },
             // 添加用户记录数据 - 收藏
             new UserRecord
@@ -181,7 +181,7 @@ public class InitData
                 UserId = 1,
                 Notes = "这是一个很好的内容",
                 IsActive = true,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.Now
             },
             new UserRecord
             {
@@ -191,7 +191,7 @@ public class InitData
                 ImageUrl = "https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418",
                 UserId = 1,
                 IsActive = true,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.Now
             },
             // 添加用户记录数据 - 足迹
             new UserRecord
@@ -201,10 +201,10 @@ public class InitData
                 Title = "浏览过的内容示例",
                 ImageUrl = "https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418",
                 UserId = 1,
-                LastViewedAt = DateTime.UtcNow,
+                LastViewedAt = DateTime.Now,
                 ViewCount = 1,
                 IsActive = true,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.Now
             },
             new UserRecord
             {
@@ -213,10 +213,10 @@ public class InitData
                 Title = "浏览过的内容示例",
                 ImageUrl = "https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418",
                 UserId = 1,
-                LastViewedAt = DateTime.UtcNow,
+                LastViewedAt = DateTime.Now,
                 ViewCount = 2,
                 IsActive = true,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.Now
             },
             new UserRecord
             {
@@ -225,10 +225,10 @@ public class InitData
                 Title = "浏览过的内容示例",
                 ImageUrl = "https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418",
                 UserId = 1,
-                LastViewedAt = DateTime.UtcNow,
+                LastViewedAt = DateTime.Now,
                 ViewCount = 3,
                 IsActive = true,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.Now
             },
             new UserRecord
             {
@@ -237,10 +237,10 @@ public class InitData
                 Title = "浏览过的内容示例",
                 ImageUrl = "https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418",
                 UserId = 1,
-                LastViewedAt = DateTime.UtcNow,
+                LastViewedAt = DateTime.Now,
                 ViewCount = 1,
                 IsActive = true,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.Now
             },
             new UserRecord
             {
@@ -249,10 +249,10 @@ public class InitData
                 Title = "浏览过的内容示例",
                 ImageUrl = "https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418",
                 UserId = 1,
-                LastViewedAt = DateTime.UtcNow,
+                LastViewedAt = DateTime.Now,
                 ViewCount = 1,
                 IsActive = true,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.Now
             },
             new UserRecord
             {
@@ -261,10 +261,10 @@ public class InitData
                 Title = "浏览过的内容示例",
                 ImageUrl = "https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418",
                 UserId = 1,
-                LastViewedAt = DateTime.UtcNow,
+                LastViewedAt = DateTime.Now,
                 ViewCount = 1,
                 IsActive = true,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.Now
             }
         };
 
