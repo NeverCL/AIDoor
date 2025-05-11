@@ -21,6 +21,8 @@ export const IMAGE_SIZES = {
 
 const videoExt = ['.mp4', '.mov'];
 
+const noCompressExt = ['ico'];
+
 /**
  * 处理图片URL，获取优化后的URL
  * @param url 原始图片URL
@@ -49,7 +51,7 @@ export function getImageUrl(
     const hasParams = url.includes('?');
 
     // 检查URL是否已包含x-oss-process参数 或者 视频格式
-    noCompress = noCompress || url.includes('x-oss-process');
+    noCompress = noCompress || url.includes('x-oss-process') || noCompressExt.includes(url.split('.').pop() || '');
 
     // 构建压缩参数
     const compressParams = noCompress ? '' : `${hasParams ? '&' : '?'}x-oss-process=image/resize,w_${pxWidth},m_lfit/quality,q_${quality}`;

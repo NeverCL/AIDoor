@@ -1,4 +1,4 @@
-import { history, useParams } from "@umijs/max";
+import { history, useModel, useParams } from "@umijs/max";
 import { Button, InfiniteScroll, Loading, Modal, Rate, Toast } from "antd-mobile";
 import { LocationOutline, MessageOutline, SetOutline, StarFill } from "antd-mobile-icons";
 import dayjs from "dayjs";
@@ -49,6 +49,9 @@ export default () => {
     const pageSize = 10;
     const { id } = useParams();
     const [rating, setRating] = useState(5.0);
+
+    const { user } = useModel('global');
+
     // 获取用户发布者资料
     const { data: publisherData, loading: publisherLoading, error: publisherError, run: getPublisherData } = useRequest<PublisherData>(
         () => api.publisher.getPublisherId({ id: id }),
@@ -182,7 +185,7 @@ export default () => {
                             <div className="text-sm text-gray-500">{publisherData?.summary || '暂无简介'}</div>
                         </div>
                         <div className="ml-auto flex items-center">
-                            <div className="text-2xl" onClick={() => history.push(`/chat/${publisherData?.id}`)}>
+                            <div className="text-2xl" onClick={() => history.push(`/chat/${user?.id}`)}>
                                 <MessageOutline />
                             </div>
                         </div>
