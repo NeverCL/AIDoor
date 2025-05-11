@@ -55,7 +55,7 @@ public class UserRecordService
             }
 
             // 如果是足迹类型，检查是否已存在相同目标的记录
-            if (recordDto.RecordType == RecordType.Footprint && recordDto.TargetId.HasValue && !string.IsNullOrEmpty(recordDto.TargetType))
+            if (recordDto.RecordType == RecordType.Footprint && !string.IsNullOrEmpty(recordDto.TargetType))
             {
                 var existingRecord = await _context.UserRecords
                     .FirstOrDefaultAsync(r =>
@@ -66,7 +66,7 @@ public class UserRecordService
                 if (existingRecord != null)
                 {
                     // 已存在记录，更新访问时间和计数
-                    existingRecord.LastViewedAt = DateTime.UtcNow;
+                    existingRecord.LastViewedAt = DateTime.Now;
                     existingRecord.ViewCount++;
                     await _context.SaveChangesAsync();
                     return (true, "更新足迹记录成功", existingRecord.Id);
@@ -74,7 +74,7 @@ public class UserRecordService
             }
 
             // 获取目标内容的创建者ID，设置为TargetUserId
-            int targetUserId = 0; // 默认值为0，表示未指定目标
+            int? targetUserId = null; // 默认值为0，表示未指定目标
             if (recordDto.TargetId.HasValue && !string.IsNullOrEmpty(recordDto.TargetType))
             {
                 if (recordDto.TargetType.Equals("Content", StringComparison.OrdinalIgnoreCase))
@@ -102,7 +102,7 @@ public class UserRecordService
                 Notes = recordDto.TargetId.HasValue && !string.IsNullOrEmpty(recordDto.TargetType)
                     ? $"{recordDto.TargetType}:{recordDto.TargetId}"
                     : recordDto.Notes,
-                LastViewedAt = DateTime.UtcNow
+                LastViewedAt = DateTime.Now
             };
 
             _context.UserRecords.Add(userRecord);
@@ -126,10 +126,8 @@ public class UserRecordService
         {
             int userId = GetCurrentUserId();
 
-            var user = await _context.Users.FindAsync(userId);
-
             var query = _context.UserRecords
-                .Where(r => r.TargetUserId == user!.PublisherId)
+                .Where(r => r.UserId == userId)
                 .Include(r => r.User); // Include User information
 
             // 获取总记录数

@@ -12,7 +12,7 @@ export default (url: string, appInfo?: AppInfo) => {
     if (appInfo && appInfo.id) {
         // 异步记录应用访问，不等待结果
         api.userRecord.postUserRecord({
-            recordType: 1,
+            recordType: 2,
             title: appInfo.title,
             imageUrl: appInfo.imageUrl,
             targetId: appInfo.id,
