@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AIDoor.WebAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250510145408_Init")]
+    [Migration("20250511054834_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -136,17 +136,20 @@ namespace AIDoor.WebAPI.Migrations
                     b.Property<bool>("IsRead")
                         .HasColumnType("tinyint(1)");
 
+                    b.Property<int>("PublisherId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("ReadAt")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int>("ReceiverId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SenderId")
+                    b.Property<int>("SenderType")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime(6)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -154,9 +157,9 @@ namespace AIDoor.WebAPI.Migrations
 
                     b.HasIndex("IsRead");
 
-                    b.HasIndex("ReceiverId");
+                    b.HasIndex("PublisherId");
 
-                    b.HasIndex("SenderId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("ChatMessages");
                 });
@@ -317,8 +320,8 @@ namespace AIDoor.WebAPI.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Value")
-                        .HasColumnType("int");
+                    b.Property<double>("Value")
+                        .HasColumnType("double");
 
                     b.HasKey("Id");
 
@@ -485,7 +488,7 @@ namespace AIDoor.WebAPI.Migrations
                     b.Property<int>("RecordType")
                         .HasColumnType("int");
 
-                    b.Property<int>("TargetUserId")
+                    b.Property<int?>("TargetUserId")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
@@ -528,21 +531,21 @@ namespace AIDoor.WebAPI.Migrations
 
             modelBuilder.Entity("AIDoor.WebAPI.Domain.ChatMessage", b =>
                 {
-                    b.HasOne("AIDoor.WebAPI.Domain.User", "Receiver")
+                    b.HasOne("AIDoor.WebAPI.Domain.Publisher", "Publisher")
                         .WithMany()
-                        .HasForeignKey("ReceiverId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasForeignKey("PublisherId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("AIDoor.WebAPI.Domain.User", "Sender")
+                    b.HasOne("AIDoor.WebAPI.Domain.User", "User")
                         .WithMany()
-                        .HasForeignKey("SenderId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Receiver");
+                    b.Navigation("Publisher");
 
-                    b.Navigation("Sender");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("AIDoor.WebAPI.Domain.Comment", b =>
@@ -627,8 +630,7 @@ namespace AIDoor.WebAPI.Migrations
                     b.HasOne("AIDoor.WebAPI.Domain.Publisher", "Publisher")
                         .WithMany()
                         .HasForeignKey("TargetUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("AIDoor.WebAPI.Domain.User", "User")
                         .WithMany()

@@ -133,17 +133,20 @@ namespace AIDoor.WebAPI.Migrations
                     b.Property<bool>("IsRead")
                         .HasColumnType("tinyint(1)");
 
+                    b.Property<int>("PublisherId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("ReadAt")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int>("ReceiverId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SenderId")
+                    b.Property<int>("SenderType")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime(6)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -151,9 +154,9 @@ namespace AIDoor.WebAPI.Migrations
 
                     b.HasIndex("IsRead");
 
-                    b.HasIndex("ReceiverId");
+                    b.HasIndex("PublisherId");
 
-                    b.HasIndex("SenderId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("ChatMessages");
                 });
@@ -525,21 +528,21 @@ namespace AIDoor.WebAPI.Migrations
 
             modelBuilder.Entity("AIDoor.WebAPI.Domain.ChatMessage", b =>
                 {
-                    b.HasOne("AIDoor.WebAPI.Domain.User", "Receiver")
+                    b.HasOne("AIDoor.WebAPI.Domain.Publisher", "Publisher")
                         .WithMany()
-                        .HasForeignKey("ReceiverId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasForeignKey("PublisherId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("AIDoor.WebAPI.Domain.User", "Sender")
+                    b.HasOne("AIDoor.WebAPI.Domain.User", "User")
                         .WithMany()
-                        .HasForeignKey("SenderId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Receiver");
+                    b.Navigation("Publisher");
 
-                    b.Navigation("Sender");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("AIDoor.WebAPI.Domain.Comment", b =>

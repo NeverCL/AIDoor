@@ -40,16 +40,17 @@ declare namespace API {
 
   type ChatMessageDto = {
     id?: number;
-    senderId?: number;
-    senderName?: string;
-    senderAvatar?: string;
-    receiverId?: number;
-    receiverName?: string;
-    receiverAvatar?: string;
+    userId?: number;
+    userName?: string;
+    userAvatar?: string;
+    publisherId?: number;
+    publisherName?: string;
+    publisherAvatar?: string;
     content?: string;
     isRead?: boolean;
     createdAt?: string;
     readAt?: string;
+    senderType?: MessageSenderType;
   };
 
   type CommentCreateDto = {
@@ -59,7 +60,16 @@ declare namespace API {
     parentId?: number;
   };
 
-  type ConversationPartnerDto = {
+  type ConversationPublisherDto = {
+    publisherId?: number;
+    name?: string;
+    avatarUrl?: string;
+    lastMessage?: string;
+    lastMessageTime?: string;
+    unreadCount?: number;
+  };
+
+  type ConversationUserDto = {
     userId?: number;
     username?: string;
     avatarUrl?: string;
@@ -69,7 +79,7 @@ declare namespace API {
   };
 
   type CreatePrivateMessageDto = {
-    receiverId: number;
+    publisherId: number;
     content: string;
   };
 
@@ -81,12 +91,16 @@ declare namespace API {
     categoryId: number;
   };
 
-  type deleteChatMessageMessageIdParams = {
+  type deleteCommentIdParams = {
+    id: number;
+  };
+
+  type deleteMessagesPublisherDeleteMessageIdParams = {
     messageId: number;
   };
 
-  type deleteCommentIdParams = {
-    id: number;
+  type deleteMessagesUserDeleteMessageIdParams = {
+    messageId: number;
   };
 
   type deletePublisherIdParams = {
@@ -121,19 +135,28 @@ declare namespace API {
     id: number;
   };
 
-  type getChatMessageParams = {
-    Page?: number;
-    Limit?: number;
-    PartnerId?: number;
-    Unread?: boolean;
-  };
-
   type getCommentParams = {
     Page?: number;
     Limit?: number;
     ContentId?: number;
     TargetType?: string;
     ParentId?: number;
+  };
+
+  type getMessagesPublisherMessagesParams = {
+    Page?: number;
+    Limit?: number;
+    PublisherId?: number;
+    UserId?: number;
+    Unread?: boolean;
+  };
+
+  type getMessagesUserMessagesParams = {
+    Page?: number;
+    Limit?: number;
+    PublisherId?: number;
+    UserId?: number;
+    Unread?: boolean;
   };
 
   type getPublisherAllParams = {
@@ -194,6 +217,8 @@ declare namespace API {
     code: string;
   };
 
+  type MessageSenderType = integer;
+
   type PagedResultOfChatMessageDto = {
     data?: ChatMessageDto[];
     total?: number;
@@ -212,6 +237,11 @@ declare namespace API {
 
   type postPublisherIdReviewParams = {
     id: number;
+  };
+
+  type PublisherCreateMessageDto = {
+    userId: number;
+    content: string;
   };
 
   type PublisherCreateUpdateRequest = {
@@ -234,12 +264,20 @@ declare namespace API {
     categoryId: number;
   };
 
-  type putChatMessageMessageIdReadParams = {
+  type putMessagesPublisherMarkAllReadUserIdParams = {
+    userId: number;
+  };
+
+  type putMessagesPublisherMarkReadMessageIdParams = {
     messageId: number;
   };
 
-  type putChatMessageReadAllPartnerIdParams = {
-    partnerId: number;
+  type putMessagesUserMarkAllReadPublisherIdParams = {
+    publisherId: number;
+  };
+
+  type putMessagesUserMarkReadMessageIdParams = {
+    messageId: number;
   };
 
   type RatePublisherRequestDto = {
