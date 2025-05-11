@@ -125,7 +125,7 @@ public class PublisherService
                     Website = website,
                     AppLink = appLink,
                     UserId = userId,
-                    Status = PublisherStatus.Pending, // 新创建的发布者为待审核状态
+                    Status = PublisherStatus.Approved, // 新创建的发布者为待审核状态
                     CreatedAt = DateTime.Now
                 };
                 _context.Publishers.Add(publisher);
