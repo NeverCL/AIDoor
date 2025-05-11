@@ -126,7 +126,12 @@ export default () => {
                 ) : messagesData?.data?.length === 0 ? (
                     <div className="text-center text-gray-500">暂无消息，开始聊天吧</div>
                 ) : (
-                    messagesData?.data?.map((message) => {
+                    // 对消息进行排序，按时间从旧到新（早的在上，新的在下）
+                    [...(messagesData?.data || [])].sort((a, b) => {
+                        const dateA = new Date(a.createdAt || 0);
+                        const dateB = new Date(b.createdAt || 0);
+                        return dateA.getTime() - dateB.getTime();
+                    }).map((message) => {
                         const isMe = message.senderId !== partnerId;
                         return (
                             <div key={message.id}>
@@ -138,7 +143,7 @@ export default () => {
                                             className="w-full h-full rounded-full object-cover"
                                         />
                                     </div>
-                                    <div className={`p-2 rounded-lg ${false ? 'bg-primary text-white' : 'bg-secondary'}`}>
+                                    <div className={`p-2 rounded-lg ${isMe ? 'bg-blue-500 text-white' : 'bg-secondary'}`}>
                                         {message.content}
                                     </div>
                                 </div>

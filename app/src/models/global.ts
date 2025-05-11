@@ -26,12 +26,13 @@ const useUser = () => {
       setIsLoading(false);
     },
     onError: (error) => {
-      console.log(error);
 
-      if (error.response.status === 404) {
+      if (error.response.status === 404 || error.response.status === 405) {
         setIsLoading(false);
         return;
       }
+
+      console.log(error);
 
       setTimeout(() => {
         location.reload();
