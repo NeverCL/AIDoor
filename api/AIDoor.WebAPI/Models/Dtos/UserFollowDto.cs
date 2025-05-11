@@ -35,6 +35,16 @@ public class UserFollowResponseDto
     public int FollowingId { get; set; }
 
     /// <summary>
+    /// 关注者用户名
+    /// </summary>
+    public string FollowerUsername { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 关注者头像URL
+    /// </summary>
+    public string FollowerAvatarUrl { get; set; } = string.Empty;
+
+    /// <summary>
     /// 被关注者用户名
     /// </summary>
     public string FollowingUsername { get; set; } = string.Empty;

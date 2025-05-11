@@ -21,9 +21,19 @@ export default () => {
         {
             manual: true,
             onSuccess: (data) => {
-                setMessageData(data.data || []);
+                // Adjust to match structure from UserFollowController
+                const formattedData = (data.follows || []).map((follow: any) => ({
+                    id: follow.id,
+                    userName: follow.followerUsername || follow.followingUsername,
+                    userAvatarUrl: follow.followerAvatarUrl || follow.followingAvatarUrl,
+                    createdAt: follow.createdAt,
+                    targetId: follow.followingId,
+                    targetType: 'Publisher'
+                }));
+                setMessageData(formattedData);
+                setTotalPages(data.totalPages || 1);
+                setHasMore(currentPage < (data.totalPages || 1));
                 setLoading(false);
-                setHasMore(false); // 关注记录暂不支持分页
             },
             onError: () => {
                 setLoading(false);
@@ -56,20 +66,49 @@ export default () => {
 
     // 获取评分记录
     const { run: getRatingRecords } = useRequest(
-        api.userRecord.getUserRecord,
+        // Using PublisherController endpoint for publisher ratings
+        (params: any) => {
+            // First get the current user's publisher ID
+            return api.publisher.getPublisherMy().then(publisher => {
+                if (publisher && publisher.id) {
+                    // Then get ratings for that publisher
+                    return api.publisher.getPublisherIdRatings({
+                        id: publisher.id,
+                        page: params.Page,
+                        pageSize: params.Limit
+                    });
+                }
+                return Promise.reject(new Error('没有找到您的发布者信息'));
+            });
+        },
         {
             manual: true,
             onSuccess: (data) => {
+                // Format rating records to match the expected structure
+                const formattedData = (data.items || []).map((rating: any) => ({
+                    id: rating.id,
+                    userName: rating.user?.username || '匿名用户',
+                    userAvatarUrl: rating.user?.avatarUrl || '',
+                    title: '账号',
+                    typeString: 'rating',
+                    createdAt: rating.createdAt,
+                    value: rating.value,
+                    comment: rating.comment,
+                    targetId: data.publisherId,
+                    targetType: 'Publisher'
+                }));
+
                 if (currentPage === 1) {
-                    setMessageData(data.records || []);
+                    setMessageData(formattedData);
                 } else {
-                    setMessageData([...messageData, ...(data.records || [])]);
+                    setMessageData([...messageData, ...formattedData]);
                 }
                 setTotalPages(data.totalPages || 1);
                 setHasMore(currentPage < (data.totalPages || 1));
                 setLoading(false);
             },
-            onError: () => {
+            onError: (error) => {
+                console.error('Failed to fetch ratings:', error);
                 setLoading(false);
                 setHasMore(false);
             }
@@ -97,7 +136,10 @@ export default () => {
         setLoading(true);
         switch (messageType) {
             case 'follow':
-                getFollowRecords({});
+                getFollowRecords({
+                    Page: currentPage,
+                    Limit: pageSize
+                });
                 break;
             case 'interaction':
                 getInteractionRecords({
@@ -108,7 +150,6 @@ export default () => {
                 break;
             case 'rating':
                 getRatingRecords({
-                    RecordType: 'rating',
                     Page: currentPage,
                     Limit: pageSize
                 });
@@ -153,7 +194,9 @@ export default () => {
             case 'comment':
                 return `评论了你的「${record.title || '内容'}」`;
             case 'rating':
-                return `给你的「${record.title || '内容'}」评分`;
+                return record.comment ?
+                    `给你的「${record.title || '作品'}」评分 ${record.value}星: ${record.comment}` :
+                    `给你的「${record.title || '作品'}」评分 ${record.value}星`;
             case 'footprint':
                 return `浏览了你的「${record.title || '内容'}」`;
             default:

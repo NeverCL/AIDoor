@@ -61,6 +61,13 @@ public class UserFollowService
                 return (false, "要关注的发布者不存在", null);
             }
 
+            // 获取当前用户信息
+            var follower = await _context.Users.FindAsync(currentUserId);
+            if (follower == null)
+            {
+                return (false, "当前用户信息不存在", null);
+            }
+
             // 检查是否已经关注过该用户
             var existingFollow = await _context.UserFollows
                 .FirstOrDefaultAsync(uf =>
@@ -86,7 +93,6 @@ public class UserFollowService
                 inactiveFollow.UpdatedAt = DateTime.UtcNow;
 
                 // 更新用户的关注计数
-                var follower = await _context.Users.FindAsync(currentUserId);
                 if (follower != null)
                 {
                     follower.FollowCount++;
@@ -99,6 +105,8 @@ public class UserFollowService
                     Id = inactiveFollow.Id,
                     FollowerId = inactiveFollow.FollowerId,
                     FollowingId = inactiveFollow.FollowingId,
+                    FollowerUsername = follower.Username,
+                    FollowerAvatarUrl = follower.AvatarUrl,
                     FollowingUsername = followingPublisher.Name,
                     FollowingAvatarUrl = followingPublisher.AvatarUrl,
                     CreatedAt = inactiveFollow.CreatedAt
@@ -117,10 +125,9 @@ public class UserFollowService
             _context.UserFollows.Add(newFollow);
 
             // 更新用户的关注计数
-            var currentUser = await _context.Users.FindAsync(currentUserId);
-            if (currentUser != null)
+            if (follower != null)
             {
-                currentUser.FollowCount++;
+                follower.FollowCount++;
             }
 
             await _context.SaveChangesAsync();
@@ -130,6 +137,8 @@ public class UserFollowService
                 Id = newFollow.Id,
                 FollowerId = newFollow.FollowerId,
                 FollowingId = newFollow.FollowingId,
+                FollowerUsername = follower.Username,
+                FollowerAvatarUrl = follower.AvatarUrl,
                 FollowingUsername = followingPublisher.Name,
                 FollowingAvatarUrl = followingPublisher.AvatarUrl,
                 CreatedAt = newFollow.CreatedAt
@@ -197,6 +206,7 @@ public class UserFollowService
             // 构建查询
             var query = _context.UserFollows
                 .Include(uf => uf.Following)
+                .Include(uf => uf.Follower)
                 .Where(uf => uf.FollowerId == currentUserId && uf.IsActive)
                 .OrderByDescending(uf => uf.CreatedAt);
 
@@ -215,6 +225,8 @@ public class UserFollowService
                 Id = uf.Id,
                 FollowerId = uf.FollowerId,
                 FollowingId = uf.FollowingId,
+                FollowerUsername = uf.Follower.Username,
+                FollowerAvatarUrl = uf.Follower.AvatarUrl,
                 FollowingUsername = uf.Following.Name,
                 FollowingAvatarUrl = uf.Following.AvatarUrl,
                 CreatedAt = uf.CreatedAt
