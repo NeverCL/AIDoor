@@ -4,6 +4,7 @@ import { List } from 'antd-mobile';
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 import { getMessagesUserPublishers, getMessagesPublisherUsers } from '@/services/api/chatMessage';
+import { getImageUrl } from '@/utils';
 
 export default () => {
 
@@ -116,7 +117,7 @@ export default () => {
                                         <div key={user.userId} className="flex items-center gap-2 p-2 hover:bg-gray-50 rounded-lg cursor-pointer" onClick={() => navigate(`/chat/${user.userId}?type=pub`)}>
                                             <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center overflow-hidden">
                                                 {user.avatarUrl ? (
-                                                    <img src={user.avatarUrl} alt={user.username || '未知用户'} className="w-full h-full object-cover" />
+                                                    <img src={getImageUrl(user.avatarUrl)} alt={user.username || '未知用户'} className="w-full h-full object-cover" />
                                                 ) : (
                                                     <span className="text-xl text-primary">{user.username ? user.username.charAt(0) : '?'}</span>
                                                 )}

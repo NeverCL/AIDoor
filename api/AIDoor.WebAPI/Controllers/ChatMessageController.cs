@@ -53,20 +53,7 @@ namespace AIDoor.WebAPI.Controllers
 
         public async Task<ActionResult<ChatMessageDto>> SendToUser(PublisherCreateMessageDto createDto)
         {
-            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-            if (userId <= 0)
-            {
-                return Unauthorized();
-            }
-
-            // 获取当前用户的发布者ID
-            var publisherId = int.Parse(User.FindFirstValue("PublisherId")!);
-            if (publisherId <= 0)
-            {
-                return BadRequest("当前用户不是发布者");
-            }
-
-            var message = await _chatMessageService.CreatePublisherMessageAsync(publisherId, createDto);
+            var message = await _chatMessageService.CreatePublisherMessageAsync(UserId, createDto);
             return Ok(message);
         }
 
@@ -258,13 +245,7 @@ namespace AIDoor.WebAPI.Controllers
 
         public async Task<ActionResult<int>> PublisherMarkAllAsRead(int userId)
         {
-            var publisherId = int.Parse(User.FindFirstValue("PublisherId")!);
-            if (publisherId <= 0)
-            {
-                return BadRequest("当前用户不是发布者");
-            }
-
-            var count = await _chatMessageService.MarkAllPublisherMessagesAsReadAsync(publisherId, userId);
+            var count = await _chatMessageService.MarkAllPublisherMessagesAsReadAsync(UserId, userId);
             return Ok(count);
         }
 

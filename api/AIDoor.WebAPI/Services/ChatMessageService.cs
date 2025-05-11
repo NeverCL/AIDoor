@@ -74,10 +74,10 @@ namespace AIDoor.WebAPI.Services
         /// <summary>
         /// 发布者创建私信 - 发送给用户
         /// </summary>
-        /// <param name="publisherId">当前发布者ID</param>
+        /// <param name="userId">当前发布者ID</param>
         /// <param name="createDto">创建私信DTO</param>
         /// <returns></returns>
-        public async Task<ChatMessageDto> CreatePublisherMessageAsync(int publisherId, PublisherCreateMessageDto createDto)
+        public async Task<ChatMessageDto> CreatePublisherMessageAsync(int userId, PublisherCreateMessageDto createDto)
         {
             var user = await _dbContext.Users.FindAsync(createDto.UserId);
             if (user == null)
@@ -85,7 +85,7 @@ namespace AIDoor.WebAPI.Services
                 throw new ArgumentException("用户不存在");
             }
 
-            var publisher = await _dbContext.Publishers.FindAsync(publisherId);
+            var publisher = await _dbContext.Publishers.FirstAsync(x=>x.UserId == userId);
             if (publisher == null)
             {
                 throw new ArgumentException("发布者不存在");
@@ -94,7 +94,7 @@ namespace AIDoor.WebAPI.Services
             var message = new ChatMessage
             {
                 UserId = createDto.UserId,
-                PublisherId = publisherId,
+                PublisherId = publisher.Id,
                 Content = createDto.Content,
                 IsRead = false,
                 CreatedAt = DateTime.Now,
@@ -334,14 +334,16 @@ namespace AIDoor.WebAPI.Services
         /// <summary>
         /// 发布者标记与特定用户的所有消息为已读
         /// </summary>
-        /// <param name="publisherId">当前发布者ID</param>
+        /// <param name="userPublisherId">当前发布者ID</param>
         /// <param name="userId">用户ID</param>
         /// <returns></returns>
-        public async Task<int> MarkAllPublisherMessagesAsReadAsync(int publisherId, int userId)
+        public async Task<int> MarkAllPublisherMessagesAsReadAsync(int userPublisherId, int userId)
         {
+            var userPub = await _dbContext.Users.FindAsync(userPublisherId);
+            
             var unreadMessages = await _dbContext.ChatMessages
                 .Where(pm =>
-                    pm.PublisherId == publisherId &&
+                    pm.PublisherId == userPub.PublisherId &&
                     pm.UserId == userId &&
                     pm.SenderType == MessageSenderType.User &&
                     !pm.IsRead)

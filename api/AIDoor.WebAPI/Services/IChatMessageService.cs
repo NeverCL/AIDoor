@@ -18,10 +18,10 @@ namespace AIDoor.WebAPI.Services
         /// <summary>
         /// 发布者创建私信 - 发送给用户
         /// </summary>
-        /// <param name="publisherId">当前发布者ID</param>
+        /// <param name="userId">当前发布者ID</param>
         /// <param name="createDto">创建私信DTO</param>
         /// <returns></returns>
-        Task<ChatMessageDto> CreatePublisherMessageAsync(int publisherId, PublisherCreateMessageDto createDto);
+        Task<ChatMessageDto> CreatePublisherMessageAsync(int userId, PublisherCreateMessageDto createDto);
 
         /// <summary>
         /// 获取用户与指定发布者的私信列表
@@ -80,10 +80,10 @@ namespace AIDoor.WebAPI.Services
         /// <summary>
         /// 发布者标记与特定用户的所有消息为已读
         /// </summary>
-        /// <param name="publisherId">当前发布者ID</param>
+        /// <param name="userPublisherId">当前发布者ID</param>
         /// <param name="userId">用户ID</param>
         /// <returns></returns>
-        Task<int> MarkAllPublisherMessagesAsReadAsync(int publisherId, int userId);
+        Task<int> MarkAllPublisherMessagesAsReadAsync(int userPublisherId, int userId);
 
         /// <summary>
         /// 获取用户的对话发布者列表

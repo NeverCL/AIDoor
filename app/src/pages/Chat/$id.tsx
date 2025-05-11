@@ -1,5 +1,5 @@
 import BackNavBar from "@/components/BackNavBar";
-import { useRequest, useModel, history } from "@umijs/max";
+import { useRequest, useModel, history, useSearchParams } from "@umijs/max";
 import api from "@/services/api";
 import { useParams } from "@umijs/max";
 import { Input, Button, Toast } from "antd-mobile";
@@ -8,7 +8,11 @@ import { useEffect, useState, useRef } from "react";
 
 export default () => {
     const { id } = useParams();
-    const { user } = useModel('global');
+
+    const [searchParams] = useSearchParams();
+
+    const isPublisher = searchParams.get("type") == "pub";
+
     const publisherId = parseInt(id || "0");
 
     const [messageText, setMessageText] = useState("");
@@ -21,7 +25,11 @@ export default () => {
         run: getMessages,
         refresh: refreshMessages
     } = useRequest(
-        () => api.chatMessage.getMessagesUserMessages({
+        () => api.chatMessage.getMessagesUserMessages(isPublisher ? {
+            UserId: parseInt(id || "0"),
+            Page: 1,
+            Limit: 50
+        } : {
             PublisherId: publisherId,
             Page: 1,
             Limit: 50
@@ -53,7 +61,9 @@ export default () => {
 
     // 标记消息为已读
     const { run: markAllAsRead } = useRequest(
-        () => api.chatMessage.putMessagesUserMarkAllReadPublisherId({ publisherId }),
+        () => isPublisher ? api.chatMessage.putMessagesPublisherMarkAllReadUserId({
+            userId: parseInt(id || "0"),
+        }) : api.chatMessage.putMessagesUserMarkAllReadPublisherId({ publisherId }),
         {
             manual: true,
             onError: (error) => {
@@ -64,7 +74,10 @@ export default () => {
 
     // 发送消息
     const { run: sendMessage } = useRequest(
-        (content: string) => api.chatMessage.postMessagesSendToPublisher({
+        (content: string) => isPublisher ? api.chatMessage.postMessagesSendToUser({
+            userId: parseInt(id || "0"),
+            content
+        }) : api.chatMessage.postMessagesSendToPublisher({
             publisherId,
             content
         }),
@@ -109,7 +122,7 @@ export default () => {
     };
 
     return (
-        <BackNavBar title={currentPublisher?.name || "聊天"}>
+        <BackNavBar title={isPublisher ? messagesData?.data[0].userName : currentPublisher?.name || "聊天"}>
             <div
                 ref={messagesContainerRef}
                 className="flex-1 flex flex-col *:mt-4 overflow-y-auto p-2"
