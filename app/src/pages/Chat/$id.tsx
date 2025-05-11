@@ -150,14 +150,15 @@ export default () => {
                 <div className="flex-1 mr-2">
                     <Input
                         placeholder="请输入消息..."
-                        className="bg-white rounded-full px-4 py-2 border-none"
+                        style={{ '--adm-color-text': 'black' } as React.CSSProperties}
+                        className="rounded-full px-4 py-2 border-none !bg-white"
                         value={messageText}
                         onChange={setMessageText}
                     />
                 </div>
                 <Button
                     color="primary"
-                    className="rounded-full px-4"
+                    className="!rounded-full !px-4"
                     onClick={handleSendMessage}
                 >
                     发送
