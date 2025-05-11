@@ -326,4 +326,20 @@ declare namespace API {
     targetType?: string;
     notes?: string;
   };
+
+  type UserRecordDto = {
+    id: number;
+    recordType: RecordType;
+    typeString: string;
+    title: string;
+    imageUrl: string;
+    targetId?: number;
+    targetType?: string;
+    notes?: string;
+    lastViewedAt?: string;
+    viewCount: number;
+    createdAt: string;
+    userName: string;
+    userAvatarUrl: string;
+  };
 }
