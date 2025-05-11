@@ -3,7 +3,7 @@ import { history } from '@umijs/max';
 import { List } from 'antd-mobile';
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
-import { getChatMessagePartners } from '@/services/api/chatMessage';
+import { getMessagesUserPublishers } from '@/services/api/chatMessage';
 
 export default () => {
 
@@ -16,29 +16,29 @@ export default () => {
     };
 
     const [messageLoading, setMessageLoading] = useState(false);
-    const [partners, setPartners] = useState<API.ConversationPartnerDto[]>([]);
+    const [publishers, setPublishers] = useState<API.ConversationPublisherDto[]>([]);
 
-    // 获取私信列表
-    const fetchChatPartners = async () => {
+    // 获取私信列表 - 发布者
+    const fetchPublishers = async () => {
         setMessageLoading(true);
         try {
-            const data = await getChatMessagePartners();
+            const data = await getMessagesUserPublishers();
             // 按最后消息时间倒序排序，最新的在最上面
             const sortedData = data.sort((a, b) => {
                 const timeA = a.lastMessageTime ? new Date(a.lastMessageTime).getTime() : 0;
                 const timeB = b.lastMessageTime ? new Date(b.lastMessageTime).getTime() : 0;
                 return timeB - timeA;
             });
-            setPartners(sortedData);
+            setPublishers(sortedData);
         } catch (error) {
-            console.error('Failed to fetch chat partners:', error);
+            console.error('Failed to fetch publishers:', error);
         } finally {
             setMessageLoading(false);
         }
     };
 
     useEffect(() => {
-        fetchChatPartners();
+        fetchPublishers();
     }, []);
 
     return (
@@ -92,28 +92,28 @@ export default () => {
                                 <div className="flex justify-center py-4">
                                     <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
                                 </div>
-                            ) : partners.length > 0 ? (
-                                partners.map((partner) => (
-                                    <div key={partner.userId} className="flex items-center gap-2 p-2 hover:bg-gray-50 rounded-lg cursor-pointer" onClick={() => navigate(`/chat/${partner.userId}`)}>
+                            ) : publishers.length > 0 ? (
+                                publishers.map((publisher) => (
+                                    <div key={publisher.publisherId} className="flex items-center gap-2 p-2 hover:bg-gray-50 rounded-lg cursor-pointer" onClick={() => navigate(`/chat/${publisher.publisherId}`)}>
                                         <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center overflow-hidden">
-                                            {partner.avatarUrl ? (
-                                                <img src={partner.avatarUrl} alt={partner.username || '未知用户'} className="w-full h-full object-cover" />
+                                            {publisher.avatarUrl ? (
+                                                <img src={publisher.avatarUrl} alt={publisher.name || '未知发布者'} className="w-full h-full object-cover" />
                                             ) : (
-                                                <span className="text-xl text-primary">{partner.username ? partner.username.charAt(0) : '?'}</span>
+                                                <span className="text-xl text-primary">{publisher.name ? publisher.name.charAt(0) : '?'}</span>
                                             )}
                                         </div>
                                         <div className="flex-1">
                                             <div className="text-base font-bold flex items-center gap-1">
-                                                {partner.username || '未知用户'}
-                                                {partner.unreadCount && partner.unreadCount > 0 && (
+                                                {publisher.name || '未知发布者'}
+                                                {publisher.unreadCount && publisher.unreadCount > 0 && (
                                                     <span className="bg-red-500 text-white text-xs rounded-full px-1.5 py-0.5 ml-1">
-                                                        {partner.unreadCount}
+                                                        {publisher.unreadCount}
                                                     </span>
                                                 )}
                                             </div>
-                                            <div className="text-sm text-gray-500 truncate max-w-52">{partner.lastMessage || '无消息内容'}</div>
+                                            <div className="text-sm text-gray-500 truncate max-w-52">{publisher.lastMessage || '无消息内容'}</div>
                                         </div>
-                                        <div className="text-xs text-gray-500">{partner.lastMessageTime ? dayjs(partner.lastMessageTime).format('YYYY-MM-DD HH:mm') : ''}</div>
+                                        <div className="text-xs text-gray-500">{publisher.lastMessageTime ? dayjs(publisher.lastMessageTime).format('YYYY-MM-DD HH:mm') : ''}</div>
                                     </div>
                                 ))
                             ) : (

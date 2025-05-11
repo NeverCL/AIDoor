@@ -21,10 +21,10 @@ export default () => {
         run: getMessages,
         refresh: refreshMessages
     } = useRequest(
-        () => api.chatMessage.getUserMessages({
-            publisherId,
-            page: 1,
-            limit: 50
+        () => api.chatMessage.getMessagesUserMessages({
+            PublisherId: publisherId,
+            Page: 1,
+            Limit: 50
         }),
         {
             manual: true,
@@ -41,7 +41,7 @@ export default () => {
         data: publishersData,
         loading: publishersLoading
     } = useRequest(
-        () => api.chatMessage.getUserPublishers(),
+        () => api.chatMessage.getMessagesUserPublishers(),
         {
             onError: (error) => {
                 Toast.show({
@@ -53,7 +53,7 @@ export default () => {
 
     // 标记消息为已读
     const { run: markAllAsRead } = useRequest(
-        () => api.chatMessage.userMarkAllAsRead({ publisherId }),
+        () => api.chatMessage.putMessagesUserMarkAllReadPublisherId({ publisherId }),
         {
             manual: true,
             onError: (error) => {
@@ -64,7 +64,7 @@ export default () => {
 
     // 发送消息
     const { run: sendMessage } = useRequest(
-        (content: string) => api.chatMessage.sendToPublisher({
+        (content: string) => api.chatMessage.postMessagesSendToPublisher({
             publisherId,
             content
         }),
