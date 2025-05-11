@@ -167,7 +167,7 @@ const UserCard = () => {
                 <div className="w-[1px] bg-secondary h-3"></div>
                 <NavLink to='/mylist/follow' className="flex flex-col justify-center items-center">
                     <span className="">关注</span>
-                    <span className="text-lg">0</span>
+                    <span className="text-lg">{user?.followCount}</span>
                 </NavLink>
             </div>
         </div>

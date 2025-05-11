@@ -35,7 +35,7 @@ export default () => {
             // 更新列表，移除已取消关注的发布者
             const newData = {
                 ...followData,
-                data: followData?.data?.filter((item: any) => item.publisherId !== id) || []
+                follows: followData?.follows?.filter((item: any) => item.id !== id) || []
             };
             mutate(newData);
         } catch (error) {
@@ -49,8 +49,10 @@ export default () => {
 
     // 跳转到发布者详情页
     const navigateToPublisher = (id: number) => {
-        history.push(`/publisher/${id}`);
+        history.push(`/detail/publisher/${id}`);
     };
+
+    const follows = followData?.follows || [];
 
     return (
         <BackNavBar title="我的关注">
@@ -58,31 +60,33 @@ export default () => {
                 <div className="flex justify-center items-center h-64">
                     <Loading />
                 </div>
-            ) : followData?.data && followData.data.length > 0 ? (
+            ) : follows.length > 0 ? (
                 <div className="flex flex-col gap-3 p-4">
-                    {followData.data.map((item: any) => (
-                        <div key={item.publisherId} className="flex justify-between items-center p-2 border-b border-gray-100">
+                    {follows.map((item: any) => (
+                        <div key={item.id} className="flex justify-between items-center p-2 border-b border-gray-100">
                             <div
                                 className="flex items-center gap-3 flex-1"
-                                onClick={() => navigateToPublisher(item.publisherId)}
+                                onClick={() => navigateToPublisher(item.followingId)}
                             >
                                 <Avatar
-                                    src={getImageUrl(item.avatarUrl)}
+                                    src={getImageUrl(item.followingAvatarUrl)}
                                     className="w-12 h-12"
                                 />
                                 <div className="flex flex-col">
-                                    <span className="font-medium">{item.name || '未知发布者'}</span>
-                                    <span className="text-xs text-gray-500 line-clamp-1">{item.description || '暂无简介'}</span>
+                                    <span className="font-medium">{item.followingUsername || '未知发布者'}</span>
+                                    <span className="text-xs text-gray-500 line-clamp-1">
+                                        关注时间: {new Date(item.createdAt).toLocaleDateString()}
+                                    </span>
                                 </div>
                             </div>
                             <Button
-                                color="default"
+                                color="danger"
                                 size="small"
                                 className="px-4 rounded-lg"
-                                loading={loadingIds.includes(item.publisherId)}
-                                onClick={() => handleUnfollow(item.publisherId)}
+                                loading={loadingIds.includes(item.id)}
+                                onClick={() => handleUnfollow(item.id)}
                             >
-                                取消关注
+                                取关
                             </Button>
                         </div>
                     ))}
