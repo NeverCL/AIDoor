@@ -31,7 +31,7 @@ export default () => {
         {
             manual: true,
             onSuccess: (data) => {
-                setMessageData(data.data || []);
+                setMessageData(data.records || []);
                 setLoading(false);
             },
             onError: () => {

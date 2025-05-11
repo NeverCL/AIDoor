@@ -126,20 +126,17 @@ public class UserRecordService
         {
             int userId = GetCurrentUserId();
 
+            var user = await _context.Users.FindAsync(userId);
+
             var query = _context.UserRecords
-                .Where(r => r.UserId == userId);
+                .Where(r => r.TargetUserId == user!.PublisherId);
 
             // 获取总记录数
             int totalCount = await query.CountAsync();
 
             List<UserRecordDto> records;
 
-            // 应用筛选条件
-            if (queryParams.RecordType.HasValue)
-            {
-                // 有指定记录类型，按照分页参数获取数据
-                records = await query
-                    .Where(r => r.RecordType == queryParams.RecordType.Value)
+            records = await query
                     .OrderByDescending(r => r.LastViewedAt ?? r.CreatedAt)
                     .Skip((queryParams.Page - 1) * queryParams.Limit)
                     .Take(queryParams.Limit)
@@ -156,41 +153,6 @@ public class UserRecordService
                         CreatedAt = r.CreatedAt
                     })
                     .ToListAsync();
-            }
-            else
-            {
-                // 没有指定记录类型，获取每种类型前6条记录
-                var recordsList = new List<UserRecordDto>();
-
-                // 获取所有记录类型的枚举值
-                var recordTypes = Enum.GetValues(typeof(RecordType)).Cast<RecordType>();
-
-                // 对每种类型单独查询前6条记录
-                foreach (var recordType in recordTypes)
-                {
-                    var typeRecords = await query
-                        .Where(r => r.RecordType == recordType)
-                        .OrderByDescending(r => r.LastViewedAt ?? r.CreatedAt)
-                        .Take(6)
-                        .Select(r => new UserRecordDto
-                        {
-                            Id = r.Id,
-                            RecordType = r.RecordType,
-                            TypeString = r.TypeString,
-                            Title = r.Title,
-                            ImageUrl = r.ImageUrl + "?x-oss-process=image/resize,p_30",
-                            Notes = r.Notes,
-                            LastViewedAt = r.LastViewedAt,
-                            ViewCount = r.ViewCount,
-                            CreatedAt = r.CreatedAt
-                        })
-                        .ToListAsync();
-
-                    recordsList.AddRange(typeRecords);
-                }
-
-                records = recordsList;
-            }
 
             // 解析目标ID和类型
             ProcessRecords(records);

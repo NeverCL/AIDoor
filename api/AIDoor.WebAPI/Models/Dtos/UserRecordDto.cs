@@ -80,5 +80,5 @@ public class UserRecordQueryParams
         set => _limit = value > 0 && value <= 50 ? value : 20;
     }
 
-    public RecordType? RecordType { get; set; }
+    public string? RecordType { get; set; }
 }
