@@ -2,6 +2,7 @@ import { Icon, NavLink, useModel, useRequest, history } from "@umijs/max"
 import { List } from "antd-mobile";
 import { useState, useEffect } from "react";
 import api from '@/services/api';
+import { EditSOutline } from "antd-mobile-icons";
 
 const url = 'https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418';
 
@@ -170,6 +171,9 @@ const UserCard = () => {
             <div className="flex items-center flex-1" onClick={() => history.push('/user/edit')}>
                 <div className="h-[3.94rem] w-[3.94rem] relative bottom-[0.63rem]">
                     <img className="h-full w-full rounded-full" src={user?.avatarUrl} alt="my-header" />
+                    <div className="absolute -bottom-1 -right-1 bg-black text-white p-1 rounded-full shadow-md">
+                        <EditSOutline fontSize={14} />
+                    </div>
                 </div>
                 <span className="text-lg font-bold ml-3">{user?.username}</span>
             </div>

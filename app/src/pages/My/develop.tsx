@@ -1,6 +1,6 @@
 import { history } from "@umijs/max";
 import { Button, InfiniteScroll, Toast } from "antd-mobile";
-import { LocationOutline, MessageOutline, SetOutline, StarFill } from "antd-mobile-icons";
+import { LocationOutline, MessageOutline, SetOutline, StarFill, EditSOutline } from "antd-mobile-icons";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { useRequest } from '@umijs/max';
@@ -117,7 +117,7 @@ export default () => {
         <div className="h-full flex flex-col *:mt-8 overflow-y-auto">
             {/* 头像 昵称 简介 消息|设置图标*/}
             <div className="flex items-center ">
-                <div className="w-16 h-16 rounded-full bg-gray-300" onClick={() => history.push('/Account/Develop')}>
+                <div className="w-16 h-16 rounded-full bg-gray-300 relative" onClick={() => history.push('/Account/Develop')}>
                     {publisherData?.avatarUrl && (
                         <img
                             src={getImageUrl(publisherData.avatarUrl)}
@@ -125,6 +125,9 @@ export default () => {
                             className="w-full h-full rounded-full object-cover"
                         />
                     )}
+                    <div className="absolute -bottom-1 -right-1 bg-black text-white p-1 rounded-full shadow-md">
+                        <EditSOutline fontSize={14} />
+                    </div>
                 </div>
                 <div className="ml-4">
                     <div className="text-lg font-bold">{publisherData?.username || '未设置昵称'}</div>
