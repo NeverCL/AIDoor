@@ -44,8 +44,8 @@ public class PublisherService
         // 使用TargetUserId计算点赞数量 
         var likesCount = await _context.UserRecords
             .CountAsync(r => r.RecordType == RecordType.Like &&
-                           r.TargetUserId == publisherId &&
-                           r.IsActive);
+                             r.TargetUserId == publisherId &&
+                             r.IsActive);
 
         // 计算粉丝数量
         var followersCount = await _context.UserFollows
@@ -54,8 +54,8 @@ public class PublisherService
         // 使用TargetUserId计算收藏数量
         var favoritesCount = await _context.UserRecords
             .CountAsync(r => r.RecordType == RecordType.Favorite &&
-                           r.TargetUserId == publisherId &&
-                           r.IsActive);
+                             r.TargetUserId == publisherId &&
+                             r.IsActive);
 
         // 创建发布者DTO
         var publisherDto = new PublisherDto
@@ -71,8 +71,8 @@ public class PublisherService
             StatusText = GetStatusText(publisher.Status),
             ReviewNote = publisher.ReviewNote,
             ReviewedAt = publisher.ReviewedAt,
-            AppLink = publisher.AppLink,
-            Website = publisher.Website,
+            AppLink = publisher.Status == PublisherStatus.Approved ? publisher.AppLink : null,
+            Website = publisher.Status == PublisherStatus.Approved ? publisher.Website : null,
             Stats = new PublisherStatsDto
             {
                 Likes = likesCount,
@@ -125,7 +125,7 @@ public class PublisherService
                     Website = website,
                     AppLink = appLink,
                     UserId = userId,
-                    Status = PublisherStatus.Approved, // 新创建的发布者为待审核状态
+                    Status = PublisherStatus.Pending, // 新创建的发布者为待审核状态
                     CreatedAt = DateTime.Now
                 };
                 _context.Publishers.Add(publisher);
@@ -140,7 +140,7 @@ public class PublisherService
             else
             {
                 // 如果发布者已被拒绝，那么更新后状态变回待审核
-                var needReview = publisher.Status == PublisherStatus.Rejected;
+                var needReview = true; // publisher.Status == PublisherStatus.Rejected;
 
                 // 更新现有发布者信息
                 publisher.Name = name;
@@ -358,8 +358,8 @@ public class PublisherService
             // 使用publisherId更新点赞数量
             var likesCount = await _context.UserRecords
                 .CountAsync(r => r.RecordType == RecordType.Like &&
-                               r.TargetUserId == publisherId &&
-                               r.IsActive);
+                                 r.TargetUserId == publisherId &&
+                                 r.IsActive);
 
             // 更新粉丝数量
             var followersCount = await _context.UserFollows
@@ -368,8 +368,8 @@ public class PublisherService
             // 使用publisherId更新收藏数量
             var favoritesCount = await _context.UserRecords
                 .CountAsync(r => r.RecordType == RecordType.Favorite &&
-                               r.TargetUserId == publisherId &&
-                               r.IsActive);
+                                 r.TargetUserId == publisherId &&
+                                 r.IsActive);
 
             // 更新发布者统计数据
             publisher.LikesCount = likesCount;

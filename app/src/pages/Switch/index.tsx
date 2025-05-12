@@ -32,6 +32,17 @@ export default () => {
 
                     // 如果获取成功，检查发布者状态
                     if (publisherInfo) {
+
+                        // 已审核通过，可以切换到开发者模式
+                        const result = await switchUserMode();
+
+                        Toast.clear();
+
+                        if (result.success) {
+                            history.replace('/');
+                        }
+                        return;
+
                         const publisher = publisherInfo;
 
                         // 根据发布者状态处理
