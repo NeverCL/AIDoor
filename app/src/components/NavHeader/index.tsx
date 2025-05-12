@@ -1,10 +1,9 @@
 import { NavLink, Icon, useLocation, useModel, history } from '@umijs/max';
 import { useEffect, useRef, useState } from 'react';
-import { Button, Popup, SearchBar, SearchBarRef, Toast, Badge } from 'antd-mobile';
+import { Button, Popup, SearchBar, SearchBarRef, Toast, Badge, List, Empty, SwipeAction, InfiniteScroll, Dialog } from 'antd-mobile';
 import { getUserRecord } from '@/services/api/userRecord';
 import { getImageUrl } from '@/utils';
-import { getUnreadCount } from '@/services/api/systemMessage';
-import SystemMessages from '@/components/SystemMessages';
+import { getSystemMessages, getUnreadCount, updateMessageStatus, deleteMessage, markAllAsRead } from '@/services/api/systemMessage';
 
 const isActive = 'flex flex-col justify-center items-center ';
 const notActive = 'text-secondary ';
@@ -19,15 +18,14 @@ const NavHeader: React.FC = () => {
 
   const [showSearch, setShowSearch] = useState(false);
 
-  const [searchText, setSearchText] = useState('');
-
   // 常用应用列表状态
   const [appList, setAppList] = useState<API.UserRecordDto[]>([]);
   const [loading, setLoading] = useState(false);
 
   // 系统消息状态
-  const [showMessages, setShowMessages] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [messages, setMessages] = useState<API.SystemMessageDto[]>([]);
+  const [messagesLoading, setMessagesLoading] = useState(false);
 
   const searchRef = useRef<SearchBarRef>(null);
 
@@ -58,6 +56,121 @@ const NavHeader: React.FC = () => {
     return () => clearInterval(timer);
   }, []);
 
+  // 获取系统消息列表
+  const fetchMessages = async () => {
+    if (!open) return;
+
+    setMessagesLoading(true);
+    try {
+      const result = await getSystemMessages({ page: 1, limit: 3 });
+      setMessages(result.messages);
+    } catch (error) {
+      console.error('获取系统消息失败:', error);
+    } finally {
+      setMessagesLoading(false);
+    }
+  };
+
+  // 标记消息为已读
+  const handleRead = async (id: number) => {
+    try {
+      await updateMessageStatus(id, true);
+      setMessages((prev) =>
+        prev.map((message) => (message.id === id ? { ...message, isRead: true } : message))
+      );
+      const newUnreadCount = await getUnreadCount();
+      setUnreadCount(newUnreadCount);
+    } catch (error) {
+      console.error('标记消息已读失败:', error);
+      Toast.show('操作失败');
+    }
+  };
+
+  // 标记所有消息为已读
+  const handleMarkAllRead = async () => {
+    try {
+      await markAllAsRead();
+      setMessages((prev) => prev.map((message) => ({ ...message, isRead: true })));
+      setUnreadCount(0);
+      Toast.show('全部标记为已读');
+    } catch (error) {
+      console.error('标记全部已读失败:', error);
+      Toast.show('操作失败');
+    }
+  };
+
+  // 删除消息
+  const handleDeleteMessage = async (id: number) => {
+    try {
+      const result = await Dialog.confirm({
+        content: '确定要删除这条消息吗？',
+      });
+
+      if (result) {
+        await deleteMessage(id);
+        setMessages((prev) => prev.filter((message) => message.id !== id));
+        const newUnreadCount = await getUnreadCount();
+        setUnreadCount(newUnreadCount);
+        Toast.show('删除成功');
+      }
+    } catch (error) {
+      console.error('删除消息失败:', error);
+      Toast.show('删除失败');
+    }
+  };
+
+  // 获取消息优先级样式
+  const getPriorityStyle = (priority: number) => {
+    switch (priority) {
+      case 3: // Urgent
+        return { color: '#ff4d4f', fontWeight: 'bold' };
+      case 2: // High
+        return { color: '#fa8c16' };
+      case 1: // Normal
+        return { color: '#1677ff' };
+      default: // Low
+        return { color: '#8c8c8c' };
+    }
+  };
+
+  // 获取消息类型图标
+  const getTypeIcon = (type: number) => {
+    switch (type) {
+      case 3: // System
+        return '💻';
+      case 2: // Error
+        return '⚠️';
+      case 1: // Warning
+        return '⚡';
+      default: // Notification
+        return '📢';
+    }
+  };
+
+  // 格式化日期为相对时间
+  const formatDate = (dateString: string) => {
+    try {
+      const date = new Date(dateString);
+      const now = new Date();
+      const diffTime = Math.abs(now.getTime() - date.getTime());
+      const diffMinutes = Math.floor(diffTime / (1000 * 60));
+      const diffHours = Math.floor(diffTime / (1000 * 60 * 60));
+      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+      if (diffMinutes < 60) {
+        return `${diffMinutes}分钟前`;
+      } else if (diffHours < 24) {
+        return `${diffHours}小时前`;
+      } else if (diffDays < 30) {
+        return `${diffDays}天前`;
+      } else {
+        return date.toLocaleDateString('zh-CN');
+      }
+    } catch (e) {
+      return dateString;
+    }
+  };
+
   // 获取足迹数据，筛选targetType为App的项目
   const fetchAppFootprints = async () => {
     if (open) {
@@ -85,7 +198,10 @@ const NavHeader: React.FC = () => {
 
   // 当弹窗打开时获取数据
   useEffect(() => {
-    fetchAppFootprints();
+    if (open) {
+      fetchAppFootprints();
+      fetchMessages();
+    }
   }, [open]);
 
   const navigateToApp = (targetId?: number, targetType?: string) => {
@@ -145,7 +261,7 @@ const NavHeader: React.FC = () => {
               <div className="relative">
                 <Icon icon="local:search" onClick={() => setShowSearch(true)} />
                 {unreadCount > 0 && (
-                  <div onClick={() => setShowMessages(true)} className="cursor-pointer">
+                  <div onClick={() => setOpen(true)} className="cursor-pointer">
                     <Badge
                       content={unreadCount}
                       className="absolute -top-2 -right-2"
@@ -165,23 +281,79 @@ const NavHeader: React.FC = () => {
       >
         <div className='flex w-[70vw] flex-col text-[16px] p-4 pt-12'>
           <div className='flex flex-col'>
-            <span className='font-bold'>系统消息</span>
-            <div className="flex justify-between items-center">
-              <span className='text-sm'>您的账号已开通...</span>
-              <div
-                onClick={() => {
-                  setOpen(false);
-                  setShowMessages(true);
-                }}
-                className="cursor-pointer"
-              >
-                <Badge
-                  content={unreadCount > 0 ? unreadCount : null}
-                  color="#1677ff"
-                />
-              </div>
+            <div className="flex justify-between items-center mb-2">
+              <span className='font-bold'>系统消息</span>
+              {unreadCount > 0 && (
+                <span
+                  onClick={handleMarkAllRead}
+                  className="text-blue-500 text-xs cursor-pointer"
+                >
+                  全部已读
+                </span>
+              )}
             </div>
-            <span className='text-xs text-secondary'>2025年4月6日 12:29:16</span>
+
+            {messagesLoading ? (
+              <div className="flex justify-center py-2">
+                <div className="animate-spin h-4 w-4 border-2 border-primary border-t-transparent rounded-full"></div>
+              </div>
+            ) : messages.length === 0 ? (
+              <div className="text-gray-500 text-sm py-2">暂无系统消息</div>
+            ) : (
+              <div className="space-y-3 mb-2">
+                {messages.map(message => (
+                  <div
+                    key={message.id}
+                    className="bg-gray-50 rounded-lg p-2 relative"
+                    onClick={() => !message.isRead && handleRead(message.id)}
+                  >
+                    <div className="flex items-start">
+                      <div
+                        className="w-8 h-8 rounded-full flex items-center justify-center text-lg mr-2 flex-shrink-0"
+                        style={getPriorityStyle(message.priority)}
+                      >
+                        {getTypeIcon(message.type)}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center">
+                          {!message.isRead && <Badge color="#1677ff" className="mr-1" />}
+                          <div
+                            className="text-sm font-medium truncate"
+                            style={{ fontWeight: message.isRead ? 'normal' : 'bold' }}
+                          >
+                            {message.title}
+                          </div>
+                        </div>
+                        <div className="text-xs text-gray-600 line-clamp-2 mt-1">
+                          {message.content}
+                        </div>
+                        <div className="text-xs text-gray-400 mt-1">
+                          {formatDate(message.createdAt)}
+                        </div>
+                      </div>
+                      <div
+                        className="text-gray-400 text-xs cursor-pointer p-1"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteMessage(message.id);
+                        }}
+                      >
+                        ✕
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                <div
+                  className="text-center text-xs text-blue-500 cursor-pointer py-1"
+                  onClick={() => {
+                    history.push('/messages');
+                    setOpen(false);
+                  }}
+                >
+                  查看全部 &gt;
+                </div>
+              </div>
+            )}
           </div>
 
           <div className='h-px bg-gray-200 my-4'></div>
@@ -227,9 +399,7 @@ const NavHeader: React.FC = () => {
               </Button>
             </div>
           </NavLink>
-
         </div>
-
       </Popup>
     </>
   );
