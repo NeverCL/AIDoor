@@ -117,7 +117,7 @@ export default () => {
         <div className="h-full flex flex-col *:mt-8 overflow-y-auto">
             {/* 头像 昵称 简介 消息|设置图标*/}
             <div className="flex items-center ">
-                <div className="w-16 h-16 rounded-full bg-gray-300">
+                <div className="w-16 h-16 rounded-full bg-gray-300" onClick={() => history.push('/Account/Develop')}>
                     {publisherData?.avatarUrl && (
                         <img
                             src={getImageUrl(publisherData.avatarUrl)}

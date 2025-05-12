@@ -25,7 +25,7 @@ export default () => {
 
         // 创建发布者请求
         const createPublisherRequest = {
-            name: values.name,
+            name: values.username,
             avatarUrl: avatarUrl,
             description: values.description,
             summary: values.summary,
@@ -66,7 +66,7 @@ export default () => {
                     }
                 >
                     <Form.Item
-                        name="name"
+                        name="username"
                         label="发布者名称"
                         rules={[{ required: true, message: '请输入发布者名称' }]}
                     >
