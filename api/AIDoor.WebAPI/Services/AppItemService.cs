@@ -16,6 +16,27 @@ public class AppItemService
         _dbContext = dbContext;
     }
 
+    // 获取所有应用（包括已禁用的应用，只有管理员可以访问）
+    public async Task<List<ApplicationDto>> GetAllApplications()
+    {
+        var applications = await _dbContext.Applications
+            .Include(a => a.Category)
+            .OrderBy(a => a.DisplayOrder)
+            .ToListAsync();
+
+        return applications.Select(a => new ApplicationDto
+        {
+            Id = a.Id,
+            Title = a.Title,
+            Description = a.Description,
+            ImageUrl = a.ImageUrl,
+            Link = a.Link,
+            DisplayOrder = a.DisplayOrder,
+            CategoryId = a.CategoryId,
+            CategoryName = a.Category.Name
+        }).ToList();
+    }
+
     // 获取所有应用分类及其应用（只返回激活状态的）
     public async Task<List<CategoryDto>> GetApplicationCategories()
     {

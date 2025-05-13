@@ -1,23 +1,26 @@
 import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import {
-    FooterToolbar,
     ModalForm,
     PageContainer,
     ProDescriptions,
     ProFormDigit,
-    ProFormSwitch,
+    ProFormSelect,
     ProFormText,
+    ProFormTextArea,
     ProTable,
 } from '@ant-design/pro-components';
-import { FormattedMessage, useIntl } from '@umijs/max';
-import { Button, Drawer, message, Space, Switch } from 'antd';
+import { Button, Drawer, Image, message, Tabs } from 'antd';
 import React, { useRef, useState } from 'react';
 import {
     getAdminAppitemsCategories,
     postAdminAppitemsCategories,
     putAdminAppitemsCategoriesCategoryId,
     deleteAdminAppitemsCategoriesCategoryId,
+    getAdminAppitemsApplications,
+    postAdminAppitemsApplications,
+    putAdminAppitemsApplicationsApplicationId,
+    deleteAdminAppitemsApplicationsApplicationId,
 } from '@/services/api/appItemAdmin';
 
 /**
@@ -25,7 +28,7 @@ import {
  *
  * @param fields
  */
-const handleAdd = async (fields: API.CategoryCreateDto) => {
+const handleAddCategory = async (fields: API.CategoryCreateDto) => {
     const hide = message.loading('正在添加...');
     try {
         await postAdminAppitemsCategories(fields);
@@ -44,7 +47,7 @@ const handleAdd = async (fields: API.CategoryCreateDto) => {
  *
  * @param fields
  */
-const handleUpdate = async (categoryId: number, fields: API.CategoryUpdateDto) => {
+const handleUpdateCategory = async (categoryId: number, fields: API.CategoryUpdateDto) => {
     const hide = message.loading('正在更新...');
     try {
         await putAdminAppitemsCategoriesCategoryId({ categoryId }, fields);
@@ -63,7 +66,7 @@ const handleUpdate = async (categoryId: number, fields: API.CategoryUpdateDto) =
  *
  * @param selectedRows
  */
-const handleRemove = async (categoryId: number) => {
+const handleRemoveCategory = async (categoryId: number) => {
     const hide = message.loading('正在删除...');
     try {
         await deleteAdminAppitemsCategoriesCategoryId({ categoryId });
@@ -77,15 +80,96 @@ const handleRemove = async (categoryId: number) => {
     }
 };
 
-const CategoryList: React.FC = () => {
-    const [createModalOpen, handleModalOpen] = useState<boolean>(false);
-    const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
-    const [showDetail, setShowDetail] = useState<boolean>(false);
-    const actionRef = useRef<ActionType>();
-    const [currentRow, setCurrentRow] = useState<API.CategoryDto>();
-    const intl = useIntl();
+/**
+ * 添加应用
+ *
+ * @param fields
+ */
+const handleAddApplication = async (fields: API.ApplicationCreateDto) => {
+    const hide = message.loading('正在添加...');
+    try {
+        await postAdminAppitemsApplications(fields);
+        hide();
+        message.success('添加成功');
+        return true;
+    } catch (error) {
+        hide();
+        message.error('添加失败，请重试');
+        return false;
+    }
+};
 
-    const columns: ProColumns<API.CategoryDto>[] = [
+/**
+ * 更新应用
+ *
+ * @param fields
+ */
+const handleUpdateApplication = async (applicationId: number, fields: API.ApplicationUpdateDto) => {
+    const hide = message.loading('正在更新...');
+    try {
+        await putAdminAppitemsApplicationsApplicationId({ applicationId }, fields);
+        hide();
+        message.success('更新成功');
+        return true;
+    } catch (error) {
+        hide();
+        message.error('更新失败，请重试');
+        return false;
+    }
+};
+
+/**
+ * 删除应用
+ *
+ * @param selectedRows
+ */
+const handleRemoveApplication = async (applicationId: number) => {
+    const hide = message.loading('正在删除...');
+    try {
+        await deleteAdminAppitemsApplicationsApplicationId({ applicationId });
+        hide();
+        message.success('删除成功');
+        return true;
+    } catch (error) {
+        hide();
+        message.error('删除失败，请重试');
+        return false;
+    }
+};
+
+const CategoryList: React.FC = () => {
+    const [createCategoryModalOpen, handleCategoryModalOpen] = useState<boolean>(false);
+    const [updateCategoryModalOpen, handleUpdateCategoryModalOpen] = useState<boolean>(false);
+    const [createAppModalOpen, handleAppModalOpen] = useState<boolean>(false);
+    const [updateAppModalOpen, handleUpdateAppModalOpen] = useState<boolean>(false);
+    const [showCategoryDetail, setShowCategoryDetail] = useState<boolean>(false);
+    const [showAppDetail, setShowAppDetail] = useState<boolean>(false);
+    const categoryActionRef = useRef<ActionType>();
+    const appActionRef = useRef<ActionType>();
+    const [currentCategory, setCurrentCategory] = useState<any>();
+    const [currentApp, setCurrentApp] = useState<any>();
+    const [categoryOptions, setCategoryOptions] = useState<{ label: string; value: number }[]>([]);
+    const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
+    const [activeTabKey, setActiveTabKey] = useState('1');
+
+    // 获取分类列表
+    const fetchCategories = async () => {
+        const result = await getAdminAppitemsCategories();
+        if (result.success && result.data) {
+            const options = result.data.map((item: any) => ({
+                label: item.name,
+                value: item.id,
+            }));
+            setCategoryOptions(options);
+        }
+    };
+
+    // 组件挂载时获取分类列表
+    React.useEffect(() => {
+        fetchCategories();
+    }, []);
+
+    const categoryColumns: ProColumns<any>[] = [
         {
             title: 'ID',
             dataIndex: 'id',
@@ -99,8 +183,8 @@ const CategoryList: React.FC = () => {
                 return (
                     <a
                         onClick={() => {
-                            setCurrentRow(entity);
-                            setShowDetail(true);
+                            setCurrentCategory(entity);
+                            setShowCategoryDetail(true);
                         }}
                     >
                         {dom}
@@ -112,35 +196,6 @@ const CategoryList: React.FC = () => {
             title: '显示顺序',
             dataIndex: 'displayOrder',
             search: false,
-        },
-        {
-            title: '状态',
-            dataIndex: 'isActive',
-            valueEnum: {
-                true: {
-                    text: '启用',
-                    status: 'Success',
-                },
-                false: {
-                    text: '禁用',
-                    status: 'Error',
-                },
-            },
-            render: (_, record) => (
-                <Switch
-                    checked={record.isActive}
-                    onChange={async (checked) => {
-                        const success = await handleUpdate(record.id, {
-                            name: record.name,
-                            displayOrder: record.displayOrder,
-                            isActive: checked,
-                        });
-                        if (success && actionRef.current) {
-                            actionRef.current.reload();
-                        }
-                    }}
-                />
-            ),
         },
         {
             title: '创建时间',
@@ -157,8 +212,103 @@ const CategoryList: React.FC = () => {
                 <a
                     key="edit"
                     onClick={() => {
-                        handleUpdateModalOpen(true);
-                        setCurrentRow(record);
+                        handleUpdateCategoryModalOpen(true);
+                        setCurrentCategory(record);
+                    }}
+                >
+                    编辑
+                </a>,
+                <a
+                    key="viewApps"
+                    onClick={() => {
+                        setSelectedCategoryId(record.id);
+                        setActiveTabKey('2'); // 切换到应用管理标签页
+                        if (appActionRef.current) {
+                            appActionRef.current.reload();
+                        }
+                    }}
+                >
+                    查看应用
+                </a>,
+                <a
+                    key="delete"
+                    onClick={async () => {
+                        const success = await handleRemoveCategory(record.id);
+                        if (success && categoryActionRef.current) {
+                            categoryActionRef.current.reload();
+                        }
+                    }}
+                >
+                    删除
+                </a>,
+            ],
+        },
+    ];
+
+    const appColumns: ProColumns<any>[] = [
+        {
+            title: 'ID',
+            dataIndex: 'id',
+            hideInForm: true,
+            search: false,
+        },
+        {
+            title: '应用名称',
+            dataIndex: 'title',
+            render: (dom, entity) => {
+                return (
+                    <a
+                        onClick={() => {
+                            setCurrentApp(entity);
+                            setShowAppDetail(true);
+                        }}
+                    >
+                        {dom}
+                    </a>
+                );
+            },
+        },
+        {
+            title: '分类',
+            dataIndex: 'categoryName',
+            search: false,
+        },
+        {
+            title: '封面图',
+            dataIndex: 'imageUrl',
+            search: false,
+            render: (_, record) => record.imageUrl ? (
+                <Image src={record.imageUrl} width={80} height={45} />
+            ) : null,
+        },
+        {
+            title: '链接',
+            dataIndex: 'link',
+            search: false,
+            ellipsis: true,
+        },
+        {
+            title: '显示顺序',
+            dataIndex: 'displayOrder',
+            search: false,
+        },
+        {
+            title: '创建时间',
+            dataIndex: 'createdAt',
+            valueType: 'dateTime',
+            hideInForm: true,
+            search: false,
+        },
+        {
+            title: '操作',
+            dataIndex: 'option',
+            valueType: 'option',
+            render: (_, record) => [
+                <a
+                    key="edit"
+                    onClick={() => {
+                        handleUpdateAppModalOpen(true);
+                        setCurrentApp(record);
                     }}
                 >
                     编辑
@@ -166,9 +316,9 @@ const CategoryList: React.FC = () => {
                 <a
                     key="delete"
                     onClick={async () => {
-                        const success = await handleRemove(record.id);
-                        if (success && actionRef.current) {
-                            actionRef.current.reload();
+                        const success = await handleRemoveApplication(record.id);
+                        if (success && appActionRef.current) {
+                            appActionRef.current.reload();
                         }
                     }}
                 >
@@ -180,130 +330,356 @@ const CategoryList: React.FC = () => {
 
     return (
         <PageContainer>
-            <ProTable<API.CategoryDto>
-                headerTitle="分类管理"
-                actionRef={actionRef}
-                rowKey="id"
-                search={false}
-                toolBarRender={() => [
-                    <Button
-                        type="primary"
-                        key="primary"
-                        onClick={() => {
-                            handleModalOpen(true);
-                        }}
-                    >
-                        <PlusOutlined /> 新建
-                    </Button>,
+            <Tabs
+                activeKey={activeTabKey}
+                onChange={(key) => setActiveTabKey(key)}
+                items={[
+                    {
+                        key: '1',
+                        label: '分类管理',
+                        children: (
+                            <>
+                                <ProTable
+                                    headerTitle="分类列表"
+                                    actionRef={categoryActionRef}
+                                    rowKey="id"
+                                    search={false}
+                                    toolBarRender={() => [
+                                        <Button
+                                            type="primary"
+                                            key="primary"
+                                            onClick={() => {
+                                                handleCategoryModalOpen(true);
+                                            }}
+                                        >
+                                            <PlusOutlined /> 新建分类
+                                        </Button>,
+                                    ]}
+                                    request={async () => {
+                                        const response = await getAdminAppitemsCategories();
+                                        return {
+                                            data: response.data || [],
+                                            success: response.success,
+                                        };
+                                    }}
+                                    columns={categoryColumns}
+                                />
+
+                                <ModalForm
+                                    title="新建分类"
+                                    width="400px"
+                                    open={createCategoryModalOpen}
+                                    onOpenChange={handleCategoryModalOpen}
+                                    onFinish={async (value) => {
+                                        const success = await handleAddCategory(value as API.CategoryCreateDto);
+                                        if (success) {
+                                            handleCategoryModalOpen(false);
+                                            if (categoryActionRef.current) {
+                                                categoryActionRef.current.reload();
+                                            }
+                                        }
+                                    }}
+                                >
+                                    <ProFormText
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message: '请输入分类名称',
+                                            },
+                                        ]}
+                                        width="md"
+                                        name="name"
+                                        label="分类名称"
+                                    />
+                                    <ProFormDigit
+                                        width="md"
+                                        name="displayOrder"
+                                        label="显示顺序"
+                                        min={0}
+                                        fieldProps={{ precision: 0 }}
+                                    />
+                                </ModalForm>
+
+                                <ModalForm
+                                    title="编辑分类"
+                                    width="400px"
+                                    open={updateCategoryModalOpen}
+                                    onOpenChange={handleUpdateCategoryModalOpen}
+                                    onFinish={async (value) => {
+                                        if (!currentCategory) return false;
+                                        const success = await handleUpdateCategory(currentCategory.id, value as API.CategoryUpdateDto);
+                                        if (success) {
+                                            handleUpdateCategoryModalOpen(false);
+                                            setCurrentCategory(undefined);
+                                            if (categoryActionRef.current) {
+                                                categoryActionRef.current.reload();
+                                            }
+                                        }
+                                        return success;
+                                    }}
+                                    initialValues={currentCategory}
+                                >
+                                    <ProFormText
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message: '请输入分类名称',
+                                            },
+                                        ]}
+                                        width="md"
+                                        name="name"
+                                        label="分类名称"
+                                    />
+                                    <ProFormDigit
+                                        width="md"
+                                        name="displayOrder"
+                                        label="显示顺序"
+                                        min={0}
+                                        fieldProps={{ precision: 0 }}
+                                    />
+                                </ModalForm>
+
+                                <Drawer
+                                    width={600}
+                                    open={showCategoryDetail}
+                                    onClose={() => {
+                                        setCurrentCategory(undefined);
+                                        setShowCategoryDetail(false);
+                                    }}
+                                    closable={false}
+                                >
+                                    {currentCategory?.name && (
+                                        <ProDescriptions
+                                            column={2}
+                                            title={currentCategory?.name}
+                                            request={async () => ({
+                                                data: currentCategory || {},
+                                            })}
+                                            params={{
+                                                id: currentCategory?.id,
+                                            }}
+                                            columns={categoryColumns as ProDescriptionsItemProps<any>[]}
+                                        />
+                                    )}
+                                </Drawer>
+                            </>
+                        ),
+                    },
+                    {
+                        key: '2',
+                        label: '应用管理',
+                        children: (
+                            <>
+                                <ProTable
+                                    headerTitle={
+                                        selectedCategoryId
+                                            ? `应用列表 (分类ID: ${selectedCategoryId})`
+                                            : '应用列表 (所有分类)'
+                                    }
+                                    actionRef={appActionRef}
+                                    rowKey="id"
+                                    search={{
+                                        labelWidth: 120,
+                                    }}
+                                    toolBarRender={() => [
+                                        <Button
+                                            type="primary"
+                                            key="primary"
+                                            onClick={() => {
+                                                handleAppModalOpen(true);
+                                            }}
+                                        >
+                                            <PlusOutlined /> 新建应用
+                                        </Button>,
+                                        selectedCategoryId ? (
+                                            <Button
+                                                key="clearFilter"
+                                                onClick={() => {
+                                                    setSelectedCategoryId(null);
+                                                    if (appActionRef.current) {
+                                                        appActionRef.current.reload();
+                                                    }
+                                                }}
+                                            >
+                                                查看所有应用
+                                            </Button>
+                                        ) : null,
+                                    ]}
+                                    request={async () => {
+                                        const response = await getAdminAppitemsApplications();
+                                        let data = response.data || [];
+                                        if (selectedCategoryId) {
+                                            data = data.filter((item: any) => item.categoryId === selectedCategoryId);
+                                        }
+                                        return {
+                                            data,
+                                            success: response.success,
+                                        };
+                                    }}
+                                    columns={appColumns}
+                                />
+
+                                <ModalForm
+                                    title="新建应用"
+                                    width="600px"
+                                    open={createAppModalOpen}
+                                    onOpenChange={handleAppModalOpen}
+                                    onFinish={async (value) => {
+                                        const formValue = { ...value };
+                                        if (selectedCategoryId && !formValue.categoryId) {
+                                            formValue.categoryId = selectedCategoryId;
+                                        }
+                                        const success = await handleAddApplication(formValue as API.ApplicationCreateDto);
+                                        if (success) {
+                                            handleAppModalOpen(false);
+                                            if (appActionRef.current) {
+                                                appActionRef.current.reload();
+                                            }
+                                        }
+                                    }}
+                                    initialValues={selectedCategoryId ? { categoryId: selectedCategoryId } : {}}
+                                >
+                                    <ProFormText
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message: '请输入应用名称',
+                                            },
+                                        ]}
+                                        width="md"
+                                        name="title"
+                                        label="应用名称"
+                                    />
+                                    <ProFormSelect
+                                        name="categoryId"
+                                        label="所属分类"
+                                        width="md"
+                                        options={categoryOptions}
+                                        rules={[{ required: true, message: '请选择所属分类' }]}
+                                    />
+                                    <ProFormText
+                                        width="md"
+                                        name="imageUrl"
+                                        label="封面图URL"
+                                    />
+                                    <ProFormText
+                                        width="md"
+                                        name="link"
+                                        label="链接地址"
+                                    />
+                                    <ProFormTextArea
+                                        width="md"
+                                        name="description"
+                                        label="应用描述"
+                                    />
+                                    <ProFormTextArea
+                                        width="md"
+                                        name="content"
+                                        label="应用内容"
+                                    />
+                                    <ProFormDigit
+                                        width="md"
+                                        name="displayOrder"
+                                        label="显示顺序"
+                                        min={0}
+                                        fieldProps={{ precision: 0 }}
+                                    />
+                                </ModalForm>
+
+                                <ModalForm
+                                    title="编辑应用"
+                                    width="600px"
+                                    open={updateAppModalOpen}
+                                    onOpenChange={handleUpdateAppModalOpen}
+                                    onFinish={async (value) => {
+                                        if (!currentApp) return false;
+                                        const success = await handleUpdateApplication(currentApp.id, value as API.ApplicationUpdateDto);
+                                        if (success) {
+                                            handleUpdateAppModalOpen(false);
+                                            setCurrentApp(undefined);
+                                            if (appActionRef.current) {
+                                                appActionRef.current.reload();
+                                            }
+                                        }
+                                        return success;
+                                    }}
+                                    initialValues={currentApp}
+                                >
+                                    <ProFormText
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message: '请输入应用名称',
+                                            },
+                                        ]}
+                                        width="md"
+                                        name="title"
+                                        label="应用名称"
+                                    />
+                                    <ProFormSelect
+                                        name="categoryId"
+                                        label="所属分类"
+                                        width="md"
+                                        options={categoryOptions}
+                                        rules={[{ required: true, message: '请选择所属分类' }]}
+                                    />
+                                    <ProFormText
+                                        width="md"
+                                        name="imageUrl"
+                                        label="封面图URL"
+                                    />
+                                    <ProFormText
+                                        width="md"
+                                        name="link"
+                                        label="链接地址"
+                                    />
+                                    <ProFormTextArea
+                                        width="md"
+                                        name="description"
+                                        label="应用描述"
+                                    />
+                                    <ProFormTextArea
+                                        width="md"
+                                        name="content"
+                                        label="应用内容"
+                                    />
+                                    <ProFormDigit
+                                        width="md"
+                                        name="displayOrder"
+                                        label="显示顺序"
+                                        min={0}
+                                        fieldProps={{ precision: 0 }}
+                                    />
+                                </ModalForm>
+
+                                <Drawer
+                                    width={600}
+                                    open={showAppDetail}
+                                    onClose={() => {
+                                        setCurrentApp(undefined);
+                                        setShowAppDetail(false);
+                                    }}
+                                    closable={false}
+                                >
+                                    {currentApp?.title && (
+                                        <ProDescriptions
+                                            column={2}
+                                            title={currentApp?.title}
+                                            request={async () => ({
+                                                data: currentApp || {},
+                                            })}
+                                            params={{
+                                                id: currentApp?.id,
+                                            }}
+                                            columns={appColumns as ProDescriptionsItemProps<any>[]}
+                                        />
+                                    )}
+                                </Drawer>
+                            </>
+                        ),
+                    },
                 ]}
-                request={async (params) => {
-                    const response = await getAdminAppitemsCategories();
-                    return {
-                        data: response.data || [],
-                        success: response.success,
-                    };
-                }}
-                columns={columns}
             />
-
-            <ModalForm
-                title="新建分类"
-                width="400px"
-                open={createModalOpen}
-                onOpenChange={handleModalOpen}
-                onFinish={async (value) => {
-                    const success = await handleAdd(value as API.CategoryCreateDto);
-                    if (success) {
-                        handleModalOpen(false);
-                        if (actionRef.current) {
-                            actionRef.current.reload();
-                        }
-                    }
-                }}
-            >
-                <ProFormText
-                    rules={[
-                        {
-                            required: true,
-                            message: '请输入分类名称',
-                        },
-                    ]}
-                    width="md"
-                    name="name"
-                    label="分类名称"
-                />
-                <ProFormDigit
-                    width="md"
-                    name="displayOrder"
-                    label="显示顺序"
-                    min={0}
-                    fieldProps={{ precision: 0 }}
-                />
-            </ModalForm>
-
-            <ModalForm
-                title="编辑分类"
-                width="400px"
-                open={updateModalOpen}
-                onOpenChange={handleUpdateModalOpen}
-                onFinish={async (value) => {
-                    if (!currentRow) return false;
-                    const success = await handleUpdate(currentRow.id, value as API.CategoryUpdateDto);
-                    if (success) {
-                        handleUpdateModalOpen(false);
-                        setCurrentRow(undefined);
-                        if (actionRef.current) {
-                            actionRef.current.reload();
-                        }
-                    }
-                    return success;
-                }}
-                initialValues={currentRow}
-            >
-                <ProFormText
-                    rules={[
-                        {
-                            required: true,
-                            message: '请输入分类名称',
-                        },
-                    ]}
-                    width="md"
-                    name="name"
-                    label="分类名称"
-                />
-                <ProFormDigit
-                    width="md"
-                    name="displayOrder"
-                    label="显示顺序"
-                    min={0}
-                    fieldProps={{ precision: 0 }}
-                />
-                <ProFormSwitch name="isActive" label="状态" />
-            </ModalForm>
-
-            <Drawer
-                width={600}
-                open={showDetail}
-                onClose={() => {
-                    setCurrentRow(undefined);
-                    setShowDetail(false);
-                }}
-                closable={false}
-            >
-                {currentRow?.name && (
-                    <ProDescriptions<API.CategoryDto>
-                        column={2}
-                        title={currentRow?.name}
-                        request={async () => ({
-                            data: currentRow || {},
-                        })}
-                        params={{
-                            id: currentRow?.id,
-                        }}
-                        columns={columns as ProDescriptionsItemProps<API.CategoryDto>[]}
-                    />
-                )}
-            </Drawer>
         </PageContainer>
     );
 };
