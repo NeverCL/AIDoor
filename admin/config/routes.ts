@@ -48,6 +48,16 @@ export default [
         name: 'account',
         component: './User/Account',
       },
+      {
+        path: '/admin/categories',
+        name: 'categories',
+        component: './TableList/CategoryList',
+      },
+      {
+        path: '/admin/applications',
+        name: 'applications',
+        component: './TableList/AppItemList',
+      },
     ],
   },
   {

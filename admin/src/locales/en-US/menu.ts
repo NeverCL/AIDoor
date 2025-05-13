@@ -5,6 +5,8 @@ export default {
   'menu.admin': 'Admin',
   'menu.admin.sub-page': 'Sub-Page',
   'menu.admin.account': 'Account Management',
+  'menu.admin.categories': 'Categories',
+  'menu.admin.applications': 'Applications',
   'menu.login': 'Login',
   'menu.register': 'Register',
   'menu.register-result': 'Register Result',

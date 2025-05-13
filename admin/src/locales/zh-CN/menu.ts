@@ -5,6 +5,8 @@ export default {
   'menu.admin': '管理页',
   'menu.admin.sub-page': '二级管理页',
   'menu.admin.account': '账户管理',
+  'menu.admin.categories': '分类管理',
+  'menu.admin.applications': '应用管理',
   'menu.login': '登录',
   'menu.register': '注册',
   'menu.register-result': '注册结果',

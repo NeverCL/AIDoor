@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AIDoor.WebAPI.Controllers;
 
-[Authorize(Roles = "Admin")]
+[Authorize(Roles = "admin")]
 [Route("api/admin/appitems")]
 public class AppItemAdminController : BaseController
 {

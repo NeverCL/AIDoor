@@ -15,7 +15,7 @@ namespace AIDoor.WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AccountController : ControllerBase
+    public class AccountController : BaseController
     {
         private readonly AppDbContext _context;
         private readonly IConfiguration _configuration;
@@ -27,6 +27,7 @@ namespace AIDoor.WebAPI.Controllers
         }
 
         [HttpPost("login")]
+        [AllowAnonymous]
         public async Task<ActionResult<LoginResponse>> Login([FromBody] LoginInput loginInput)
         {
             if (!ModelState.IsValid)
