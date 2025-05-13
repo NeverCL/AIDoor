@@ -106,6 +106,14 @@ const PublisherList: React.FC = () => {
             dataIndex: 'username',
         },
         {
+            title: '去应用',
+            dataIndex: 'appLink',
+        },
+        {
+            title: '去官网',
+            dataIndex: 'website',
+        },
+        {
             title: '头像',
             dataIndex: 'avatarUrl',
             search: false,
@@ -252,15 +260,7 @@ const PublisherList: React.FC = () => {
                     labelWidth: 120,
                 }}
                 toolBarRender={() => [
-                    <Button
-                        type="primary"
-                        key="primary"
-                        onClick={() => {
-                            actionRef.current?.reload();
-                        }}
-                    >
-                        <PlusOutlined /> 刷新
-                    </Button>,
+
                 ]}
                 request={async (params) => {
                     // 转换参数格式
