@@ -342,4 +342,19 @@ declare namespace API {
     userName: string;
     userAvatarUrl: string;
   };
+
+  type getBannerIdParams = {
+    id: number;
+  };
+
+  // Banner 查询DTO
+  type BannerDto = {
+    id: number;
+    title: string;
+    bannerImageUrl: string;
+    qrCodeImageUrl: string;
+    isActive: boolean;
+    createdAt: string;
+    updatedAt?: string;
+  };
 }

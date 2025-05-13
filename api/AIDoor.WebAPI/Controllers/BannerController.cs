@@ -19,7 +19,7 @@ public class BannerController : BaseController
     public async Task<IActionResult> GetActiveBanners()
     {
         var banners = await _bannerService.GetActiveBanners();
-        return Ok("获取Banner列表成功", banners);
+        return Ok(null, banners);
     }
 
     [HttpGet("{id:int}")]
@@ -32,6 +32,6 @@ public class BannerController : BaseController
             return NotFound("未找到指定Banner");
         }
 
-        return Ok("获取Banner成功", banner);
+        return Ok(null, banner);
     }
 }

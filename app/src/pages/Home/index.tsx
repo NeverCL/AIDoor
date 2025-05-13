@@ -1,4 +1,5 @@
 import api from '@/services/api';
+import { getImageUrl } from '@/utils';
 import cx from '@/utils/classNames';
 import openUrl from '@/utils/openUrl';
 import { NavLink, useModel, useRequest } from '@umijs/max';
@@ -25,6 +26,7 @@ interface Category {
 
 const HomePage: React.FC = () => {
   const { data } = useRequest(api.appItem.getAppItemAll);
+  const { data: bannerData } = useRequest(api.banner.getBanners);
   const { filter } = useModel('filter');
   const [activeIndex, setActiveIndex] = useState(0);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -88,6 +90,10 @@ const HomePage: React.FC = () => {
   // Get current category applications
   const currentApplications = categories[activeIndex]?.applications || [];
 
+  // Get the first banner (if available)
+  const banner = bannerData?.data?.[0];
+  const bannerImageUrl = banner?.bannerImageUrl || 'https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418';
+
   return (
     <>
       {/* 分类 */}
@@ -110,7 +116,7 @@ const HomePage: React.FC = () => {
       <div className='flex-1 flex flex-col overflow-y-auto'>
         {/* banner */}
         <NavLink to='/qrcode'>
-          <img className='rounded-lg h-32 w-full object-cover' src='https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418' alt="" />
+          <img className='rounded-lg h-32 w-full object-cover' src={getImageUrl(bannerImageUrl)} alt="" />
         </NavLink>
 
         {/* AI产品 */}
