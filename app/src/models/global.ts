@@ -27,7 +27,7 @@ const useUser = () => {
     },
     onError: (error) => {
 
-      if (error.response.status === 404 || error.response.status === 405) {
+      if (error.response.status === 404 || error.response.status === 405 || error.response.status === 302) {
         setIsLoading(false);
         return;
       }
