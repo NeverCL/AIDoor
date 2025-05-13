@@ -260,14 +260,6 @@ const NavHeader: React.FC = () => {
               </div>
               <div className="relative">
                 <Icon icon="local:search" onClick={() => setShowSearch(true)} />
-                {unreadCount > 0 && (
-                  <div onClick={() => setOpen(true)} className="cursor-pointer">
-                    <Badge
-                      content={unreadCount}
-                      className="absolute -top-2 -right-2"
-                    />
-                  </div>
-                )}
               </div>
             </>
         }
@@ -283,14 +275,6 @@ const NavHeader: React.FC = () => {
           <div className='flex flex-col'>
             <div className="flex justify-between items-center mb-2">
               <span className='font-bold'>系统消息</span>
-              {unreadCount > 0 && (
-                <span
-                  onClick={handleMarkAllRead}
-                  className="text-blue-500 text-xs cursor-pointer"
-                >
-                  全部已读
-                </span>
-              )}
             </div>
 
             {messagesLoading ? (
@@ -304,7 +288,7 @@ const NavHeader: React.FC = () => {
                 {messages.map(message => (
                   <div
                     key={message.id}
-                    className="bg-gray-50 rounded-lg p-2 relative"
+                    className="rounded-lg p-2 relative"
                     onClick={() => !message.isRead && handleRead(message.id)}
                   >
                     <div className="flex items-start">
@@ -324,34 +308,16 @@ const NavHeader: React.FC = () => {
                             {message.title}
                           </div>
                         </div>
-                        <div className="text-xs text-gray-600 line-clamp-2 mt-1">
+                        <div className="text-xs text-gray-300 line-clamp-2 mt-1">
                           {message.content}
                         </div>
                         <div className="text-xs text-gray-400 mt-1">
                           {formatDate(message.createdAt)}
                         </div>
                       </div>
-                      <div
-                        className="text-gray-400 text-xs cursor-pointer p-1"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDeleteMessage(message.id);
-                        }}
-                      >
-                        ✕
-                      </div>
                     </div>
                   </div>
                 ))}
-                <div
-                  className="text-center text-xs text-blue-500 cursor-pointer py-1"
-                  onClick={() => {
-                    history.push('/messages');
-                    setOpen(false);
-                  }}
-                >
-                  查看全部 &gt;
-                </div>
               </div>
             )}
           </div>
