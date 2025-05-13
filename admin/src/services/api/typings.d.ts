@@ -378,4 +378,35 @@ declare namespace API {
     targetType?: string;
     notes?: string;
   };
+
+  type AccountInfo = {
+    id: number;
+    username: string;
+    email?: string;
+    isAdmin: boolean;
+    isActive: boolean;
+    createdAt: string;
+    lastLoginAt?: string;
+  };
+
+  type AccountList = {
+    data: AccountInfo[];
+    total: number;
+    success: boolean;
+  };
+
+  type AccountCreateRequest = {
+    username: string;
+    password: string;
+    email?: string;
+    isAdmin?: boolean;
+  };
+
+  type AccountUpdateRequest = {
+    username?: string;
+    password?: string;
+    email?: string;
+    isAdmin?: boolean;
+    isActive?: boolean;
+  };
 }

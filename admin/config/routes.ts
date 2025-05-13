@@ -43,6 +43,11 @@ export default [
         name: 'sub-page',
         component: './Admin',
       },
+      {
+        path: '/admin/account',
+        name: 'account',
+        component: './User/Account',
+      },
     ],
   },
   {
