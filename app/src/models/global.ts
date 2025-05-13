@@ -27,12 +27,10 @@ const useUser = () => {
     },
     onError: (error) => {
 
-      if (error.response.status === 404 || error.response.status === 405 || error.response.status === 302) {
+      if (error.response.status === 404 || error.response.status === 405 || error.response.status === 0) {
         setIsLoading(false);
         return;
       }
-
-      console.log(error);
 
       setTimeout(() => {
         location.reload();
