@@ -10,12 +10,10 @@ import {
     ProFormText,
     ProTable,
 } from '@ant-design/pro-components';
-import { FormattedMessage, useIntl } from '@umijs/max';
 import { Button, Drawer, Modal, message, Switch } from 'antd';
 import React, { useRef, useState } from 'react';
 import {
     getAccounts,
-    getAccount,
     createAccount,
     updateAccount,
     deleteAccount
@@ -79,7 +77,6 @@ const AccountList: React.FC = () => {
     const actionRef = useRef<ActionType>();
     const [currentRow, setCurrentRow] = useState<API.AccountInfo>();
     const [selectedRowsState, setSelectedRows] = useState<API.AccountInfo[]>([]);
-    const intl = useIntl();
 
     const { confirm } = Modal;
 
@@ -129,10 +126,6 @@ const AccountList: React.FC = () => {
                     },
                 ],
             },
-        },
-        {
-            title: '邮箱',
-            dataIndex: 'email',
         },
         {
             title: '管理员',
@@ -309,17 +302,6 @@ const AccountList: React.FC = () => {
                     name="password"
                     label="密码"
                 />
-                <ProFormText
-                    width="md"
-                    name="email"
-                    label="邮箱"
-                    rules={[
-                        {
-                            type: 'email',
-                            message: '请输入有效的邮箱地址',
-                        },
-                    ]}
-                />
                 <ProFormCheckbox name="isAdmin" label="管理员权限" />
             </ModalForm>
 
@@ -357,17 +339,6 @@ const AccountList: React.FC = () => {
                     label="密码"
                     placeholder="不修改请留空"
                 />
-                <ProFormText
-                    width="md"
-                    name="email"
-                    label="邮箱"
-                    rules={[
-                        {
-                            type: 'email',
-                            message: '请输入有效的邮箱地址',
-                        },
-                    ]}
-                />
                 <ProFormCheckbox name="isAdmin" label="管理员权限" />
                 <ProFormCheckbox name="isActive" label="启用状态" />
             </ModalForm>
@@ -385,13 +356,7 @@ const AccountList: React.FC = () => {
                     <ProDescriptions<API.AccountInfo>
                         column={2}
                         title={currentRow?.username}
-                        request={async () => ({
-                            data: currentRow || {},
-                        })}
-                        params={{
-                            id: currentRow?.id,
-                        }}
-                        columns={columns as ProDescriptions.DescriptionsItemProps<API.AccountInfo>[]}
+                        dataSource={currentRow}
                     />
                 )}
             </Drawer>

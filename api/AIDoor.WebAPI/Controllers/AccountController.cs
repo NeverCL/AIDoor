@@ -3,6 +3,7 @@ using AIDoor.WebAPI.Domain;
 using AIDoor.WebAPI.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
@@ -160,6 +161,187 @@ namespace AIDoor.WebAPI.Controllers
                     Avatar = "https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png"
                 }
             });
+        }
+
+        // CRUD operations for Account management
+
+        [HttpGet]
+        [Authorize(Roles = "admin")]
+        public async Task<ActionResult<AccountListResponse>> GetAccounts([FromQuery] AccountQueryParams queryParams)
+        {
+            var query = _context.Accounts.AsQueryable();
+
+            // Apply filters
+            if (!string.IsNullOrEmpty(queryParams.Username))
+            {
+                query = query.Where(a => a.Username.Contains(queryParams.Username));
+            }
+
+            if (queryParams.IsActive.HasValue)
+            {
+                query = query.Where(a => a.IsActive == queryParams.IsActive.Value);
+            }
+
+            // Get total count
+            var total = await query.CountAsync();
+
+            // Apply pagination
+            var pageSize = queryParams.PageSize ?? 20;
+            var current = queryParams.Current ?? 1;
+            var skip = (current - 1) * pageSize;
+
+            var accounts = await query
+                .OrderByDescending(a => a.Id)
+                .Skip(skip)
+                .Take(pageSize)
+                .Select(a => new AccountInfoResponse
+                {
+                    Id = a.Id,
+                    Username = a.Username,
+                    IsAdmin = a.IsAdmin,
+                    IsActive = a.IsActive,
+                    CreatedAt = a.CreatedAt,
+                    LastLoginAt = a.LastLoginAt
+                })
+                .ToListAsync();
+
+            return Ok(new AccountListResponse
+            {
+                Data = accounts,
+                Total = total,
+                Success = true
+            });
+        }
+
+        [HttpGet("{id}")]
+        [Authorize(Roles = "admin")]
+        public async Task<ActionResult<AccountInfoResponse>> GetAccount(int id)
+        {
+            var account = await _context.Accounts.FindAsync(id);
+
+            if (account == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(new AccountInfoResponse
+            {
+                Id = account.Id,
+                Username = account.Username,
+                IsAdmin = account.IsAdmin,
+                IsActive = account.IsActive,
+                CreatedAt = account.CreatedAt,
+                LastLoginAt = account.LastLoginAt
+            });
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "admin")]
+        public async Task<ActionResult<AccountInfoResponse>> CreateAccount([FromBody] AccountCreateRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            // Check if username already exists
+            if (await _context.Accounts.AnyAsync(a => a.Username == request.Username))
+            {
+                return BadRequest(new { message = "用户名已存在" });
+            }
+
+            var account = new Account
+            {
+                Username = request.Username,
+                PasswordHash = ComputeSha256Hash(request.Password),
+                IsAdmin = request.IsAdmin ?? false,
+                IsActive = true,
+                CreatedAt = DateTime.Now
+            };
+
+            _context.Accounts.Add(account);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetAccount), new { id = account.Id }, new AccountInfoResponse
+            {
+                Id = account.Id,
+                Username = account.Username,
+                IsAdmin = account.IsAdmin,
+                IsActive = account.IsActive,
+                CreatedAt = account.CreatedAt,
+                LastLoginAt = account.LastLoginAt
+            });
+        }
+
+        [HttpPut("{id}")]
+        [Authorize(Roles = "admin")]
+        public async Task<ActionResult<AccountInfoResponse>> UpdateAccount(int id, [FromBody] AccountUpdateRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var account = await _context.Accounts.FindAsync(id);
+
+            if (account == null)
+            {
+                return NotFound();
+            }
+
+            // Check if username is being changed and if it already exists
+            if (!string.IsNullOrEmpty(request.Username) && request.Username != account.Username)
+            {
+                if (await _context.Accounts.AnyAsync(a => a.Username == request.Username))
+                {
+                    return BadRequest(new { message = "用户名已存在" });
+                }
+                account.Username = request.Username;
+            }
+
+            // Update password if provided
+            if (!string.IsNullOrEmpty(request.Password))
+            {
+                account.PasswordHash = ComputeSha256Hash(request.Password);
+            }
+
+            if (request.IsAdmin.HasValue)
+            {
+                account.IsAdmin = request.IsAdmin.Value;
+            }
+
+            if (request.IsActive.HasValue)
+            {
+                account.IsActive = request.IsActive.Value;
+            }
+
+            await _context.SaveChangesAsync();
+
+            return Ok(new AccountInfoResponse
+            {
+                Id = account.Id,
+                Username = account.Username,
+                IsAdmin = account.IsAdmin,
+                IsActive = account.IsActive,
+                CreatedAt = account.CreatedAt,
+                LastLoginAt = account.LastLoginAt
+            });
+        }
+
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "admin")]
+        public async Task<IActionResult> DeleteAccount(int id)
+        {
+            var account = await _context.Accounts.FindAsync(id);
+            if (account == null)
+            {
+                return NotFound();
+            }
+
+            _context.Accounts.Remove(account);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { success = true });
         }
     }
 }

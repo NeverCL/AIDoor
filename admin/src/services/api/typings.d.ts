@@ -382,7 +382,6 @@ declare namespace API {
   type AccountInfo = {
     id: number;
     username: string;
-    email?: string;
     isAdmin: boolean;
     isActive: boolean;
     createdAt: string;
@@ -398,14 +397,12 @@ declare namespace API {
   type AccountCreateRequest = {
     username: string;
     password: string;
-    email?: string;
     isAdmin?: boolean;
   };
 
   type AccountUpdateRequest = {
     username?: string;
     password?: string;
-    email?: string;
     isAdmin?: boolean;
     isActive?: boolean;
   };
