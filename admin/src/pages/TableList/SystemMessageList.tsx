@@ -152,21 +152,6 @@ const SystemMessageList: React.FC = () => {
             ),
         },
         {
-            title: '状态',
-            dataIndex: 'isRead',
-            valueEnum: {
-                true: { text: '已读', status: 'Success' },
-                false: { text: '未读', status: 'Warning' },
-            },
-        },
-        {
-            title: '过期时间',
-            dataIndex: 'expireAt',
-            valueType: 'dateTime',
-            search: false,
-            renderText: (val: string) => (val ? val : '永不过期'),
-        },
-        {
             title: '创建时间',
             dataIndex: 'createdAt',
             valueType: 'dateTime',
@@ -178,15 +163,15 @@ const SystemMessageList: React.FC = () => {
             dataIndex: 'option',
             valueType: 'option',
             render: (_, record) => [
-                <a
-                    key="markRead"
-                    onClick={async () => {
-                        await handleUpdateSystemMessage(record.id, { isRead: !record.isRead });
-                        actionRef.current?.reload();
-                    }}
-                >
-                    {record.isRead ? '标为未读' : '标为已读'}
-                </a>,
+                // <a
+                //     key="markRead"
+                //     onClick={async () => {
+                //         await handleUpdateSystemMessage(record.id, { isRead: !record.isRead });
+                //         actionRef.current?.reload();
+                //     }}
+                // >
+                //     {record.isRead ? '标为未读' : '标为已读'}
+                // </a>,
                 <a
                     key="delete"
                     onClick={async () => {
