@@ -7,6 +7,7 @@ export default {
   'menu.admin.account': 'Account Management',
   'menu.admin.categories': 'Categories & Applications',
   'menu.admin.users': 'User Management',
+  'menu.admin.publishers': 'Publisher Management',
   'menu.login': 'Login',
   'menu.register': 'Register',
   'menu.register-result': 'Register Result',

@@ -58,6 +58,11 @@ export default [
         name: 'users',
         component: './User',
       },
+      {
+        path: '/admin/publishers',
+        name: 'publishers',
+        component: './TableList/PublisherList',
+      },
     ],
   },
   {

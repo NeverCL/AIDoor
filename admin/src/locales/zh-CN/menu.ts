@@ -7,6 +7,7 @@ export default {
   'menu.admin.account': '账户管理',
   'menu.admin.categories': '分类与应用管理',
   'menu.admin.users': '用户管理',
+  'menu.admin.publishers': '发布者管理',
   'menu.login': '登录',
   'menu.register': '注册',
   'menu.register-result': '注册结果',

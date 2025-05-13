@@ -38,7 +38,7 @@ public class PublisherController : BaseController
 
         // 普通用户只能查看已审核通过的发布者，除非是自己的
         if (publisherDetails.Status != PublisherStatus.Approved &&
-            !User.IsInRole("Admin") &&
+            !User.IsInRole("admin") &&
             publisherDetails.Id != UserId)
         {
             return NotFound("该发布者尚未通过审核");
@@ -133,7 +133,7 @@ public class PublisherController : BaseController
     /// <param name="id">发布者ID</param>
     /// <returns>操作结果</returns>
     [HttpPost("{id:int}/refresh-stats")]
-    [Authorize(Roles = "Admin")] // 只允许管理员手动刷新统计数据
+    [Authorize(Roles = "admin")] // 只允许管理员手动刷新统计数据
     public async Task<IActionResult> RefreshPublisherStats(int id)
     {
         var success = await _publisherService.UpdatePublisherStatsAsync(id);
@@ -217,7 +217,7 @@ public class PublisherController : BaseController
     /// <param name="request">审核请求</param>
     /// <returns>审核结果</returns>
     [HttpPost("{id:int}/review")]
-    [Authorize(Roles = "Admin")] // 只允许管理员审核
+    [Authorize(Roles = "admin")] // 只允许管理员审核
     public async Task<IActionResult> ReviewPublisher(int id, [FromBody] ReviewPublisherRequest request)
     {
         var (success, message) = await _publisherService.ReviewPublisherAsync(
@@ -238,7 +238,7 @@ public class PublisherController : BaseController
     /// <param name="pageSize">每页数量</param>
     /// <returns>待审核发布者列表</returns>
     [HttpGet("pending")]
-    [Authorize(Roles = "Admin")] // 只允许管理员查看
+    [Authorize(Roles = "admin")] // 只允许管理员查看
     public async Task<IActionResult> GetPendingPublishers([FromQuery] int page = 1, [FromQuery] int pageSize = 20)
     {
         var (publishers, total) = await _publisherService.GetPendingPublishersAsync(page, pageSize);
@@ -259,7 +259,7 @@ public class PublisherController : BaseController
     /// <param name="status">状态筛选</param>
     /// <returns>发布者列表</returns>
     [HttpGet("all")]
-    [Authorize(Roles = "Admin")] // 只允许管理员查看
+    [Authorize(Roles = "admin")] // 只允许管理员查看
     public async Task<IActionResult> GetAllPublishers(
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 20,

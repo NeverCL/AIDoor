@@ -5,7 +5,6 @@ import {
     PageContainer,
     ProTable,
 } from '@ant-design/pro-components';
-import { useIntl } from '@umijs/max';
 import { Button, message, Modal, Switch, Tag } from 'antd';
 import React, { useRef, useState } from 'react';
 import { request } from '@umijs/max';
@@ -47,11 +46,6 @@ const updateUserStatus = async (userId: number, isActive: boolean) => {
 const UserList: React.FC = () => {
     const actionRef = useRef<ActionType>();
     const [selectedRowsState, setSelectedRows] = useState<UserItem[]>([]);
-
-    /**
-     * 国际化配置
-     */
-    const intl = useIntl();
 
     const handleUpdateStatus = async (record: UserItem, newStatus: boolean) => {
         Modal.confirm({
