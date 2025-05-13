@@ -9,6 +9,7 @@ export default {
   'menu.admin.users': 'User Management',
   'menu.admin.publishers': 'Publisher Management',
   'menu.admin.banners': 'Banner Management',
+  'menu.admin.system-messages': 'System Messages',
   'menu.login': 'Login',
   'menu.register': 'Register',
   'menu.register-result': 'Register Result',

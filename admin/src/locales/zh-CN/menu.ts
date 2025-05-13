@@ -9,6 +9,7 @@ export default {
   'menu.admin.users': '用户管理',
   'menu.admin.publishers': '发布者管理',
   'menu.admin.banners': 'Banner管理',
+  'menu.admin.system-messages': '系统消息管理',
   'menu.login': '登录',
   'menu.register': '注册',
   'menu.register-result': '注册结果',

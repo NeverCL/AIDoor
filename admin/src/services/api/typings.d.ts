@@ -442,4 +442,52 @@ declare namespace API {
   type deleteAdminBannersIdParams = {
     id: number;
   };
+
+  // SystemMessageAdmin相关类型
+  type SystemMessageAdminDto = {
+    id: number;
+    title: string;
+    content: string;
+    type: number;
+    typeString: string;
+    isRead: boolean;
+    readAt?: string;
+    expireAt?: string;
+    priority: number;
+    priorityString: string;
+    createdAt: string;
+    recipientId?: number;
+  };
+
+  type SystemMessageAdminCreateDto = {
+    title: string;
+    content: string;
+    type?: number;
+    recipientId?: number;
+    expireAt?: string;
+    priority?: number;
+  };
+
+  type SystemMessageAdminUpdateDto = {
+    isRead: boolean;
+  };
+
+  type getAdminSystemMessagesParams = {
+    page?: number;
+    limit?: number;
+    type?: number;
+    minPriority?: number;
+  };
+
+  type getAdminSystemMessagesIdParams = {
+    id: number;
+  };
+
+  type putAdminSystemMessagesIdParams = {
+    id: number;
+  };
+
+  type deleteAdminSystemMessagesIdParams = {
+    id: number;
+  };
 }

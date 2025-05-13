@@ -11,6 +11,7 @@ import * as comment from './comment';
 import * as file from './file';
 import * as publisher from './publisher';
 import * as systemMessage from './systemMessage';
+import * as systemMessageAdmin from './systemMessageAdmin';
 import * as userContent from './userContent';
 import * as user from './user';
 import * as userFollow from './userFollow';
@@ -25,6 +26,7 @@ export default {
   file,
   publisher,
   systemMessage,
+  systemMessageAdmin,
   userContent,
   user,
   userFollow,

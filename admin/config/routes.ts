@@ -68,6 +68,11 @@ export default [
         name: 'banners',
         component: './TableList/BannerList',
       },
+      {
+        path: '/admin/system-messages',
+        name: 'system-messages',
+        component: './TableList/SystemMessageList',
+      },
     ],
   },
   {
