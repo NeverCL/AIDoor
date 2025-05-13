@@ -53,6 +53,11 @@ export default [
         name: 'categories',
         component: './TableList/CategoryList',
       },
+      {
+        path: '/admin/users',
+        name: 'users',
+        component: './User',
+      },
     ],
   },
   {

@@ -250,6 +250,53 @@ public class UserController : BaseController
 
         return Ok(recordsData);
     }
+
+    /// <summary>
+    /// 管理员获取所有用户列表
+    /// </summary>
+    /// <param name="pageSize">每页数量</param>
+    /// <param name="pageIndex">页码</param>
+    /// <param name="keyword">搜索关键词</param>
+    /// <returns>用户列表和总数</returns>
+    [HttpGet("admin/list")]
+    [Authorize(Roles = "admin")]
+    public async Task<IActionResult> GetAllUsers([FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 1, [FromQuery] string? keyword = null)
+    {
+        var (users, total) = await _userService.GetAllUsersAsync(pageSize, pageIndex, keyword);
+
+        return Ok(new
+        {
+            data = users,
+            total = total,
+            pageSize = pageSize,
+            pageIndex = pageIndex,
+            success = true
+        });
+    }
+
+    /// <summary>
+    /// 管理员更新用户状态（激活/禁用）
+    /// </summary>
+    /// <param name="request">更新请求</param>
+    /// <returns>更新结果</returns>
+    [HttpPut("admin/status")]
+    [Authorize(Roles = "admin")]
+    public async Task<IActionResult> UpdateUserStatus([FromBody] UpdateUserStatusRequest request)
+    {
+        if (request.UserId <= 0)
+        {
+            return BadRequest("用户ID不能为空");
+        }
+
+        var result = await _userService.UpdateUserStatusAsync(request.UserId, request.IsActive);
+
+        if (!result.Success)
+        {
+            return BadRequest(result.Message);
+        }
+
+        return Ok(new { success = true, message = result.Message });
+    }
 }
 
 public record SendCodeRequest(string Phone);
@@ -259,3 +306,5 @@ public record UpdateProfileRequest(string Username, string AvatarUrl);
 public record RegisterRequest(string Name, string Phone, string Code, string? Password = null);
 
 public record UserLoginRequest(string Phone, string Code);
+
+public record UpdateUserStatusRequest(int UserId, bool IsActive);

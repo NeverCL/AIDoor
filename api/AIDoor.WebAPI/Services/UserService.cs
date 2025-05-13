@@ -458,6 +458,65 @@ public class UserService
 
         return publisherDto;
     }
+
+    /// <summary>
+    /// 获取所有用户列表（管理员使用）
+    /// </summary>
+    /// <param name="pageSize">每页数量</param>
+    /// <param name="pageIndex">页码</param>
+    /// <param name="searchKeyword">搜索关键词（用户名或手机号）</param>
+    /// <returns>用户列表和总数</returns>
+    public async Task<(List<User> Users, int Total)> GetAllUsersAsync(int pageSize = 10, int pageIndex = 1, string? searchKeyword = null)
+    {
+        IQueryable<User> query = _context.Users.AsQueryable();
+
+        // 如果有搜索关键词，则筛选用户名或手机号
+        if (!string.IsNullOrWhiteSpace(searchKeyword))
+        {
+            query = query.Where(u => u.Username.Contains(searchKeyword) ||
+                                    u.PhoneNumber.Contains(searchKeyword));
+        }
+
+        // 获取总数
+        var total = await query.CountAsync();
+
+        // 分页获取数据
+        var users = await query
+            .OrderByDescending(u => u.CreatedAt)
+            .Skip((pageIndex - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return (users, total);
+    }
+
+    /// <summary>
+    /// 更新用户状态（管理员使用）
+    /// </summary>
+    /// <param name="userId">用户ID</param>
+    /// <param name="isActive">是否激活</param>
+    /// <returns>更新结果</returns>
+    public async Task<(bool Success, string Message)> UpdateUserStatusAsync(int userId, bool isActive)
+    {
+        var user = await _context.Users.FindAsync(userId);
+        if (user == null)
+        {
+            return (false, "用户不存在");
+        }
+
+        try
+        {
+            user.IsActive = isActive;
+            user.UpdatedAt = DateTime.Now;
+            await _context.SaveChangesAsync();
+            return (true, $"用户状态已更新为{(isActive ? "激活" : "禁用")}");
+        }
+        catch (Exception ex)
+        {
+            System.Console.WriteLine($"更新用户状态失败: {ex.Message}");
+            return (false, "更新用户状态失败，请稍后重试");
+        }
+    }
 }
 
 /// <summary>
