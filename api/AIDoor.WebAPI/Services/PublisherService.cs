@@ -69,6 +69,8 @@ public class PublisherService
             CreatedAt = publisher.CreatedAt,
             Status = publisher.Status,
             StatusText = GetStatusText(publisher.Status),
+            Type = publisher.Type,
+            TypeText = publisher.Type == PublisherType.Personal ? "个人" : "企业",
             ReviewNote = publisher.ReviewNote,
             ReviewedAt = publisher.ReviewedAt,
             AppLink = publisher.Status == PublisherStatus.Approved ? publisher.AppLink : null,
@@ -267,13 +269,18 @@ public class PublisherService
                 Description = p.Description,
                 CreatedAt = p.CreatedAt,
                 Status = p.Status,
-                StatusText = GetStatusText(p.Status),
                 Type = p.Type,
-                TypeText = p.Type == PublisherType.Personal ? "个人" : "企业",
                 Website = p.Website,
                 AppLink = p.AppLink
             })
             .ToListAsync();
+
+        // 设置状态文本和类型文本 - 在EF Core查询之外设置
+        foreach (var publisher in publishers)
+        {
+            publisher.StatusText = GetStatusText(publisher.Status);
+            publisher.TypeText = GetTypeText(publisher.Type);
+        }
 
         return (publishers, total);
     }
@@ -313,13 +320,18 @@ public class PublisherService
                 Description = p.Description,
                 CreatedAt = p.CreatedAt,
                 Status = p.Status,
-                StatusText = GetStatusText(p.Status),
                 Type = p.Type,
-                TypeText = p.Type == PublisherType.Personal ? "个人" : "企业",
                 Website = p.Website,
                 AppLink = p.AppLink
             })
             .ToListAsync();
+
+        // 设置状态文本和类型文本 - 在EF Core查询之外设置
+        foreach (var publisher in publishers)
+        {
+            publisher.StatusText = GetStatusText(publisher.Status);
+            publisher.TypeText = GetTypeText(publisher.Type);
+        }
 
         return (publishers, total);
     }
@@ -337,6 +349,21 @@ public class PublisherService
             PublisherStatus.Approved => "已通过",
             PublisherStatus.Rejected => "已拒绝",
             _ => "未知状态"
+        };
+    }
+
+    /// <summary>
+    /// 获取类型文本描述
+    /// </summary>
+    /// <param name="type">类型枚举值</param>
+    /// <returns>类型文本</returns>
+    private string GetTypeText(PublisherType type)
+    {
+        return type switch
+        {
+            PublisherType.Personal => "个人",
+            PublisherType.Enterprise => "企业",
+            _ => "未知类型"
         };
     }
 

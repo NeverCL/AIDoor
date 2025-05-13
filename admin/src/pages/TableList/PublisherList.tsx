@@ -21,7 +21,7 @@ enum PublisherStatus {
 
 export interface PublisherItem {
     id: number;
-    name: string;
+    username: string;
     avatarUrl: string;
     description: string;
     summary: string;
@@ -103,7 +103,7 @@ const PublisherList: React.FC = () => {
         },
         {
             title: '名称',
-            dataIndex: 'name',
+            dataIndex: 'username',
         },
         {
             title: '头像',
@@ -205,7 +205,7 @@ const PublisherList: React.FC = () => {
                                     width: 600,
                                     content: (
                                         <div>
-                                            <p><strong>名称：</strong>{record.name}</p>
+                                            <p><strong>名称：</strong>{record.username}</p>
                                             <p><strong>简介：</strong>{record.description}</p>
                                             <p><strong>摘要：</strong>{record.summary}</p>
                                             {record.website && <p><strong>网站：</strong>{record.website}</p>}
