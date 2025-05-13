@@ -38,7 +38,7 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddSecurityServices(this IServiceCollection services)
     {
-        // Cookie认证服务
+        // Cookie authentication service
         services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddCookie(options =>
             {
@@ -46,8 +46,8 @@ public static class ServiceCollectionExtensions
                 options.Cookie.HttpOnly = true;
                 options.ExpireTimeSpan = TimeSpan.FromDays(7);
                 options.SlidingExpiration = true;
-                options.LoginPath = "/api/User/login";
-                options.LogoutPath = "/api/User/logout";
+                options.LoginPath = "/api/Account/login";
+                options.LogoutPath = "/api/Account/logout";
                 options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                 options.Cookie.SameSite = SameSiteMode.None;
 #if DEBUG

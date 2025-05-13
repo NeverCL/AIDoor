@@ -1,13 +1,11 @@
-import { Footer } from '@/components';
-import { login } from '@/services/ant-design-pro/api';
-import { getFakeCaptcha } from '@/services/ant-design-pro/login';
+// import { Footer } from '@/components';
 import {
-  AlipayCircleOutlined,
+  // AlipayCircleOutlined,
   LockOutlined,
   MobileOutlined,
-  TaobaoCircleOutlined,
+  // TaobaoCircleOutlined,
   UserOutlined,
-  WeiboCircleOutlined,
+  // WeiboCircleOutlined,
 } from '@ant-design/icons';
 import {
   LoginForm,
@@ -21,6 +19,7 @@ import Settings from '../../../../config/defaultSettings';
 import React, { useState } from 'react';
 import { flushSync } from 'react-dom';
 import { createStyles } from 'antd-style';
+import api from '@/services/api';
 
 const useStyles = createStyles(({ token }) => {
   return {
@@ -58,17 +57,17 @@ const useStyles = createStyles(({ token }) => {
   };
 });
 
-const ActionIcons = () => {
-  const { styles } = useStyles();
+// const ActionIcons = () => {
+//   const { styles } = useStyles();
 
-  return (
-    <>
-      <AlipayCircleOutlined key="AlipayCircleOutlined" className={styles.action} />
-      <TaobaoCircleOutlined key="TaobaoCircleOutlined" className={styles.action} />
-      <WeiboCircleOutlined key="WeiboCircleOutlined" className={styles.action} />
-    </>
-  );
-};
+//   return (
+//     <>
+//       {/* <AlipayCircleOutlined key="AlipayCircleOutlined" className={styles.action} /> */}
+//       {/* <TaobaoCircleOutlined key="TaobaoCircleOutlined" className={styles.action} /> */}
+//       {/* <WeiboCircleOutlined key="WeiboCircleOutlined" className={styles.action} /> */}
+//     </>
+//   );
+// };
 
 const Lang = () => {
   const { styles } = useStyles();
@@ -117,7 +116,7 @@ const Login: React.FC = () => {
   const handleSubmit = async (values: API.LoginParams) => {
     try {
       // 登录
-      const msg = await login({ ...values, type });
+      const msg = await api.account.postAccountLogin({ ...values, type });
       if (msg.status === 'ok') {
         const defaultLoginSuccessMessage = intl.formatMessage({
           id: 'pages.login.success',
@@ -335,12 +334,7 @@ const Login: React.FC = () => {
                   },
                 ]}
                 onGetCaptcha={async (phone) => {
-                  const result = await getFakeCaptcha({
-                    phone,
-                  });
-                  if (!result) {
-                    return;
-                  }
+
                   message.success('获取验证码成功！验证码为：1234');
                 }}
               />

@@ -19,6 +19,8 @@ interface ResponseStructure {
   showType?: ErrorShowType;
 }
 
+const isDev = process.env.NODE_ENV === 'development';
+
 /**
  * @name 错误处理
  * pro 自带的错误处理， 可以在这里做自己的改动
@@ -89,8 +91,14 @@ export const errorConfig: RequestConfig = {
   requestInterceptors: [
     (config: RequestOptions) => {
       // 拦截请求配置，进行个性化处理。
-      const url = config?.url?.concat('?token = 123');
-      return { ...config, url };
+      // 为所有请求添加credentials以支持Cookie认证
+      config.credentials = 'include';
+
+      if (!isDev) {
+        config.baseURL = 'https://api.thedoorofai.com/';
+      }
+
+      return config;
     },
   ],
 

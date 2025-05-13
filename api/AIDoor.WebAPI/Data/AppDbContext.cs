@@ -12,6 +12,8 @@ public class AppDbContext : DbContext
 
     public DbSet<User> Users { get; set; }
 
+    public DbSet<Account> Accounts { get; set; }
+
     public DbSet<AppCategory> ApplicationCategories { get; set; }
 
     public DbSet<AppItem> Applications { get; set; }
