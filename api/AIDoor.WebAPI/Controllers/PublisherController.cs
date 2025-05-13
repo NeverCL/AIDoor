@@ -36,13 +36,13 @@ public class PublisherController : BaseController
             return NotFound("未找到该发布者信息");
         }
 
-        // 普通用户只能查看已审核通过的发布者，除非是自己的
-        if (publisherDetails.Status != PublisherStatus.Approved &&
-            !User.IsInRole("admin") &&
-            publisherDetails.Id != UserId)
-        {
-            return NotFound("该发布者尚未通过审核");
-        }
+        // // 普通用户只能查看已审核通过的发布者，除非是自己的
+        // if (publisherDetails.Status != PublisherStatus.Approved &&
+        //     !User.IsInRole("admin") &&
+        //     publisherDetails.Id != UserId)
+        // {
+        //     return NotFound("该发布者尚未通过审核");
+        // }
 
         return Ok(publisherDetails);
     }
