@@ -366,7 +366,7 @@ declare namespace API {
   };
 
   type UserLoginRequest = {
-    username: string;
+    phone: string;
     code: string;
   };
 

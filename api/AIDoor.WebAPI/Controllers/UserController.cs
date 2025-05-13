@@ -102,12 +102,12 @@ public class UserController : BaseController
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] UserLoginRequest request)
     {
-        if (string.IsNullOrEmpty(request.Username) || string.IsNullOrEmpty(request.Code))
+        if (string.IsNullOrEmpty(request.Phone) || string.IsNullOrEmpty(request.Code))
         {
             return BadRequest("请填写完整信息");
         }
 
-        var result = await _userService.LoginWithCodeAsync(request.Username, request.Code);
+        var result = await _userService.LoginWithCodeAsync(request.Phone, request.Code);
         if (!result.Success)
         {
             return BadRequest(result.Message);
@@ -258,4 +258,4 @@ public record UpdateProfileRequest(string Username, string AvatarUrl);
 
 public record RegisterRequest(string Name, string Phone, string Code, string? Password = null);
 
-public record UserLoginRequest(string Username, string Code);
+public record UserLoginRequest(string Phone, string Code);
