@@ -42,6 +42,9 @@ public class AppDbContext : DbContext
     // 系统消息表
     public DbSet<SystemMessage> SystemMessages { get; set; }
 
+    // Banner表
+    public DbSet<Banner> Banners { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -204,5 +207,10 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<SystemMessage>()
             .HasIndex(sm => sm.RecipientId);
+
+        // Banner 索引配置
+        modelBuilder.Entity<Banner>()
+            .HasIndex(b => b.Title);
+
     }
 }

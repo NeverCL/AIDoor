@@ -31,6 +31,11 @@ public class InitData
             SeedAccounts(context);
         }
 
+        if (!context.Banners.Any())
+        {
+            SeedBanners(context);
+        }
+
         context.SaveChanges();
     }
 
@@ -309,5 +314,22 @@ public class InitData
         };
 
         context.UserRecords.AddRange(records);
+    }
+
+    private void SeedBanners(AppDbContext context)
+    {
+        var banners = new List<Banner>
+        {
+            new Banner
+            {
+                Id = 1,
+                Title = "扫描二维码加入我们的开发者社群",
+                BannerImageUrl = "https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418",
+                QrCodeImageUrl = "https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418",
+                CreatedAt = DateTime.Now
+            }
+        };
+
+        context.Banners.AddRange(banners);
     }
 }
