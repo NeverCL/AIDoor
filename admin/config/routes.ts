@@ -63,6 +63,11 @@ export default [
         name: 'publishers',
         component: './TableList/PublisherList',
       },
+      {
+        path: '/admin/banners',
+        name: 'banners',
+        component: './TableList/BannerList',
+      },
     ],
   },
   {

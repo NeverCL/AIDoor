@@ -406,4 +406,40 @@ declare namespace API {
     isAdmin?: boolean;
     isActive?: boolean;
   };
+
+  // Banner相关类型
+  type BannerDto = {
+    id: number;
+    title: string;
+    bannerImageUrl: string;
+    qrCodeImageUrl: string;
+    isActive: boolean;
+    createdAt: string;
+    updatedAt?: string;
+  };
+
+  type BannerCreateDto = {
+    title: string;
+    bannerImageUrl: string;
+    qrCodeImageUrl: string;
+  };
+
+  type BannerUpdateDto = {
+    title: string;
+    bannerImageUrl: string;
+    qrCodeImageUrl: string;
+    isActive: boolean;
+  };
+
+  type getAdminBannersIdParams = {
+    id: number;
+  };
+
+  type putAdminBannersIdParams = {
+    id: number;
+  };
+
+  type deleteAdminBannersIdParams = {
+    id: number;
+  };
 }

@@ -8,6 +8,7 @@ export default {
   'menu.admin.categories': 'Categories & Applications',
   'menu.admin.users': 'User Management',
   'menu.admin.publishers': 'Publisher Management',
+  'menu.admin.banners': 'Banner Management',
   'menu.login': 'Login',
   'menu.register': 'Register',
   'menu.register-result': 'Register Result',

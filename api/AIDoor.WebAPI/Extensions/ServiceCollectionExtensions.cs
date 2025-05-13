@@ -118,6 +118,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<PublisherRatingService>();
         services.AddScoped<IChatMessageService, ChatMessageService>();
         services.AddScoped<SystemMessageService>();
+        services.AddScoped<BannerService>();
 
         return services;
     }

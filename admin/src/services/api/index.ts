@@ -5,6 +5,7 @@
 import * as account from './account';
 import * as appItemAdmin from './appItemAdmin';
 import * as appItem from './appItem';
+import * as banner from './banner';
 import * as chatMessage from './chatMessage';
 import * as comment from './comment';
 import * as file from './file';
@@ -18,6 +19,7 @@ export default {
   account,
   appItemAdmin,
   appItem,
+  banner,
   chatMessage,
   comment,
   file,
