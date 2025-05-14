@@ -8,6 +8,7 @@ import {
     ProFormSelect,
     ProFormText,
     ProFormTextArea,
+    ProFormUploadButton,
     ProTable,
 } from '@ant-design/pro-components';
 import { Button, Drawer, Image, message, Tabs } from 'antd';
@@ -155,7 +156,8 @@ const CategoryList: React.FC = () => {
     // 获取分类列表
     const fetchCategories = async () => {
         const result = await getAdminAppitemsCategories();
-        if (result.success && result.data) {
+
+        if (result.data) {
             const options = result.data.map((item: any) => ({
                 label: item.name,
                 value: item.id,
@@ -529,6 +531,11 @@ const CategoryList: React.FC = () => {
                                         if (selectedCategoryId && !formValue.categoryId) {
                                             formValue.categoryId = selectedCategoryId;
                                         }
+
+                                        console.log(formValue);
+
+                                        return;
+
                                         const success = await handleAddApplication(formValue as API.ApplicationCreateDto);
                                         if (success) {
                                             handleAppModalOpen(false);
@@ -557,10 +564,18 @@ const CategoryList: React.FC = () => {
                                         options={categoryOptions}
                                         rules={[{ required: true, message: '请选择所属分类' }]}
                                     />
-                                    <ProFormText
-                                        width="md"
+                                    <ProFormUploadButton
                                         name="imageUrl"
-                                        label="封面图URL"
+                                        label="封面图"
+                                        width="md"
+                                        max={1}
+                                        fieldProps={
+                                            {
+                                                listType: 'picture-card',
+                                                accept: 'image/*',
+                                            }
+                                        }
+                                        action='/api/file/upload'
                                     />
                                     <ProFormText
                                         width="md"
