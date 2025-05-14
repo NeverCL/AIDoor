@@ -15,8 +15,9 @@ import {
     postAdminBanners,
     putAdminBannersId,
     deleteAdminBannersId,
-    getAdminBannersId,
 } from '@/services/api/banner';
+import ImgUploader from '@/components/ImgUploader';
+import { getImageUrl } from '@/utils/imageUtils';
 
 /**
  * 添加Banner
@@ -109,13 +110,13 @@ const BannerList: React.FC = () => {
             title: 'Banner图片',
             dataIndex: 'bannerImageUrl',
             search: false,
-            render: (_, record) => <Image width={100} src={record.bannerImageUrl} />,
+            render: (_, record) => <Image width={100} src={getImageUrl(record.bannerImageUrl)} />,
         },
         {
             title: '二维码图片',
             dataIndex: 'qrCodeImageUrl',
             search: false,
-            render: (_, record) => <Image width={80} src={record.qrCodeImageUrl} />,
+            render: (_, record) => <Image width={80} src={getImageUrl(record.qrCodeImageUrl)} />,
         },
         {
             title: '状态',
@@ -213,36 +214,8 @@ const BannerList: React.FC = () => {
                     name="title"
                     label="标题"
                 />
-                <ProFormText
-                    rules={[
-                        {
-                            required: true,
-                            message: 'Banner图片URL不能为空',
-                        },
-                        {
-                            type: 'url',
-                            message: '请输入有效的URL',
-                        },
-                    ]}
-                    width="md"
-                    name="bannerImageUrl"
-                    label="Banner图片URL"
-                />
-                <ProFormText
-                    rules={[
-                        {
-                            required: true,
-                            message: '二维码图片URL不能为空',
-                        },
-                        {
-                            type: 'url',
-                            message: '请输入有效的URL',
-                        },
-                    ]}
-                    width="md"
-                    name="qrCodeImageUrl"
-                    label="二维码图片URL"
-                />
+                <ImgUploader name="bannerImageUrl" label="Banner图片" />
+                <ImgUploader name="qrCodeImageUrl" label="二维码图片" />
             </ModalForm>
 
             <ModalForm
@@ -251,7 +224,7 @@ const BannerList: React.FC = () => {
                 open={updateModalOpen}
                 onOpenChange={handleUpdateModalOpen}
                 onFinish={async (value) => {
-                    const success = await handleUpdateBanner(currentRow?.id!, value as API.BannerUpdateDto);
+                    const success = await handleUpdateBanner(currentRow?.id || 0, value as API.BannerUpdateDto);
                     if (success) {
                         handleUpdateModalOpen(false);
                         setCurrentRow(undefined);
@@ -273,36 +246,8 @@ const BannerList: React.FC = () => {
                     name="title"
                     label="标题"
                 />
-                <ProFormText
-                    rules={[
-                        {
-                            required: true,
-                            message: 'Banner图片URL不能为空',
-                        },
-                        {
-                            type: 'url',
-                            message: '请输入有效的URL',
-                        },
-                    ]}
-                    width="md"
-                    name="bannerImageUrl"
-                    label="Banner图片URL"
-                />
-                <ProFormText
-                    rules={[
-                        {
-                            required: true,
-                            message: '二维码图片URL不能为空',
-                        },
-                        {
-                            type: 'url',
-                            message: '请输入有效的URL',
-                        },
-                    ]}
-                    width="md"
-                    name="qrCodeImageUrl"
-                    label="二维码图片URL"
-                />
+                <ImgUploader name="bannerImageUrl" label="Banner图片" />
+                <ImgUploader name="qrCodeImageUrl" label="二维码图片" />
                 <ProFormSwitch
                     name="isActive"
                     label="是否激活"
