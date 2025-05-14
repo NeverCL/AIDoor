@@ -23,6 +23,8 @@ import {
     putAdminAppitemsApplicationsApplicationId,
     deleteAdminAppitemsApplicationsApplicationId,
 } from '@/services/api/appItemAdmin';
+import { getImageUrl } from '@/utils/imageUtils';
+import ImgUploader from '@/components/ImgUploader';
 
 /**
  * 添加分类
@@ -532,10 +534,6 @@ const CategoryList: React.FC = () => {
                                             formValue.categoryId = selectedCategoryId;
                                         }
 
-                                        console.log(formValue);
-
-                                        return;
-
                                         const success = await handleAddApplication(formValue as API.ApplicationCreateDto);
                                         if (success) {
                                             handleAppModalOpen(false);
@@ -564,19 +562,7 @@ const CategoryList: React.FC = () => {
                                         options={categoryOptions}
                                         rules={[{ required: true, message: '请选择所属分类' }]}
                                     />
-                                    <ProFormUploadButton
-                                        name="imageUrl"
-                                        label="封面图"
-                                        width="md"
-                                        max={1}
-                                        fieldProps={
-                                            {
-                                                listType: 'picture-card',
-                                                accept: 'image/*',
-                                            }
-                                        }
-                                        action='/api/file/upload'
-                                    />
+                                    <ImgUploader name="imageUrl" single={true} />
                                     <ProFormText
                                         width="md"
                                         name="link"
@@ -590,6 +576,7 @@ const CategoryList: React.FC = () => {
                                     <ProFormTextArea
                                         width="md"
                                         name="content"
+                                        rules={[{ required: true, message: '请输入应用内容' }]}
                                         label="应用内容"
                                     />
                                     <ProFormDigit
@@ -638,11 +625,7 @@ const CategoryList: React.FC = () => {
                                         options={categoryOptions}
                                         rules={[{ required: true, message: '请选择所属分类' }]}
                                     />
-                                    <ProFormText
-                                        width="md"
-                                        name="imageUrl"
-                                        label="封面图URL"
-                                    />
+                                    <ImgUploader name="imageUrl" single={true} />
                                     <ProFormText
                                         width="md"
                                         name="link"
