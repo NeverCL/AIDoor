@@ -26,6 +26,7 @@ const ImgUploader: React.FC<ImgUploaderProps> = ({
             fieldProps={{
                 listType: 'picture-card',
                 accept: 'image/*',
+                withCredentials: true
             }}
             action={action}
             rules={[{ required: true, message: '请上传图片' }]}
