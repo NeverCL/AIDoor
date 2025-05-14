@@ -8,7 +8,6 @@ import {
     ProFormSelect,
     ProFormText,
     ProFormTextArea,
-    ProFormUploadButton,
     ProTable,
 } from '@ant-design/pro-components';
 import { Button, Drawer, Image, message, Tabs } from 'antd';
@@ -23,8 +22,8 @@ import {
     putAdminAppitemsApplicationsApplicationId,
     deleteAdminAppitemsApplicationsApplicationId,
 } from '@/services/api/appItemAdmin';
-import { getImageUrl } from '@/utils/imageUtils';
 import ImgUploader from '@/components/ImgUploader';
+import { getImageUrl } from '@/utils/imageUtils';
 
 /**
  * 添加分类
@@ -282,7 +281,7 @@ const CategoryList: React.FC = () => {
             dataIndex: 'imageUrl',
             search: false,
             render: (_, record) => record.imageUrl ? (
-                <Image src={record.imageUrl} width={80} height={45} />
+                <Image src={getImageUrl(record.imageUrl)} width={80} height={45} />
             ) : null,
         },
         {
