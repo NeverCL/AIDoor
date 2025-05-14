@@ -8,6 +8,10 @@ interface ImgUploaderProps {
     label?: string;
 }
 
+const isDev = process.env.NODE_ENV === 'development';
+
+const action = isDev ? '/api/file/upload' : 'https://api.thedoorofai.com/api/file/upload';
+
 const ImgUploader: React.FC<ImgUploaderProps> = ({
     name,
     single = true,
@@ -23,7 +27,7 @@ const ImgUploader: React.FC<ImgUploaderProps> = ({
                 listType: 'picture-card',
                 accept: 'image/*',
             }}
-            action='/api/file/upload'
+            action={action}
             rules={[{ required: true, message: '请上传图片' }]}
             transform={(value) => {
                 // 如果是数组且有response，说明是新上传的图片

@@ -47,12 +47,10 @@ public class BannerUpdateDto
 
     [Required(ErrorMessage = "Banner图片URL不能为空")]
     [MaxLength(255, ErrorMessage = "Banner图片URL最大长度为255个字符")]
-    [Url(ErrorMessage = "请提供有效的URL")]
     public string BannerImageUrl { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "二维码图片URL不能为空")]
     [MaxLength(255, ErrorMessage = "二维码图片URL最大长度为255个字符")]
-    [Url(ErrorMessage = "请提供有效的URL")]
     public string QrCodeImageUrl { get; set; } = string.Empty;
 
     public bool IsActive { get; set; } = true;
