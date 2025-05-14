@@ -3,6 +3,7 @@ import api from "@/services/api";
 import { useParams, useRequest } from "@umijs/max";
 import { Swiper, DotLoading, Button } from "antd-mobile";
 import openUrl from "@/utils/openUrl";
+import { getImageUrl } from "@/utils/imageUtils";
 
 export default () => {
     const { id } = useParams();
@@ -21,7 +22,7 @@ export default () => {
                         <Swiper loop autoplay>
                             <Swiper.Item>
                                 <div className="h-[40vh] overflow-hidden">
-                                    <img src={data?.imageUrl} alt={data?.title} />
+                                    <img src={getImageUrl(data?.imageUrl)} alt={data?.title} />
                                 </div>
                             </Swiper.Item>
                         </Swiper>
