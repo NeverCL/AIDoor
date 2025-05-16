@@ -27,6 +27,7 @@ public class UserController : BaseController
         var claims = new List<System.Security.Claims.Claim>
         {
             new(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new(ClaimTypes.Sid, user.PublisherId?.ToString()),
             new(ClaimTypes.Name, user.Username),
             new(ClaimTypes.MobilePhone, user.PhoneNumber),
             // 使用自定义类型保存开发者模式状态
@@ -40,6 +41,8 @@ public class UserController : BaseController
             IsPersistent = true,
             ExpiresUtc = DateTimeOffset.UtcNow.AddDays(7)
         };
+        
+        
 
         await HttpContext.SignInAsync(
             new ClaimsPrincipal(claimsIdentity),

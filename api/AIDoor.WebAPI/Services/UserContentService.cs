@@ -29,6 +29,17 @@ public class UserContentService
         return userId;
     }
 
+    private int? GetCurrentPublisherId()
+    {
+        var publisherIdClaim = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.Sid);
+        if (publisherIdClaim == null)
+        {
+            throw new UnauthorizedAccessException("未登录或无法识别用户");
+        }
+
+        return int.TryParse(publisherIdClaim.Value, out int publisherId) ? publisherId : null;
+    }
+
     private readonly static string[] videoExtensions =
         [".mp4", ".avi", ".mov", ".wmv", ".flv", ".mpeg", ".mpg", ".m4v", ".webm", ".mkv"];
 
@@ -89,7 +100,10 @@ public class UserContentService
 
         int totalCount = await query.CountAsync();
 
+        var publisherId = GetCurrentPublisherId();
+
         var contents = await query
+            .Where(x => x.PublisherId == publisherId)
             .Skip((queryParams.Page - 1) * queryParams.Limit)
             .Take(queryParams.Limit)
             .Select(uc => new UserContentDto
