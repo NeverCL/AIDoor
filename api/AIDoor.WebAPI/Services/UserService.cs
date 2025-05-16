@@ -322,12 +322,18 @@ public class UserService
         }
 
         // 处理足迹记录，按最后浏览时间排序
-        if (recordsByType.TryGetValue(RecordType.Footprint, out var footprints) && footprints.Any())
+        var contentFootprints = recordsByType.TryGetValue(RecordType.ContentFootprint, out var contentRecords) ? contentRecords : new List<UserRecord>();
+        var appFootprints = recordsByType.TryGetValue(RecordType.AppFootprint, out var appRecords) ? appRecords : new List<UserRecord>();
+
+        // 合并两种足迹
+        var allFootprints = contentFootprints.Concat(appFootprints).ToList();
+
+        if (allFootprints.Any())
         {
             result.Add(new UserRecordTypeDto
             {
                 Type = "footprint",
-                Data = footprints
+                Data = allFootprints
                     .OrderByDescending(f => f.LastViewedAt)
                     .Select(footprint => new UserRecordItemDto
                     {

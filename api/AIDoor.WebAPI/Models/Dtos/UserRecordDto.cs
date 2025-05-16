@@ -12,7 +12,7 @@ public class UserRecordCreateDto
     /// 记录类型
     /// </summary>
     [Required(ErrorMessage = "记录类型不能为空")]
-    public RecordType RecordType { get; set; } = RecordType.Footprint;
+    public RecordType RecordType { get; set; } = RecordType.ContentFootprint;
 
     /// <summary>
     /// 标题

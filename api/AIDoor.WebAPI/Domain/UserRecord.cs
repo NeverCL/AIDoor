@@ -64,7 +64,12 @@ public enum RecordType
     Favorite,
 
     /// <summary>
-    /// 浏览足迹
+    /// 浏览内容足迹
     /// </summary>
-    Footprint,
+    ContentFootprint,
+
+    /// <summary>
+    /// 浏览App足迹
+    /// </summary>
+    AppFootprint,
 }

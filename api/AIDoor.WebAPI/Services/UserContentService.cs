@@ -167,7 +167,7 @@ public class UserContentService
 
         // 获取浏览数（足迹记录数）
         int viewsCount = await _context.UserRecords.CountAsync(r =>
-            r.RecordType == RecordType.Footprint &&
+            r.RecordType == RecordType.ContentFootprint &&
             r.Notes == $"Content:{contentId}");
 
         return new ContentStatsDto

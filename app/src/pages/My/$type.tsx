@@ -22,7 +22,7 @@ interface RecordItem {
 const recordTypes = {
     like: { name: '我的点赞', type: 0, icon: <HeartFill style={{ color: '#f5222d' }} /> },
     favorite: { name: '我的收藏', type: 1, icon: <StarFill style={{ color: '#faad14' }} /> },
-    footprint: { name: '足迹', type: 2, icon: <ClockCircleOutline /> }
+    footprint: { name: '足迹', type: null, icon: <ClockCircleOutline /> }
 };
 
 export default () => {
@@ -37,11 +37,23 @@ export default () => {
 
     // 加载记录数据
     const { run: fetchRecords, loading } = useRequest(
-        (currentPage: number) => api.userRecord.getUserRecord({
-            RecordType: recordTypes[type]?.type,
-            Page: currentPage,
-            Limit: 10
-        }),
+        (currentPage: number) => {
+            // 处理足迹特殊情况，需要分别获取内容足迹和App足迹
+            if (type === 'footprint') {
+                // 获取所有足迹记录
+                return api.userRecord.getFootprints({
+                    Page: currentPage,
+                    Limit: 10
+                });
+            }
+
+            // 其他记录类型正常处理
+            return api.userRecord.getUserRecord({
+                RecordType: recordTypes[type]?.type,
+                Page: currentPage,
+                Limit: 10
+            });
+        },
         {
             manual: true,
             onSuccess: (data, [currentPage]) => {

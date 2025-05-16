@@ -55,12 +55,12 @@ public class UserRecordService
             }
 
             // 如果是足迹类型，检查是否已存在相同目标的记录
-            if (recordDto.RecordType == RecordType.Footprint && !string.IsNullOrEmpty(recordDto.TargetType))
+            if ((recordDto.RecordType == RecordType.ContentFootprint || recordDto.RecordType == RecordType.AppFootprint) && !string.IsNullOrEmpty(recordDto.TargetType))
             {
                 var existingRecord = await _context.UserRecords
                     .FirstOrDefaultAsync(r =>
                         r.UserId == userId &&
-                        r.RecordType == RecordType.Footprint &&
+                        (r.RecordType == recordDto.RecordType) &&
                         r.Notes == $"{recordDto.TargetType}:{recordDto.TargetId}");
 
                 if (existingRecord != null)
@@ -227,9 +227,28 @@ public class UserRecordService
         {
             int userId = GetCurrentUserId();
 
-            var records = await _context.UserRecords
-                .Where(r => r.UserId == userId && r.RecordType == recordType)
-                .ToListAsync();
+            var recordsQuery = _context.UserRecords.Where(r => r.UserId == userId);
+
+            // 根据枚举类型筛选记录
+            if (recordType == RecordType.Like)
+            {
+                recordsQuery = recordsQuery.Where(r => r.RecordType == RecordType.Like);
+            }
+            else if (recordType == RecordType.Favorite)
+            {
+                recordsQuery = recordsQuery.Where(r => r.RecordType == RecordType.Favorite);
+            }
+            else if (recordType == RecordType.ContentFootprint)
+            {
+                recordsQuery = recordsQuery.Where(r => r.RecordType == RecordType.ContentFootprint);
+            }
+            else if (recordType == RecordType.AppFootprint)
+            {
+                recordsQuery = recordsQuery.Where(r => r.RecordType == RecordType.AppFootprint);
+            }
+            // 如果想清空所有足迹，可以通过API添加特殊处理
+
+            var records = await recordsQuery.ToListAsync();
 
             if (records.Count == 0)
             {

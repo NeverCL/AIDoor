@@ -75,7 +75,7 @@ public class UserContentController : BaseController
         // 创建浏览记录
         var recordDto = new UserRecordCreateDto
         {
-            RecordType = RecordType.Footprint,
+            RecordType = RecordType.ContentFootprint,
             Title = content.Title,
             ImageUrl = content.Images.Length > 0 ? $"https://cdn.thedoorofai.com/{content.Images[0]}" : string.Empty,
             TargetId = id,

@@ -177,17 +177,12 @@ const NavHeader: React.FC = () => {
       setLoading(true);
       try {
         const response = await getUserRecord({
-          RecordType: 'Footprint',
+          RecordType: 'AppFootprint',
           Page: 1,
           Limit: 10
         });
 
-        // 筛选targetType为App的足迹
-        const appFootprints = response.records.filter(
-          (item: API.UserRecordDto) => item.targetType === 'App'
-        );
-
-        setAppList(appFootprints);
+        setAppList(response.records);
       } catch (error) {
         console.error('获取应用足迹失败:', error);
       } finally {

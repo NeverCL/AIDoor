@@ -242,7 +242,7 @@ public class InitData
             new UserRecord
             {
                 Id = 5,
-                RecordType = RecordType.Footprint,
+                RecordType = RecordType.ContentFootprint,
                 Title = "浏览过的内容示例",
                 ImageUrl = "https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418",
                 UserId = 1,
@@ -254,7 +254,7 @@ public class InitData
             new UserRecord
             {
                 Id = 6,
-                RecordType = RecordType.Footprint,
+                RecordType = RecordType.ContentFootprint,
                 Title = "浏览过的内容示例",
                 ImageUrl = "https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418",
                 UserId = 1,
@@ -266,7 +266,7 @@ public class InitData
             new UserRecord
             {
                 Id = 7,
-                RecordType = RecordType.Footprint,
+                RecordType = RecordType.ContentFootprint,
                 Title = "浏览过的内容示例",
                 ImageUrl = "https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418",
                 UserId = 1,
@@ -278,8 +278,8 @@ public class InitData
             new UserRecord
             {
                 Id = 8,
-                RecordType = RecordType.Footprint,
-                Title = "浏览过的内容示例",
+                RecordType = RecordType.AppFootprint,
+                Title = "浏览过的App示例",
                 ImageUrl = "https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418",
                 UserId = 1,
                 LastViewedAt = DateTime.Now,
@@ -290,8 +290,8 @@ public class InitData
             new UserRecord
             {
                 Id = 9,
-                RecordType = RecordType.Footprint,
-                Title = "浏览过的内容示例",
+                RecordType = RecordType.AppFootprint,
+                Title = "浏览过的App示例",
                 ImageUrl = "https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418",
                 UserId = 1,
                 LastViewedAt = DateTime.Now,
@@ -302,8 +302,8 @@ public class InitData
             new UserRecord
             {
                 Id = 10,
-                RecordType = RecordType.Footprint,
-                Title = "浏览过的内容示例",
+                RecordType = RecordType.AppFootprint,
+                Title = "浏览过的App示例",
                 ImageUrl = "https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418",
                 UserId = 1,
                 LastViewedAt = DateTime.Now,

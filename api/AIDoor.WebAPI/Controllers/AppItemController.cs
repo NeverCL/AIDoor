@@ -39,7 +39,7 @@ public class AppItemController : BaseController
         // 创建浏览记录
         var recordDto = new UserRecordCreateDto
         {
-            RecordType = RecordType.Footprint,
+            RecordType = RecordType.AppFootprint,
             Title = appItem.Title,
             ImageUrl = appItem.ImageUrl,
             TargetId = id,

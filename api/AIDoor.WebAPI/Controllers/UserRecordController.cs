@@ -73,7 +73,7 @@ public class UserRecordController : BaseController
         // 创建浏览记录
         var recordDto = new UserRecordCreateDto
         {
-            RecordType = RecordType.Footprint,
+            RecordType = RecordType.ContentFootprint,
             Title = content.Title,
             ImageUrl = content.Images.Length > 0 ? $"https://cdn.thedoorofai.com/{content.Images[0]}" : string.Empty,
             TargetId = id,
@@ -99,7 +99,7 @@ public class UserRecordController : BaseController
 
         var recordDto = new UserRecordCreateDto
         {
-            RecordType = RecordType.Footprint,
+            RecordType = RecordType.AppFootprint,
             Title = appVisit.Title,
             ImageUrl = appVisit.ImageUrl,
             TargetId = appVisit.AppId,
@@ -144,6 +144,23 @@ public class UserRecordController : BaseController
         }
 
         return Ok(result.Message);
+    }
+
+    /// <summary>
+    /// 清空所有足迹记录
+    /// </summary>
+    [HttpDelete("clear-footprints")]
+    public async Task<IActionResult> ClearAllFootprints()
+    {
+        var contentResult = await _recordService.ClearRecordsAsync(RecordType.ContentFootprint);
+        var appResult = await _recordService.ClearRecordsAsync(RecordType.AppFootprint);
+
+        if (!contentResult.Success || !appResult.Success)
+        {
+            return BadRequest("清空足迹记录失败");
+        }
+
+        return Ok("所有足迹记录已清空");
     }
 }
 
