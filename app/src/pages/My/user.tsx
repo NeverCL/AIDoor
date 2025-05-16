@@ -3,8 +3,8 @@ import { List } from "antd-mobile";
 import { useState, useEffect } from "react";
 import api from '@/services/api';
 import { EditSOutline } from "antd-mobile-icons";
+import { getImageUrl } from "@/utils";
 
-const url = 'https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418';
 
 // 用户设置相关导航
 interface NavItem {
@@ -227,7 +227,7 @@ const RecordCard = ({ item }: RecordCardProps) => {
         <NavLink to={getDetailPath()}>
             <div className="flex flex-col">
                 <div className="h-16">
-                    <img src={item.imageUrl} alt="" className="h-full w-full object-cover rounded-lg" />
+                    <img src={getImageUrl(item.imageUrl)} alt="" className="h-full w-full object-cover rounded-lg" />
                 </div>
                 <span className="mt-[0.38rem] px-[0.06rem] text-sm truncate">{item.title}</span>
             </div>
