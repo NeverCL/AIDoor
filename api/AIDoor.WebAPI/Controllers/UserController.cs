@@ -7,6 +7,7 @@ using AIDoor.WebAPI.Dtos;
 using AIDoor.WebAPI.Models;
 using Microsoft.AspNetCore.Authorization;
 using AIDoor.WebAPI.Domain;
+
 namespace AIDoor.WebAPI.Controllers;
 
 public class UserController : BaseController
@@ -24,15 +25,19 @@ public class UserController : BaseController
     private async Task SignInUserAsync(User user)
     {
         // 设置认证Cookie
-        var claims = new List<System.Security.Claims.Claim>
+        var claims = new List<Claim>
         {
             new(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new(ClaimTypes.Sid, user.PublisherId?.ToString()),
             new(ClaimTypes.Name, user.Username),
             new(ClaimTypes.MobilePhone, user.PhoneNumber),
             // 使用自定义类型保存开发者模式状态
             new(DEV_MODE_COOKIE, user.IsDevMode.ToString())
         };
+
+        if (user.PublisherId != null)
+        {
+            claims.Add(new Claim(ClaimTypes.Sid, user.PublisherId.ToString()));
+        }
 
         var claimsIdentity = new ClaimsIdentity(claims, "login");
 
@@ -41,8 +46,7 @@ public class UserController : BaseController
             IsPersistent = true,
             ExpiresUtc = DateTimeOffset.UtcNow.AddDays(7)
         };
-        
-        
+
 
         await HttpContext.SignInAsync(
             new ClaimsPrincipal(claimsIdentity),
@@ -73,7 +77,8 @@ public class UserController : BaseController
             return BadRequest("请填写完整信息");
         }
 
-        var result = await _userService.RegisterAsync(request.Phone, request.Password ?? "", request.Code, request.Name);
+        var result =
+            await _userService.RegisterAsync(request.Phone, request.Password ?? "", request.Code, request.Name);
 
         if (!result.Success)
         {
@@ -263,7 +268,8 @@ public class UserController : BaseController
     /// <returns>用户列表和总数</returns>
     [HttpGet("admin/list")]
     [Authorize(Roles = "admin")]
-    public async Task<IActionResult> GetAllUsers([FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 1, [FromQuery] string? keyword = null)
+    public async Task<IActionResult> GetAllUsers([FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 1,
+        [FromQuery] string? keyword = null)
     {
         var (users, total) = await _userService.GetAllUsersAsync(pageSize, pageIndex, keyword);
 

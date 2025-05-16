@@ -6,38 +6,11 @@ using System.Security.Claims;
 
 namespace AIDoor.WebAPI.Services;
 
-public class UserContentService
+public class UserContentService : BaseService
 {
-    private readonly AppDbContext _context;
-    private readonly IHttpContextAccessor _httpContextAccessor;
-
     public UserContentService(AppDbContext context, IHttpContextAccessor httpContextAccessor)
+        : base(context, httpContextAccessor)
     {
-        _context = context;
-        _httpContextAccessor = httpContextAccessor;
-    }
-
-    // 获取当前登录用户ID
-    private int GetCurrentUserId()
-    {
-        var userIdClaim = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier);
-        if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out int userId))
-        {
-            throw new UnauthorizedAccessException("未登录或无法识别用户");
-        }
-
-        return userId;
-    }
-
-    private int? GetCurrentPublisherId()
-    {
-        var publisherIdClaim = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.Sid);
-        if (publisherIdClaim == null)
-        {
-            throw new UnauthorizedAccessException("未登录或无法识别用户");
-        }
-
-        return int.TryParse(publisherIdClaim.Value, out int publisherId) ? publisherId : null;
     }
 
     private readonly static string[] videoExtensions =
