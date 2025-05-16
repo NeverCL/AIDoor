@@ -57,10 +57,15 @@ const recordTypeConfig: { [key: string]: { name: string; icon: React.ReactNode; 
         icon: <Icon icon='local:fav' className='mr-2 text-[1.13rem]' />,
         path: '/my/favorite',
     },
-    footprint: {
-        name: '足迹',
+    contentfootprint: {
+        name: '内容足迹',
         icon: <Icon icon='local:foot' className='mr-2 text-[1.13rem]' />,
-        path: '/my/footprint',
+        path: '/my/contentfootprint',
+    },
+    appfootprint: {
+        name: 'App足迹',
+        icon: <Icon icon='local:foot' className='mr-2 text-[1.13rem]' />,
+        path: '/my/appfootprint',
     }
 }
 
@@ -80,12 +85,21 @@ export default () => {
             const recordsByType: { [key: string]: RecordItem[] } = {
                 like: [],
                 favorite: [],
-                footprint: []
+                contentfootprint: [],
+                appfootprint: []
             };
 
             // 对记录按类型进行分类
             data.records.forEach((record: any) => {
-                const type = record.typeString;
+                let type = record.typeString.toLowerCase();
+
+                // 将新的足迹类型映射到前端类型
+                if (type === 'contentfootprint') {
+                    type = 'contentfootprint';
+                } else if (type === 'appfootprint') {
+                    type = 'appfootprint';
+                }
+
                 if (recordsByType[type]) {
                     recordsByType[type].push({
                         id: record.id,

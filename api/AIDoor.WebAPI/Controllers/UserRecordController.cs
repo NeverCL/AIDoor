@@ -162,6 +162,50 @@ public class UserRecordController : BaseController
 
         return Ok("所有足迹记录已清空");
     }
+
+    /// <summary>
+    /// 获取所有足迹记录（包括内容足迹和应用足迹）
+    /// 备注：此接口主要用于向后兼容，新版前端应直接使用ContentFootprint和AppFootprint类型
+    /// </summary>
+    [HttpGet("footprints")]
+    public async Task<IActionResult> GetAllFootprints([FromQuery] UserRecordQueryParams queryParams)
+    {
+        var contentTask = _recordService.GetRecordsAsync(new UserRecordQueryParams
+        {
+            Page = queryParams.Page,
+            Limit = queryParams.Limit / 2, // 平分页面大小
+            RecordType = "ContentFootprint"
+        });
+
+        var appTask = _recordService.GetRecordsAsync(new UserRecordQueryParams
+        {
+            Page = queryParams.Page,
+            Limit = queryParams.Limit / 2, // 平分页面大小
+            RecordType = "AppFootprint"
+        });
+
+        await Task.WhenAll(contentTask, appTask);
+
+        var (contentRecords, contentCount) = contentTask.Result;
+        var (appRecords, appCount) = appTask.Result;
+
+        // 合并两种足迹并按最后浏览时间排序
+        var combinedRecords = contentRecords.Concat(appRecords)
+            .OrderByDescending(r => r.LastViewedAt ?? r.CreatedAt)
+            .Take(queryParams.Limit)
+            .ToList();
+
+        int totalCount = contentCount + appCount;
+
+        return Ok(new
+        {
+            records = combinedRecords,
+            totalCount,
+            currentPage = queryParams.Page,
+            pageSize = queryParams.Limit,
+            totalPages = (int)Math.Ceiling(totalCount / (double)queryParams.Limit)
+        });
+    }
 }
 
 /// <summary>

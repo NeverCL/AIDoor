@@ -88,3 +88,18 @@ export async function getUserRecordContentId(
     ...(options || {}),
   });
 }
+
+/** 获取所有足迹记录（包括内容足迹和应用足迹） GET /api/UserRecord/footprints */
+export async function getFootprints(
+  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
+  params: API.getUserRecordParams,
+  options?: { [key: string]: any },
+) {
+  return request<any>('/api/UserRecord/footprints', {
+    method: 'GET',
+    params: {
+      ...params,
+    },
+    ...(options || {}),
+  });
+}

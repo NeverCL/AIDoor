@@ -19,10 +19,11 @@ interface RecordItem {
 }
 
 // 记录类型映射
-const recordTypes = {
+const recordTypes: Record<string, { name: string; type: number | null; icon: JSX.Element }> = {
     like: { name: '我的点赞', type: 0, icon: <HeartFill style={{ color: '#f5222d' }} /> },
     favorite: { name: '我的收藏', type: 1, icon: <StarFill style={{ color: '#faad14' }} /> },
-    footprint: { name: '足迹', type: null, icon: <ClockCircleOutline /> }
+    contentfootprint: { name: '内容足迹', type: 2, icon: <ClockCircleOutline /> },
+    appfootprint: { name: 'App足迹', type: 3, icon: <ClockCircleOutline /> }
 };
 
 export default () => {
@@ -31,28 +32,40 @@ export default () => {
     const [hasMore, setHasMore] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
 
-    const { type } = useParams();
+    const params = useParams<{ type: string }>();
+    const type = params.type || '';
 
-    const title = recordTypes[type]?.name || '';
+    const title = type && recordTypes[type] ? recordTypes[type].name : '';
 
     // 加载记录数据
     const { run: fetchRecords, loading } = useRequest(
         (currentPage: number) => {
-            // 处理足迹特殊情况，需要分别获取内容足迹和App足迹
-            if (type === 'footprint') {
-                // 获取所有足迹记录
-                return api.userRecord.getFootprints({
+            // 处理不同类型的记录
+            if (type === 'contentfootprint') {
+                // 获取内容足迹
+                return api.userRecord.getUserRecord({
+                    RecordType: 'ContentFootprint',
+                    Page: currentPage,
+                    Limit: 10
+                });
+            } else if (type === 'appfootprint') {
+                // 获取App足迹
+                return api.userRecord.getUserRecord({
+                    RecordType: 'AppFootprint',
+                    Page: currentPage,
+                    Limit: 10
+                });
+            } else if (type && recordTypes[type] && recordTypes[type].type !== null) {
+                // 获取其他类型记录
+                return api.userRecord.getUserRecord({
+                    RecordType: String(recordTypes[type].type),
                     Page: currentPage,
                     Limit: 10
                 });
             }
 
-            // 其他记录类型正常处理
-            return api.userRecord.getUserRecord({
-                RecordType: recordTypes[type]?.type,
-                Page: currentPage,
-                Limit: 10
-            });
+            // 默认返回空记录
+            return Promise.resolve({ records: [], totalCount: 0, totalPages: 0 });
         },
         {
             manual: true,
@@ -66,7 +79,7 @@ export default () => {
                         setRecords(prev => [...prev, ...data.records]);
                     }
                     // 判断是否还有更多数据
-                    setHasMore(currentPage < data.totalPages);
+                    setHasMore(data.records.length > 0 && currentPage < data.totalPages);
                 } else {
                     setHasMore(false);
                 }
@@ -115,65 +128,68 @@ export default () => {
         return '#';
     };
 
+    // 获取图标
+    const getIcon = () => {
+        return type && recordTypes[type] ? recordTypes[type].icon : <ClockCircleOutline />;
+    };
+
     return (
         <BackNavBar title={title}>
-            <PullToRefresh
-                onRefresh={onRefresh}
-                refreshing={refreshing}
-                className="flex-1 overflow-y-auto"
-            >
-                <List className="overflow-hidden">
-                    {records.map((item) => (
-                        <List.Item
-                            key={item.id}
-                            prefix={
-                                <div className="w-12 h-12 mr-2 overflow-hidden rounded-lg">
-                                    <img
-                                        src={item.imageUrl || require('@/assets/my/icon.png')}
-                                        alt=""
-                                        className="w-full h-full object-cover"
-                                    />
-                                </div>
-                            }
-                            extra={
-                                <div className="flex items-center">
-                                    {recordTypes[type]?.icon}
-                                </div>
-                            }
-                            description={
-                                <div className="text-xs text-gray-400 mt-1">
-                                    {type === 'footprint' && item.lastViewedAt ? (
-                                        <div className="flex items-center">
-                                            {/* <span>次数：{item.viewCount || 1}</span> */}
-                                            {/* <span className="mx-2">|</span> */}
-                                            <span>最近：{dayjs(item.lastViewedAt).format('YYYY-MM-DD HH:mm')}</span>
-                                        </div>
-                                    ) : (
-                                        <span>{dayjs(item.createdAt).format('YYYY-MM-DD HH:mm')}</span>
-                                    )}
-                                </div>
-                            }
-                            arrow
-                            onClick={() => {
-                                const link = getDetailLink(item);
-                                if (link !== '#') {
-                                    window.location.href = link;
+            <div className="flex-1 overflow-y-auto">
+                <PullToRefresh
+                    onRefresh={onRefresh}
+                >
+                    <List className="overflow-hidden">
+                        {records.map((item) => (
+                            <List.Item
+                                key={item.id}
+                                prefix={
+                                    <div className="w-12 h-12 mr-2 overflow-hidden rounded-lg">
+                                        <img
+                                            src={item.imageUrl || require('@/assets/my/icon.png')}
+                                            alt=""
+                                            className="w-full h-full object-cover"
+                                        />
+                                    </div>
                                 }
-                            }}
-                        >
-                            <div className="font-medium truncate">{item.title}</div>
-                        </List.Item>
-                    ))}
-                </List>
+                                extra={
+                                    <div className="flex items-center">
+                                        {getIcon()}
+                                    </div>
+                                }
+                                description={
+                                    <div className="text-xs text-gray-400 mt-1">
+                                        {(type === 'contentfootprint' || type === 'appfootprint') && item.lastViewedAt ? (
+                                            <div className="flex items-center">
+                                                <span>最近：{dayjs(item.lastViewedAt).format('YYYY-MM-DD HH:mm')}</span>
+                                            </div>
+                                        ) : (
+                                            <span>{dayjs(item.createdAt).format('YYYY-MM-DD HH:mm')}</span>
+                                        )}
+                                    </div>
+                                }
+                                arrow
+                                onClick={() => {
+                                    const link = getDetailLink(item);
+                                    if (link !== '#') {
+                                        window.location.href = link;
+                                    }
+                                }}
+                            >
+                                <div className="font-medium truncate">{item.title}</div>
+                            </List.Item>
+                        ))}
+                    </List>
 
-                <InfiniteScroll loadMore={loadMore} hasMore={hasMore} />
+                    <InfiniteScroll loadMore={loadMore} hasMore={hasMore} />
 
-                {records.length === 0 && !loading && (
-                    <div className="flex justify-center items-center py-12 text-gray-400">
-                        暂无{title}记录
-                    </div>
-                )}
-            </PullToRefresh>
+                    {records.length === 0 && !loading && (
+                        <div className="flex justify-center items-center py-12 text-gray-400">
+                            暂无{title}记录
+                        </div>
+                    )}
+                </PullToRefresh>
+            </div>
         </BackNavBar>
     );
 }; 
