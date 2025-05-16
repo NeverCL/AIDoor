@@ -1,13 +1,15 @@
-import { Form, Input, Button, Radio, TextArea } from 'antd-mobile';
+import { Form, Input, Button, Radio, TextArea, Toast } from 'antd-mobile';
 import { useRef } from 'react';
 import BackNavBar from '@/components/BackNavBar';
-import { useRequest, history } from '@umijs/max';
+import { useRequest, history, useModel } from '@umijs/max';
 import api from '@/services/api';
 import ImgUploader from '@/components/ImgUploader';
 import { FormInstance } from 'antd-mobile/es/components/form';
 
 export default () => {
     const formRef = useRef<FormInstance>(null);
+
+    const { user, switchUserMode } = useModel('global');
 
     useRequest(api.publisher.getPublisherMy, {
         onSuccess: (res) => {
@@ -37,10 +39,14 @@ export default () => {
         // 提交发布者信息
         await postPublisher(createPublisherRequest);
 
-        // 跳转到我的页面
-        setTimeout(() => {
-            history.push('/my');
-        }, 1500);
+        const result = await switchUserMode();
+
+        if (result.success) {
+            // 跳转到我的页面
+            setTimeout(() => {
+                history.replace('/');
+            }, 1500);
+        }
     };
 
     return (
@@ -126,7 +132,7 @@ export default () => {
                     </Form.Item>
 
                     <div className="bg-yellow-50 p-4 rounded-lg mt-4 mb-6">
-                        <p className="text-sm text-yellow-700">提交后，您的发布者信息将会进入审核流程。审核通过后，您的发布者页面将对所有用户可见。</p>
+                        <p className="text-sm text-yellow-700">官网链接和应用链接提交后，将会进入审核流程。审核通过后，官网链接和应用链接将对所有用户可见。</p>
                     </div>
                 </Form>
             </div>
