@@ -34,14 +34,14 @@ interface RecordSectionProps {
 
 const navs: NavItem[] = [
     {
-        name: '设置',
-        icon: <Icon icon='local:setting' className='mr-2 text-[1.13rem]' />,
-        path: '/setting'
-    },
-    {
         name: '切换身份',
         icon: <Icon icon='local:switch' className='mr-2 text-[1.13rem]' />,
         path: '/switch'
+    },
+    {
+        name: '设置',
+        icon: <Icon icon='local:setting' className='mr-2 text-[1.13rem]' />,
+        path: '/setting'
     }
 ]
 
@@ -57,16 +57,11 @@ const recordTypeConfig: { [key: string]: { name: string; icon: React.ReactNode; 
         icon: <Icon icon='local:fav' className='mr-2 text-[1.13rem]' />,
         path: '/my/favorite',
     },
-    contentfootprint: {
-        name: '内容足迹',
+    footprint: {
+        name: '足迹',
         icon: <Icon icon='local:foot' className='mr-2 text-[1.13rem]' />,
-        path: '/my/contentfootprint',
+        path: '/my/footprint',
     },
-    appfootprint: {
-        name: 'App足迹',
-        icon: <Icon icon='local:foot' className='mr-2 text-[1.13rem]' />,
-        path: '/my/appfootprint',
-    }
 }
 
 export default () => {
