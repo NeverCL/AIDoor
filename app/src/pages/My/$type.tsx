@@ -5,6 +5,7 @@ import { HeartFill, StarFill, ClockCircleOutline } from 'antd-mobile-icons';
 import dayjs from 'dayjs';
 import api from '@/services/api';
 import BackNavBar from '@/components/BackNavBar';
+import { getImageUrl } from '@/utils';
 
 interface RecordItem {
     id: number;
@@ -146,7 +147,7 @@ export default () => {
                                 prefix={
                                     <div className="w-12 h-12 mr-2 overflow-hidden rounded-lg">
                                         <img
-                                            src={item.imageUrl || require('@/assets/my/icon.png')}
+                                            src={getImageUrl(item.imageUrl)}
                                             alt=""
                                             className="w-full h-full object-cover"
                                         />
