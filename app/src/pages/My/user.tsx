@@ -30,6 +30,7 @@ interface RecordSectionProps {
     path: string;
     type: string;
     data?: RecordItem[];
+    appData?: RecordItem[]; // 新增字段用于存储App足迹数据
 }
 
 const navs: NavItem[] = [
@@ -109,14 +110,23 @@ export default () => {
 
             // 构建记录区域数据
             const sections: RecordSectionProps[] = [];
-            Object.keys(recordTypeConfig).forEach(type => {
+
+            // 处理点赞和收藏
+            ['like', 'favorite'].forEach(type => {
                 const records = recordsByType[type] || [];
-                // 取每种类型的前4条记录
                 sections.push({
                     ...recordTypeConfig[type],
                     type,
                     data: records.slice(0, 4)
                 });
+            });
+
+            // 处理足迹 - 合并 App 足迹和内容足迹
+            sections.push({
+                ...recordTypeConfig['footprint'],
+                type: 'footprint',
+                appData: recordsByType['appfootprint']?.slice(0, 2) || [], // App足迹上面显示
+                data: recordsByType['contentfootprint']?.slice(0, 2) || [] // 内容足迹下面显示
             });
 
             setRecordSections(sections);
@@ -244,17 +254,54 @@ const RecordSection = ({ section }: { section: RecordSectionProps }) => (
                 <span>全部 ＞</span>
             </div>
         </NavLink>
+
         {/* 记录列表 */}
-        <div className="grid grid-cols-[repeat(auto-fill,minmax(6rem,1fr))] gap-2">
-            {section.data && section.data.length > 0 ? (
-                section.data.map((item, index) => (
-                    <RecordCard key={index} item={item} />
-                ))
-            ) : (
-                <div className="col-span-4 text-center py-4 text-gray-500">
-                    暂无{section.name}记录
-                </div>
-            )}
-        </div>
+        {section.type === 'footprint' ? (
+            // 足迹特殊处理：上方App足迹，下方内容足迹
+            <div className="flex flex-col gap-2">
+                {/* App足迹 */}
+                {section.appData && section.appData.length > 0 ? (
+                    <>
+                        <div className="grid grid-cols-[repeat(auto-fill,minmax(6rem,1fr))] gap-2">
+                            {section.appData.map((item, index) => (
+                                <RecordCard key={`app-${index}`} item={item} />
+                            ))}
+                        </div>
+                    </>
+                ) : (
+                    <div className="text-center py-2 text-gray-500">
+                        暂无应用足迹记录
+                    </div>
+                )}
+
+                {/* 内容足迹 */}
+                {section.data && section.data.length > 0 ? (
+                    <>
+                        <div className="grid grid-cols-[repeat(auto-fill,minmax(6rem,1fr))] gap-2">
+                            {section.data.map((item, index) => (
+                                <RecordCard key={`content-${index}`} item={item} />
+                            ))}
+                        </div>
+                    </>
+                ) : (
+                    <div className="text-center py-2 text-gray-500">
+                        暂无内容足迹记录
+                    </div>
+                )}
+            </div>
+        ) : (
+            // 其他记录类型正常显示
+            <div className="grid grid-cols-[repeat(auto-fill,minmax(6rem,1fr))] gap-2">
+                {section.data && section.data.length > 0 ? (
+                    section.data.map((item, index) => (
+                        <RecordCard key={index} item={item} />
+                    ))
+                ) : (
+                    <div className="col-span-4 text-center py-4 text-gray-500">
+                        暂无{section.name}记录
+                    </div>
+                )}
+            </div>
+        )}
     </div>
 );
