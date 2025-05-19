@@ -71,62 +71,39 @@ export default () => {
 
     // 获取所有类型的记录数据
     const { data, loading } = useRequest(() =>
-        api.userRecord.getUserRecord({ Limit: 20 })
+        api.userRecord.getUserRecordMy()
     );
 
     // 处理获取到的数据
     useEffect(() => {
-        if (data && data.records) {
-            // 按照类型对记录进行分组
-            const recordsByType: { [key: string]: RecordItem[] } = {
-                like: [],
-                favorite: [],
-                contentfootprint: [],
-                appfootprint: []
-            };
-
-            // 对记录按类型进行分类
-            data.records.forEach((record: any) => {
-                let type = record.typeString.toLowerCase();
-
-                // 将新的足迹类型映射到前端类型
-                if (type === 'contentfootprint') {
-                    type = 'contentfootprint';
-                } else if (type === 'appfootprint') {
-                    type = 'appfootprint';
-                }
-
-                if (recordsByType[type]) {
-                    recordsByType[type].push({
-                        id: record.id,
-                        imageUrl: record.imageUrl,
-                        title: record.title,
-                        targetId: record.targetId,
-                        targetType: record.targetType,
-                        typeString: record.typeString
-                    });
-                }
-            });
-
+        if (data) {
             // 构建记录区域数据
             const sections: RecordSectionProps[] = [];
 
-            // 处理点赞和收藏
-            ['like', 'favorite'].forEach(type => {
-                const records = recordsByType[type] || [];
+            // 处理点赞记录
+            if (data.like && data.like.records) {
                 sections.push({
-                    ...recordTypeConfig[type],
-                    type,
-                    data: records.slice(0, 4)
+                    ...recordTypeConfig['like'],
+                    type: 'like',
+                    data: data.like.records
                 });
-            });
+            }
+
+            // 处理收藏记录
+            if (data.favorite && data.favorite.records) {
+                sections.push({
+                    ...recordTypeConfig['favorite'],
+                    type: 'favorite',
+                    data: data.favorite.records
+                });
+            }
 
             // 处理足迹 - 合并 App 足迹和内容足迹
             sections.push({
                 ...recordTypeConfig['footprint'],
                 type: 'footprint',
-                appData: recordsByType['appfootprint']?.slice(0, 2) || [], // App足迹上面显示
-                data: recordsByType['contentfootprint']?.slice(0, 2) || [] // 内容足迹下面显示
+                appData: data.appFootprint?.records || [], // App足迹上面显示
+                data: data.contentFootprint?.records || [] // 内容足迹下面显示
             });
 
             setRecordSections(sections);
@@ -145,7 +122,7 @@ export default () => {
                     </div>
                 ) : (
                     recordSections.map((section, index) => (
-                        <RecordSection key={index} section={section} />
+                        <RecordSection key={section.type} section={section} />
                     ))
                 )}
 
@@ -262,7 +239,7 @@ const RecordSection = ({ section }: { section: RecordSectionProps }) => (
                 {/* App足迹 */}
                 {section.appData && section.appData.length > 0 ? (
                     <>
-                        <div className="grid grid-cols-[repeat(auto-fill,minmax(6rem,1fr))] gap-2">
+                        <div className="grid grid-cols-4 gap-2">
                             {section.appData.map((item, index) => (
                                 <RecordCard key={`app-${index}`} item={item} />
                             ))}
@@ -277,7 +254,7 @@ const RecordSection = ({ section }: { section: RecordSectionProps }) => (
                 {/* 内容足迹 */}
                 {section.data && section.data.length > 0 ? (
                     <>
-                        <div className="grid grid-cols-[repeat(auto-fill,minmax(6rem,1fr))] gap-2">
+                        <div className="grid grid-cols-3 gap-2">
                             {section.data.map((item, index) => (
                                 <RecordCard key={`content-${index}`} item={item} />
                             ))}
@@ -291,7 +268,7 @@ const RecordSection = ({ section }: { section: RecordSectionProps }) => (
             </div>
         ) : (
             // 其他记录类型正常显示
-            <div className="grid grid-cols-[repeat(auto-fill,minmax(6rem,1fr))] gap-2">
+            <div className="grid grid-cols-3 gap-2">
                 {section.data && section.data.length > 0 ? (
                     section.data.map((item, index) => (
                         <RecordCard key={index} item={item} />

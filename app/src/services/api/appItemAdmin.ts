@@ -2,6 +2,16 @@
 /* eslint-disable */
 import { request } from '@umijs/max';
 
+/** 此处后端没有提供注释 GET /api/admin/appitems/applications */
+export async function getAdminAppitemsApplications(options?: {
+  [key: string]: any;
+}) {
+  return request<any>('/api/admin/appitems/applications', {
+    method: 'GET',
+    ...(options || {}),
+  });
+}
+
 /** 此处后端没有提供注释 POST /api/admin/appitems/applications */
 export async function postAdminAppitemsApplications(
   body: API.ApplicationCreateDto,

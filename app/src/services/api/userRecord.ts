@@ -61,6 +61,16 @@ export async function postUserRecordAppVisit(
   });
 }
 
+/** 此处后端没有提供注释 DELETE /api/UserRecord/clear-footprints */
+export async function deleteUserRecordClearFootprints(options?: {
+  [key: string]: any;
+}) {
+  return request<any>('/api/UserRecord/clear-footprints', {
+    method: 'DELETE',
+    ...(options || {}),
+  });
+}
+
 /** 此处后端没有提供注释 DELETE /api/UserRecord/clear/${param0} */
 export async function deleteUserRecordClearRecordType(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
@@ -89,10 +99,10 @@ export async function getUserRecordContentId(
   });
 }
 
-/** 获取所有足迹记录（包括内容足迹和应用足迹） GET /api/UserRecord/footprints */
-export async function getFootprints(
+/** 此处后端没有提供注释 GET /api/UserRecord/footprints */
+export async function getUserRecordFootprints(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
-  params: API.getUserRecordParams,
+  params: API.getUserRecordFootprintsParams,
   options?: { [key: string]: any },
 ) {
   return request<any>('/api/UserRecord/footprints', {
@@ -100,6 +110,14 @@ export async function getFootprints(
     params: {
       ...params,
     },
+    ...(options || {}),
+  });
+}
+
+/** 此处后端没有提供注释 GET /api/UserRecord/my */
+export async function getUserRecordMy(options?: { [key: string]: any }) {
+  return request<any>('/api/UserRecord/my', {
+    method: 'GET',
     ...(options || {}),
   });
 }

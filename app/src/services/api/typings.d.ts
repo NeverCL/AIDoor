@@ -1,4 +1,32 @@
 declare namespace API {
+  type AccountCreateRequest = {
+    username: string;
+    password: string;
+    isAdmin?: boolean;
+  };
+
+  type AccountInfoResponse = {
+    id?: number;
+    username?: string;
+    isAdmin?: boolean;
+    isActive?: boolean;
+    createdAt?: string;
+    lastLoginAt?: string;
+  };
+
+  type AccountListResponse = {
+    data?: AccountInfoResponse[];
+    total?: number;
+    success?: boolean;
+  };
+
+  type AccountUpdateRequest = {
+    username?: string;
+    password?: string;
+    isAdmin?: boolean;
+    isActive?: boolean;
+  };
+
   type ApplicationCreateDto = {
     title: string;
     description?: string;
@@ -25,6 +53,19 @@ declare namespace API {
     title: string;
     imageUrl?: string;
     link?: string;
+  };
+
+  type BannerCreateDto = {
+    title: string;
+    bannerImageUrl: string;
+    qrCodeImageUrl: string;
+  };
+
+  type BannerUpdateDto = {
+    title: string;
+    bannerImageUrl: string;
+    qrCodeImageUrl: string;
+    isActive?: boolean;
   };
 
   type CategoryCreateDto = {
@@ -83,12 +124,24 @@ declare namespace API {
     content: string;
   };
 
+  type deleteAccountIdParams = {
+    id: number;
+  };
+
   type deleteAdminAppitemsApplicationsApplicationIdParams = {
     applicationId: number;
   };
 
   type deleteAdminAppitemsCategoriesCategoryIdParams = {
     categoryId: number;
+  };
+
+  type deleteAdminBannersIdParams = {
+    id: number;
+  };
+
+  type deleteAdminSystemMessagesIdParams = {
+    id: number;
   };
 
   type deleteCommentIdParams = {
@@ -104,6 +157,10 @@ declare namespace API {
   };
 
   type deletePublisherIdParams = {
+    id: number;
+  };
+
+  type deleteSystemMessageIdParams = {
     id: number;
   };
 
@@ -123,6 +180,17 @@ declare namespace API {
     id: number;
   };
 
+  type getAccountIdParams = {
+    id: number;
+  };
+
+  type getAccountParams = {
+    Current?: number;
+    PageSize?: number;
+    Username?: string;
+    IsActive?: boolean;
+  };
+
   type getAdminAppitemsApplicationsApplicationIdParams = {
     applicationId: number;
   };
@@ -131,7 +199,27 @@ declare namespace API {
     categoryId: number;
   };
 
+  type getAdminBannersIdParams = {
+    id: number;
+  };
+
+  type getAdminSystemMessagesIdParams = {
+    id: number;
+  };
+
+  type getAdminSystemMessagesParams = {
+    Page?: number;
+    Limit?: number;
+    OnlyUnread?: boolean;
+    Type?: string;
+    MinPriority?: string;
+  };
+
   type getAppItemIdParams = {
+    id: number;
+  };
+
+  type getBannersIdParams = {
     id: number;
   };
 
@@ -184,6 +272,24 @@ declare namespace API {
     pageSize?: number;
   };
 
+  type getSystemMessageIdParams = {
+    id: number;
+  };
+
+  type getSystemMessageParams = {
+    Page?: number;
+    Limit?: number;
+    OnlyUnread?: boolean;
+    Type?: string;
+    MinPriority?: string;
+  };
+
+  type getUserAdminListParams = {
+    pageSize?: number;
+    pageIndex?: number;
+    keyword?: string;
+  };
+
   type getUserContentIdParams = {
     id: number;
   };
@@ -206,18 +312,36 @@ declare namespace API {
     id: number;
   };
 
+  type getUserRecordFootprintsParams = {
+    Page?: number;
+    Limit?: number;
+    RecordType?: string;
+  };
+
   type getUserRecordParams = {
     Page?: number;
     Limit?: number;
     RecordType?: string;
   };
 
-  type LoginRequest = {
-    phone: string;
-    code: string;
+  type LoginInput = {
+    username: string;
+    password: string;
+    type?: string;
+    autoLogin?: boolean;
   };
 
+  type LoginResponse = {
+    status?: string;
+    type?: string;
+    currentAuthority?: string;
+  };
+
+  type MessagePriority = integer;
+
   type MessageSenderType = integer;
+
+  type MessageType = integer;
 
   type PagedResultOfChatMessageDto = {
     data?: ChatMessageDto[];
@@ -256,12 +380,24 @@ declare namespace API {
 
   type PublisherType = integer;
 
+  type putAccountIdParams = {
+    id: number;
+  };
+
   type putAdminAppitemsApplicationsApplicationIdParams = {
     applicationId: number;
   };
 
   type putAdminAppitemsCategoriesCategoryIdParams = {
     categoryId: number;
+  };
+
+  type putAdminBannersIdParams = {
+    id: number;
+  };
+
+  type putAdminSystemMessagesIdParams = {
+    id: number;
   };
 
   type putMessagesPublisherMarkAllReadUserIdParams = {
@@ -278,6 +414,10 @@ declare namespace API {
 
   type putMessagesUserMarkReadMessageIdParams = {
     messageId: number;
+  };
+
+  type putSystemMessageIdParams = {
+    id: number;
   };
 
   type RatePublisherRequestDto = {
@@ -303,9 +443,27 @@ declare namespace API {
     phone: string;
   };
 
+  type SystemMessageCreateDto = {
+    title: string;
+    content: string;
+    type?: MessageType;
+    recipientId?: number;
+    expireAt?: string;
+    priority?: MessagePriority;
+  };
+
+  type SystemMessageUpdateDto = {
+    isRead?: boolean;
+  };
+
   type UpdateProfileRequest = {
     username: string;
     avatarUrl: string;
+  };
+
+  type UpdateUserStatusRequest = {
+    userId: number;
+    isActive: boolean;
   };
 
   type UserContentCreateDto = {
@@ -318,6 +476,11 @@ declare namespace API {
     followingId: number;
   };
 
+  type UserLoginRequest = {
+    phone: string;
+    code: string;
+  };
+
   type UserRecordCreateDto = {
     recordType: RecordType;
     title: string;
@@ -325,36 +488,5 @@ declare namespace API {
     targetId?: number;
     targetType?: string;
     notes?: string;
-  };
-
-  type UserRecordDto = {
-    id: number;
-    recordType: RecordType;
-    typeString: string;
-    title: string;
-    imageUrl: string;
-    targetId?: number;
-    targetType?: string;
-    notes?: string;
-    lastViewedAt?: string;
-    viewCount: number;
-    createdAt: string;
-    userName: string;
-    userAvatarUrl: string;
-  };
-
-  type getBannerIdParams = {
-    id: number;
-  };
-
-  // Banner 查询DTO
-  type BannerDto = {
-    id: number;
-    title: string;
-    bannerImageUrl: string;
-    qrCodeImageUrl: string;
-    isActive: boolean;
-    createdAt: string;
-    updatedAt?: string;
   };
 }

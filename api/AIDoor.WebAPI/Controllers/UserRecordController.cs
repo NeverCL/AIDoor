@@ -20,6 +20,69 @@ public class UserRecordController : BaseController
     }
 
     /// <summary>
+    /// 获取我的页面所需的记录
+    /// </summary>
+    [HttpGet("my")]
+    public async Task<IActionResult> GetMyPageRecords()
+    {
+        // 获取点赞记录（前3条）
+        var (likeRecords, likeCount) = await _recordService.GetRecordsAsync(new UserRecordQueryParams
+        {
+            Page = 1,
+            Limit = 3,
+            RecordType = RecordType.Like.ToString()
+        });
+
+        // 获取收藏记录（前3条）
+        var (favoriteRecords, favoriteCount) = await _recordService.GetRecordsAsync(new UserRecordQueryParams
+        {
+            Page = 1,
+            Limit = 3,
+            RecordType = RecordType.Favorite.ToString()
+        });
+
+        // 获取内容足迹记录（前3条）
+        var (contentFootprintRecords, contentFootprintCount) = await _recordService.GetRecordsAsync(new UserRecordQueryParams
+        {
+            Page = 1,
+            Limit = 3,
+            RecordType = RecordType.ContentFootprint.ToString()
+        });
+
+        // 获取应用足迹记录（前4条）
+        var (appFootprintRecords, appFootprintCount) = await _recordService.GetRecordsAsync(new UserRecordQueryParams
+        {
+            Page = 1,
+            Limit = 4,
+            RecordType = RecordType.AppFootprint.ToString()
+        });
+
+        return Ok(new
+        {
+            like = new
+            {
+                records = likeRecords,
+                totalCount = likeCount
+            },
+            favorite = new
+            {
+                records = favoriteRecords,
+                totalCount = favoriteCount
+            },
+            contentFootprint = new
+            {
+                records = contentFootprintRecords,
+                totalCount = contentFootprintCount
+            },
+            appFootprint = new
+            {
+                records = appFootprintRecords,
+                totalCount = appFootprintCount
+            }
+        });
+    }
+
+    /// <summary>
     /// 获取用户记录列表
     /// </summary>
     [HttpGet]

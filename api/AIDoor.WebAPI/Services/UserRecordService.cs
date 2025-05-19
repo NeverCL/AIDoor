@@ -126,8 +126,10 @@ public class UserRecordService
         {
             int userId = GetCurrentUserId();
 
+            RecordType.TryParse<RecordType>(queryParams.RecordType, out var recordType);
+
             var query = _context.UserRecords
-                .Where(r => r.UserId == userId)
+                .Where(r => r.UserId == userId && r.RecordType == recordType)
                 .Include(r => r.User); // Include User information
 
             // 获取总记录数
@@ -145,7 +147,7 @@ public class UserRecordService
                         RecordType = r.RecordType,
                         TypeString = r.TypeString,
                         Title = r.Title,
-                        ImageUrl = r.ImageUrl + "?x-oss-process=image/resize,p_30",
+                        ImageUrl = r.ImageUrl,
                         Notes = r.Notes,
                         LastViewedAt = r.LastViewedAt,
                         ViewCount = r.ViewCount,

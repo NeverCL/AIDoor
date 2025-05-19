@@ -1,9 +1,9 @@
 import { NavLink, Icon, useLocation, useModel, history } from '@umijs/max';
 import { useEffect, useRef, useState } from 'react';
-import { Button, Popup, SearchBar, SearchBarRef, Toast, Badge, List, Empty, SwipeAction, InfiniteScroll, Dialog } from 'antd-mobile';
+import { Button, Popup, SearchBar, SearchBarRef, Badge } from 'antd-mobile';
 import { getUserRecord } from '@/services/api/userRecord';
 import { getImageUrl } from '@/utils';
-import { getSystemMessages, getUnreadCount, updateMessageStatus, deleteMessage, markAllAsRead } from '@/services/api/systemMessage';
+import { getSystemMessage, getSystemMessageUnreadCount } from '@/services/api/systemMessage';
 
 const isActive = 'flex flex-col justify-center items-center ';
 const notActive = 'text-secondary ';
@@ -39,7 +39,7 @@ const NavHeader: React.FC = () => {
   useEffect(() => {
     const fetchUnreadCount = async () => {
       try {
-        const count = await getUnreadCount();
+        const count = await getSystemMessageUnreadCount();
         setUnreadCount(count);
       } catch (error) {
         console.error('获取未读消息数量失败:', error);
@@ -62,7 +62,7 @@ const NavHeader: React.FC = () => {
 
     setMessagesLoading(true);
     try {
-      const result = await getSystemMessages({ page: 1, limit: 3 });
+      const result = await getSystemMessage({ page: 1, limit: 3 });
       setMessages(result.messages);
     } catch (error) {
       console.error('获取系统消息失败:', error);
@@ -71,53 +71,6 @@ const NavHeader: React.FC = () => {
     }
   };
 
-  // 标记消息为已读
-  const handleRead = async (id: number) => {
-    try {
-      await updateMessageStatus(id, true);
-      setMessages((prev) =>
-        prev.map((message) => (message.id === id ? { ...message, isRead: true } : message))
-      );
-      const newUnreadCount = await getUnreadCount();
-      setUnreadCount(newUnreadCount);
-    } catch (error) {
-      console.error('标记消息已读失败:', error);
-      Toast.show('操作失败');
-    }
-  };
-
-  // 标记所有消息为已读
-  const handleMarkAllRead = async () => {
-    try {
-      await markAllAsRead();
-      setMessages((prev) => prev.map((message) => ({ ...message, isRead: true })));
-      setUnreadCount(0);
-      Toast.show('全部标记为已读');
-    } catch (error) {
-      console.error('标记全部已读失败:', error);
-      Toast.show('操作失败');
-    }
-  };
-
-  // 删除消息
-  const handleDeleteMessage = async (id: number) => {
-    try {
-      const result = await Dialog.confirm({
-        content: '确定要删除这条消息吗？',
-      });
-
-      if (result) {
-        await deleteMessage(id);
-        setMessages((prev) => prev.filter((message) => message.id !== id));
-        const newUnreadCount = await getUnreadCount();
-        setUnreadCount(newUnreadCount);
-        Toast.show('删除成功');
-      }
-    } catch (error) {
-      console.error('删除消息失败:', error);
-      Toast.show('删除失败');
-    }
-  };
 
   // 获取消息优先级样式
   const getPriorityStyle = (priority: number) => {
@@ -284,7 +237,6 @@ const NavHeader: React.FC = () => {
                   <div
                     key={message.id}
                     className="rounded-lg p-2 relative"
-                    onClick={() => !message.isRead && handleRead(message.id)}
                   >
                     <div className="flex items-start">
                       <div
