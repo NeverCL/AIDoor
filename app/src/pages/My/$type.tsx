@@ -1,6 +1,6 @@
-import { useRequest, useParams } from '@umijs/max';
+import { useRequest, useParams, history } from '@umijs/max';
 import { useState, useEffect } from 'react';
-import { List, InfiniteScroll, PullToRefresh } from 'antd-mobile';
+import { List, InfiniteScroll, PullToRefresh, Tabs } from 'antd-mobile';
 import { HeartFill, StarFill, ClockCircleOutline } from 'antd-mobile-icons';
 import dayjs from 'dayjs';
 import api from '@/services/api';
@@ -23,6 +23,7 @@ interface RecordItem {
 const recordTypes: Record<string, { name: string; type: number | null; icon: JSX.Element }> = {
     like: { name: '我的点赞', type: 0, icon: <HeartFill style={{ color: '#f5222d' }} /> },
     favorite: { name: '我的收藏', type: 1, icon: <StarFill style={{ color: '#faad14' }} /> },
+    footprint: { name: '足迹', type: null, icon: <ClockCircleOutline /> },
     contentfootprint: { name: '内容足迹', type: 2, icon: <ClockCircleOutline /> },
     appfootprint: { name: 'App足迹', type: 3, icon: <ClockCircleOutline /> }
 };
@@ -32,11 +33,20 @@ export default () => {
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
+    const [activeTab, setActiveTab] = useState('content');
 
     const params = useParams<{ type: string }>();
-    const type = params.type || '';
+    let type = params.type || '';
 
-    const title = type && recordTypes[type] ? recordTypes[type].name : '';
+    // 如果是 footprint 类型，默认显示内容足迹
+    const isFootprintPage = type === 'footprint';
+    if (isFootprintPage) {
+        type = activeTab === 'content' ? 'contentfootprint' : 'appfootprint';
+    }
+
+    const title = isFootprintPage
+        ? recordTypes.footprint.name
+        : (type && recordTypes[type] ? recordTypes[type].name : '');
 
     // 加载记录数据
     const { run: fetchRecords, loading } = useRequest(
@@ -119,6 +129,17 @@ export default () => {
         fetchRecords(nextPage);
     };
 
+    // Tab变化处理
+    const onTabChange = (key: string) => {
+        setActiveTab(key);
+        // 重置状态
+        setPage(1);
+        setHasMore(true);
+        setRecords([]);
+        // 根据激活的Tab加载对应的数据
+        fetchRecords(1);
+    };
+
     // 生成记录项链接
     const getDetailLink = (item: RecordItem) => {
         if (item.targetType === 'Content' && item.targetId) {
@@ -137,6 +158,13 @@ export default () => {
     return (
         <BackNavBar title={title}>
             <div className="flex-1 overflow-y-auto">
+                {isFootprintPage && (
+                    <Tabs onChange={onTabChange} activeKey={activeTab}>
+                        <Tabs.Tab title="内容足迹" key="content" />
+                        <Tabs.Tab title="应用足迹" key="app" />
+                    </Tabs>
+                )}
+
                 <PullToRefresh
                     onRefresh={onRefresh}
                 >
@@ -186,7 +214,9 @@ export default () => {
 
                     {records.length === 0 && !loading && (
                         <div className="flex justify-center items-center py-12 text-gray-400">
-                            暂无{title}记录
+                            暂无{isFootprintPage
+                                ? (activeTab === 'content' ? '内容足迹' : '应用足迹')
+                                : title}记录
                         </div>
                     )}
                 </PullToRefresh>
