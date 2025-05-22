@@ -15,7 +15,7 @@ data:
       },
       "ConnectionStrings": {
         "Redis": "{{ include "aidoor.redisHost" . }}",
-        "DefaultConnection": "Server=prod-db;Port=3306;Database=AIDoorDb;User=cl;Password=qweasd123!;"
+        "DefaultConnection": "Server=prod-db;Port=3306;Database=AIDoorDb;User=ss;Password=qweasd123!;"
       },
       "AllowedHosts": "*"
     } 
