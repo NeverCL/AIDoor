@@ -11,6 +11,7 @@ interface UserContent {
     title: string;
     content?: string;
     images: string[];
+    videos?: string[]; // 添加视频资源
     createdBy: string;
     createdByAvatar?: string;
     createdAt: string;
@@ -416,6 +417,12 @@ export default () => {
         return `https://cdn.thedoorofai.com/${fileName}`;
     };
 
+    // 判断文件是否为视频
+    const isVideoFile = (fileName: string) => {
+        const videoExtensions = ['.mp4', '.avi', '.mov', '.wmv', '.flv', '.mkv', '.webm'];
+        return videoExtensions.some(ext => fileName.toLowerCase().endsWith(ext));
+    };
+
     // 返回上一页
     const onBack = () => window.history.back();
 
@@ -443,23 +450,34 @@ export default () => {
                                 <Swiper>
                                     {content.images.map((image, index) => (
                                         <Swiper.Item key={index}>
-                                            <div className="flex justify-center" onClick={() => {
-                                                ImageViewer.Multi.show({
-                                                    images: content.images.map(getImageUrl),
-                                                    defaultIndex: index,
-                                                })
-                                            }}>
-                                                <Image
-                                                    src={getImageUrl(image)}
-                                                    fit="cover"
-                                                    style={{ borderRadius: 8 }}
-                                                />
-                                            </div>
+                                            {isVideoFile(image) ? (
+                                                <div className="flex justify-center">
+                                                    <video
+                                                        src={getImageUrl(image)}
+                                                        controls
+                                                        style={{ borderRadius: 8, maxWidth: '100%' }}
+                                                    />
+                                                </div>
+                                            ) : (
+                                                <div className="flex justify-center" onClick={() => {
+                                                    ImageViewer.Multi.show({
+                                                        images: content.images.filter(img => !isVideoFile(img)).map(getImageUrl),
+                                                        defaultIndex: content.images.filter(img => !isVideoFile(img)).indexOf(image),
+                                                    })
+                                                }}>
+                                                    <Image
+                                                        src={getImageUrl(image)}
+                                                        fit="cover"
+                                                        style={{ borderRadius: 8 }}
+                                                    />
+                                                </div>
+                                            )}
                                         </Swiper.Item>
                                     ))}
                                 </Swiper>
                             </div>
                         )}
+
 
                         <h1 className="text-xl font-bold mb-2">{content.title}</h1>
 
