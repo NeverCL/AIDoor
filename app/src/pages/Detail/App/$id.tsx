@@ -1,9 +1,8 @@
 import BackNavBar from "@/components/BackNavBar";
 import api from "@/services/api";
 import { useParams, useRequest } from "@umijs/max";
-import { Swiper, DotLoading, Button } from "antd-mobile";
+import { DotLoading, Button } from "antd-mobile";
 import openUrl from "@/utils/openUrl";
-import { getImageUrl } from "@/utils/imageUtils";
 
 export default () => {
     const { id } = useParams();
@@ -19,14 +18,6 @@ export default () => {
                     </div>
                 ) : (
                     <>
-                        <Swiper loop autoplay>
-                            <Swiper.Item>
-                                <div className="h-[40vh] overflow-hidden">
-                                    <img src={getImageUrl(data?.imageUrl)} alt={data?.title} />
-                                </div>
-                            </Swiper.Item>
-                        </Swiper>
-
                         <div className="flex justify-between items-center px-4 py-2">
                             <h2 className="text-xl font-bold">{data?.title}</h2>
                             {data?.link && (
