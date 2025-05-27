@@ -22,4 +22,4 @@ metadata:
   name: prod-db
 spec:
   type: ExternalName
-  externalName: rm-2zel28f3o8b5yuf1t.mysql.rds.aliyuncs.com
+  externalName: rm-2zebhao6y16x2c01k.mysql.rds.aliyuncs.com
