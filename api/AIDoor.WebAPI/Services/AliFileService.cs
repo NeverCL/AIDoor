@@ -9,16 +9,13 @@ public class AliFileService
     private readonly ILogger<AliFileService> _logger;
     private readonly OssClient _ossClient;
     private readonly string _bucketName;
-    private readonly FileStorageOptions _fileOptions;
     private readonly AliyunOSSOptions _ossOptions;
 
     public AliFileService(
         IOptions<AliyunOSSOptions> ossOptions,
-        IOptions<FileStorageOptions> fileOptions,
         ILogger<AliFileService> logger)
     {
         _logger = logger;
-        _fileOptions = fileOptions.Value;
         _ossOptions = ossOptions.Value;
 
         // 从 Options 中获取阿里云OSS的配置

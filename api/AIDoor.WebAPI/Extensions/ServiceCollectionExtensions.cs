@@ -93,9 +93,6 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddConfigOptions(this IServiceCollection services, IConfiguration configuration)
     {
-        services.Configure<FileStorageOptions>(
-            configuration.GetSection(FileStorageOptions.FileStorage));
-
         services.Configure<AliyunOSSOptions>(
             configuration.GetSection(AliyunOSSOptions.AliyunOSS));
 
@@ -107,7 +104,6 @@ public static class ServiceCollectionExtensions
         // 注册所有应用服务
         services.AddScoped<SmsService>();
         services.AddScoped<UserService>();
-        services.AddScoped<FileService>();
         services.AddScoped<AliFileService>();
         services.AddScoped<AppItemService>();
         services.AddScoped<UserContentService>();
