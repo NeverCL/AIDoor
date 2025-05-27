@@ -72,9 +72,9 @@ public class AliFileService
         }
 
         // 验证文件大小
-        if (file.Length > _fileOptions.MaxFileSize)
+        if (file.Length > _ossOptions.MaxFileSize)
         {
-            throw new Exception($"文件大小超过限制 ({_fileOptions.MaxFileSize / 1024 / 1024}MB)");
+            throw new Exception($"文件大小超过限制 ({_ossOptions.MaxFileSize / 1024 / 1024}MB)");
         }
 
         // 生成唯一的文件名

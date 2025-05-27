@@ -8,4 +8,6 @@ public class AliyunOSSOptions
     public string AccessKeyId { get; set; } = "LTAI5tNAXNky8uG8xsuqTCBk";
     public string AccessKeySecret { get; set; } = "FjpFHalzTPs9X78yVaX42j68Vj7mBP";
     public string BucketName { get; set; } = "bj-app-file";
+
+    public long MaxFileSize { get; set; } = 200 * 1024 * 1024;
 }
