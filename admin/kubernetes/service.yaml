@@ -23,7 +23,7 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: /
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
 spec:
-  ingressClassName: nginx
+  ingressClassName: apisix
   tls:
     - hosts:
         - admin.thedoorofai.com
