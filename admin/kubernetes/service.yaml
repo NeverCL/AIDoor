@@ -24,10 +24,6 @@ metadata:
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
 spec:
   ingressClassName: apisix
-  tls:
-    - hosts:
-        - admin.thedoorofai.com
-      secretName: thedoorofai.com
   rules:
     - host: admin.thedoorofai.com
       http:
