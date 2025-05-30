@@ -49,11 +49,7 @@ ingress:
       paths:
         - path: /
           pathType: Prefix
-  tls:
-    - secretName: aidoor-tls-secret
-      hosts:
-        - api.aidoor.example.com
-
+          
 # 健康检查
 livenessProbe:
   httpGet:

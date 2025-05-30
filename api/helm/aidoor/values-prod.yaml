@@ -21,7 +21,7 @@ ingress:
       paths:
         - path: /
           pathType: Prefix
-  tls:
-    - secretName: thedoorofai.com
-      hosts:
-        - api.thedoorofai.com
+    - host: adminapi.thedoorofai.com
+      paths:
+        - path: /
+          pathType: Prefix

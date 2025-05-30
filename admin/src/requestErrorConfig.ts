@@ -94,7 +94,7 @@ export const errorConfig: RequestConfig = {
       // 为所有请求添加credentials以支持Cookie认证
 
       if (!isDev) {
-        config.baseURL = 'https://api.thedoorofai.com/';
+        config.baseURL = 'https://adminapi.thedoorofai.com/';
       }
 
       return config;
