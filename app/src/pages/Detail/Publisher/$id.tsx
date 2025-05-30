@@ -76,7 +76,8 @@ export default () => {
     const { run: loadContents, loading: contentsLoading } = useRequest(
         (pageNum: number) => api.userContent.getUserContent({
             Page: pageNum,
-            Limit: pageSize
+            Limit: pageSize,
+            IsOwner: true
         }),
         {
             manual: true,

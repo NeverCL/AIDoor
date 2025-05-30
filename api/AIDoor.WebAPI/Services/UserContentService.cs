@@ -73,10 +73,15 @@ public class UserContentService : BaseService
 
         int totalCount = await query.CountAsync();
 
-        var publisherId = GetCurrentPublisherId();
+        int? publisherId = null;
+        
+        if (queryParams.IsOwner)
+        {
+            publisherId = GetCurrentPublisherId();
+        }
 
         var contents = await query
-            .Where(x => x.PublisherId == publisherId)
+            .Where(x => publisherId == null || x.PublisherId == publisherId)
             .Skip((queryParams.Page - 1) * queryParams.Limit)
             .Take(queryParams.Limit)
             .Select(uc => new UserContentDto

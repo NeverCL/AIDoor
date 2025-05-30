@@ -29,6 +29,7 @@ public abstract class BaseService
     protected int? GetCurrentPublisherId()
     {
         var publisherIdClaim = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.Sid);
+        
         if (publisherIdClaim == null)
         {
             throw new UnauthorizedAccessException("未登录或无法识别用户，重新登录试试");

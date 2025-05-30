@@ -297,6 +297,7 @@ declare namespace API {
   type getUserContentParams = {
     Page?: number;
     Limit?: number;
+    IsOwner?: boolean;
   };
 
   type getUserFollowCheckIdParams = {

@@ -43,4 +43,6 @@ public class UserContentQueryParams
         get => _limit;
         set => _limit = value > 0 && value <= 50 ? value : 10;
     }
+
+    public bool IsOwner { get; set; }
 }
