@@ -12,10 +12,19 @@ public static class ApplicationBuilderExtensions
         {
             app.MapOpenApi();
         }
-
+        
         // 中间件管道配置
         app.UseCors(options => options.AllowCredentials().AllowAnyMethod().AllowAnyHeader().WithOrigins("https://app.thedoorofai.com", "https://admin.thedoorofai.com"));
         app.UseStaticFiles();
+        app.Use(async (context, next) =>
+        {
+            var activity = System.Diagnostics.Activity.Current;
+            if (activity != null)
+            {
+                context.Response.Headers.Append("trace-id", activity.TraceId.ToString());
+            }
+            await next();
+        });
         app.UseRouting();
 
         // 安全中间件

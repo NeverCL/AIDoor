@@ -4,7 +4,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // 注册服务
 builder.Services
-    .AddCoreServices()
+    .AddCoreServices(builder.Environment.ApplicationName)
     .AddDataServices(builder.Configuration)
     .AddSecret()
     .AddSecurityServices()
