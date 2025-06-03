@@ -19,11 +19,13 @@ namespace AIDoor.WebAPI.Controllers
     {
         private readonly AppDbContext _context;
         private readonly IConfiguration _configuration;
+        private ILogger<AccountController> _logger;
 
-        public AccountController(AppDbContext context, IConfiguration configuration)
+        public AccountController(AppDbContext context, IConfiguration configuration, ILogger<AccountController> logger)
         {
             _context = context;
             _configuration = configuration;
+            _logger = logger;
         }
 
         [HttpPost("login")]
@@ -36,11 +38,7 @@ namespace AIDoor.WebAPI.Controllers
             }
 
             // Debug: Log the incoming request
-            Console.WriteLine($"Login request: {JsonSerializer.Serialize(loginInput)}");
-            Console.WriteLine($"Username: {loginInput.username}");
-            Console.WriteLine($"Password: {loginInput.password?.Length > 0}");
-            Console.WriteLine($"Type: {loginInput.type}");
-            Console.WriteLine($"AutoLogin: {loginInput.autoLogin}");
+            _logger.LogInformation("后台登录 {username}", loginInput.username);
 
             // Compute hash of the provided password
             string passwordHash = ComputeSha256Hash(loginInput.password);
