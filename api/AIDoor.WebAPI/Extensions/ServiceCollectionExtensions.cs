@@ -24,7 +24,7 @@ public static class ServiceCollectionExtensions
             .ConfigureResource(builder => builder.AddService(serviceName))
             .WithTracing(trace =>
             {
-                trace.AddAspNetCoreInstrumentation();
+                trace.AddAspNetCoreInstrumentation(opt=>opt.Filter = ctx=> !ctx.Request.Path.StartsWithSegments("/healthz"));
                 trace.AddHttpClientInstrumentation();
                 trace.AddEntityFrameworkCoreInstrumentation();
             })
