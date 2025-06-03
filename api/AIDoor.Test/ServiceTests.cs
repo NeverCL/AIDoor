@@ -29,24 +29,15 @@ public class ServiceTests
             BucketName = "bj-app-file"
         };
 
-        var fileOptions = new FileStorageOptions
-        {
-            MaxFileSize = 10 * 1024 * 1024 // 10MB
-        };
-
         // 创建Mock对象
         var mockOssOptions = new Mock<IOptions<AliyunOSSOptions>>();
         mockOssOptions.Setup(o => o.Value).Returns(ossOptions);
-
-        var mockFileOptions = new Mock<IOptions<FileStorageOptions>>();
-        mockFileOptions.Setup(o => o.Value).Returns(fileOptions);
 
         var mockLogger = new Mock<ILogger<AliFileService>>();
 
         // 创建被测试服务
         var fileService = new AliFileService(
             mockOssOptions.Object,
-            mockFileOptions.Object,
             mockLogger.Object
         );
 

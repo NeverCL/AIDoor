@@ -4,6 +4,10 @@ using AIDoor.WebAPI.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
+using OpenTelemetry;
+using OpenTelemetry.Exporter;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Trace;
 
 namespace AIDoor.WebAPI.Extensions;
 
@@ -15,7 +19,25 @@ public static class ServiceCollectionExtensions
         services.AddOpenApi(); // API 文档服务
         services.AddHealthChecks(); // 健康检查
         services.AddHttpContextAccessor();
-
+        services.AddOpenTelemetry()
+            .WithTracing(trace =>
+            {
+                trace.AddAspNetCoreInstrumentation();
+                trace.AddHttpClientInstrumentation();
+            })
+            .WithMetrics(metric =>
+            {
+                metric.AddAspNetCoreInstrumentation();
+                metric.AddHttpClientInstrumentation();
+            })
+            .UseOtlpExporter(OtlpExportProtocol.HttpProtobuf, new Uri("http://otlp.thedoorofai.com/"));
+        services.AddLogging(builder =>
+        {
+            builder.AddOpenTelemetry(logging =>
+            {
+                logging.IncludeScopes = true;
+            });
+        });
         return services;
     }
 
