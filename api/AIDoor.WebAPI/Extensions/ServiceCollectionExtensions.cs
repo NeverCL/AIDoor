@@ -21,7 +21,7 @@ public static class ServiceCollectionExtensions
         services.AddHealthChecks(); // 健康检查
         services.AddHttpContextAccessor();
         services.AddOpenTelemetry()
-            // .ConfigureResource(builder => builder.AddService(serviceName))
+            .ConfigureResource(builder => builder.AddService(serviceName))
             .WithTracing(trace =>
             {
                 trace.AddAspNetCoreInstrumentation(opt=>opt.Filter = ctx=> !ctx.Request.Path.StartsWithSegments("/healthz"));
