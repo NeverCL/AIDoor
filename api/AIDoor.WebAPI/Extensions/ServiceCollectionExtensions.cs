@@ -21,7 +21,7 @@ public static class ServiceCollectionExtensions
         services.AddHealthChecks(); // 健康检查
         services.AddHttpContextAccessor();
         
-        Environment.SetEnvironmentVariable("OTEL_EXPORTER_OTLP_HEADERS", "Authorization=Bearer ge4p0cttir@6581c63854edbf1_ge4p0cttir@53df7ad2afe8301");
+        // Environment.SetEnvironmentVariable("OTEL_EXPORTER_OTLP_HEADERS", "Authorization=Bearer ge4p0cttir@6581c63854edbf1_ge4p0cttir@53df7ad2afe8301");
         
         services.AddOpenTelemetry()
             .ConfigureResource(builder => builder.AddService(serviceName))
@@ -37,8 +37,8 @@ public static class ServiceCollectionExtensions
                 metric.AddHttpClientInstrumentation();
                 metric.AddRuntimeInstrumentation();
             })
-            // .UseOtlpExporter(OtlpExportProtocol.HttpProtobuf, new Uri("http://otlp.thedoorofai.com/"))
-            .UseOtlpExporter(OtlpExportProtocol.Grpc, new Uri("http://tracing-analysis-dc-bj.aliyuncs.com:8090"))
+            .UseOtlpExporter(OtlpExportProtocol.HttpProtobuf, new Uri("http://otlp.thedoorofai.com/"))
+            // .UseOtlpExporter(OtlpExportProtocol.Grpc, new Uri("http://tracing-analysis-dc-bj.aliyuncs.com:8090"))
             ;
         
         services.AddLogging(builder =>
