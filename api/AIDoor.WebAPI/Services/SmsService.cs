@@ -5,11 +5,6 @@ public class SmsService
 {
     public void SendCode(string phone, int code)
     {
-        if (phone.StartsWith("170"))
-        {
-            return;
-        }
-
         AlibabaCloud.SDK.Dysmsapi20170525.Client client = CreateClient();
         AlibabaCloud.SDK.Dysmsapi20170525.Models.SendSmsRequest sendSmsRequest =
             new AlibabaCloud.SDK.Dysmsapi20170525.Models.SendSmsRequest

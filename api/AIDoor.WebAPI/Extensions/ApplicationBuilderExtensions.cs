@@ -7,12 +7,15 @@ public static class ApplicationBuilderExtensions
 {
     public static WebApplication ConfigurePipeline(this WebApplication app)
     {
+        // 全局异常处理中间件（应位于管道最前面）
+        app.UseGlobalExceptionHandler();
+
         // 开发环境配置
         if (app.Environment.IsDevelopment())
         {
             app.MapOpenApi();
         }
-        
+
         // 中间件管道配置
         app.UseCors(options => options.AllowCredentials().AllowAnyMethod().AllowAnyHeader().WithOrigins("https://app.thedoorofai.com", "https://admin.thedoorofai.com"));
         app.UseStaticFiles();
