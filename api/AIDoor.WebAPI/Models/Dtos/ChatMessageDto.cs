@@ -29,17 +29,17 @@ namespace AIDoor.WebAPI.Models.Dtos
         public string UserAvatar { get; set; } = string.Empty;
 
         /// <summary>
-        /// 发布者ID
+        /// 开发者ID
         /// </summary>
         public int PublisherId { get; set; }
 
         /// <summary>
-        /// 发布者名称
+        /// 开发者名称
         /// </summary>
         public string PublisherName { get; set; } = string.Empty;
 
         /// <summary>
-        /// 发布者头像
+        /// 开发者头像
         /// </summary>
         public string PublisherAvatar { get; set; } = string.Empty;
 
@@ -75,9 +75,9 @@ namespace AIDoor.WebAPI.Models.Dtos
     public class CreatePrivateMessageDto
     {
         /// <summary>
-        /// 发布者ID
+        /// 开发者ID
         /// </summary>
-        [Required(ErrorMessage = "发布者ID不能为空")]
+        [Required(ErrorMessage = "开发者ID不能为空")]
         public int PublisherId { get; set; }
 
         /// <summary>
@@ -89,7 +89,7 @@ namespace AIDoor.WebAPI.Models.Dtos
     }
 
     /// <summary>
-    /// 发布者创建私信请求DTO
+    /// 开发者创建私信请求DTO
     /// </summary>
     public class PublisherCreateMessageDto
     {
@@ -123,12 +123,12 @@ namespace AIDoor.WebAPI.Models.Dtos
         public int Limit { get; set; } = 20;
 
         /// <summary>
-        /// 发布者ID - 用户查询时使用
+        /// 开发者ID - 用户查询时使用
         /// </summary>
         public int? PublisherId { get; set; }
 
         /// <summary>
-        /// 用户ID - 发布者查询时使用
+        /// 用户ID - 开发者查询时使用
         /// </summary>
         public int? UserId { get; set; }
 
@@ -144,17 +144,17 @@ namespace AIDoor.WebAPI.Models.Dtos
     public class ConversationPublisherDto
     {
         /// <summary>
-        /// 发布者ID
+        /// 开发者ID
         /// </summary>
         public int PublisherId { get; set; }
 
         /// <summary>
-        /// 发布者名称
+        /// 开发者名称
         /// </summary>
         public string Name { get; set; } = string.Empty;
 
         /// <summary>
-        /// 发布者头像
+        /// 开发者头像
         /// </summary>
         public string AvatarUrl { get; set; } = string.Empty;
 
@@ -175,7 +175,7 @@ namespace AIDoor.WebAPI.Models.Dtos
     }
 
     /// <summary>
-    /// 对话伙伴DTO - 发布者视角
+    /// 对话伙伴DTO - 开发者视角
     /// </summary>
     public class ConversationUserDto
     {

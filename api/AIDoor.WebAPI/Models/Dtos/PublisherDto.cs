@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 namespace AIDoor.WebAPI.Models.Dtos;
 
 /// <summary>
-/// 发布者详情DTO
+/// 开发者详情DTO
 /// </summary>
 public class PublisherDto
 {
@@ -67,7 +67,7 @@ public class PublisherDto
 }
 
 /// <summary>
-/// 发布者统计数据DTO
+/// 开发者统计数据DTO
 /// </summary>
 public class PublisherStatsDto
 {
@@ -97,7 +97,7 @@ public class PublisherStatsDto
 }
 
 /// <summary>
-/// 发布者作品内容简略信息DTO
+/// 开发者作品内容简略信息DTO
 /// </summary>
 public class PublisherContentDto
 {

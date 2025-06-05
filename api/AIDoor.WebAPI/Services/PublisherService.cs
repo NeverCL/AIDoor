@@ -18,13 +18,13 @@ public class PublisherService
     }
 
     /// <summary>
-    /// 获取发布者详情
+    /// 获取开发者详情
     /// </summary>
-    /// <param name="publisherId">发布者ID</param>
-    /// <returns>发布者详情DTO</returns>
+    /// <param name="publisherId">开发者ID</param>
+    /// <returns>开发者详情DTO</returns>
     public async Task<PublisherDto?> GetPublisherDetailsAsync(int publisherId)
     {
-        // 查询发布者信息
+        // 查询开发者信息
         var publisher = await _context.Publishers
             .Include(p => p.User)
             .FirstOrDefaultAsync(p => p.Id == publisherId);
@@ -34,8 +34,8 @@ public class PublisherService
             return null;
         }
 
-        // 对于普通用户，只返回已通过审核的发布者
-        // 如果是当前用户自己的发布者信息则可以看到
+        // 对于普通用户，只返回已通过审核的开发者
+        // 如果是当前用户自己的开发者信息则可以看到
         if (publisher.Status != PublisherStatus.Approved)
         {
             // 这里可以添加权限校验，但在Controller中会根据角色验证
@@ -57,7 +57,7 @@ public class PublisherService
                              r.TargetUserId == publisherId &&
                              r.IsActive);
 
-        // 创建发布者DTO
+        // 创建开发者DTO
         var publisherDto = new PublisherDto
         {
             Id = publisher.Id,
@@ -88,13 +88,13 @@ public class PublisherService
     }
 
     /// <summary>
-    /// 创建或更新发布者信息
+    /// 创建或更新开发者信息
     /// </summary>
     /// <param name="userId">关联的用户ID</param>
-    /// <param name="name">发布者名称</param>
-    /// <param name="avatarUrl">发布者头像</param>
-    /// <param name="description">发布者描述</param>
-    /// <param name="type">发布者类型</param>
+    /// <param name="name">开发者名称</param>
+    /// <param name="avatarUrl">开发者头像</param>
+    /// <param name="description">开发者描述</param>
+    /// <param name="type">开发者类型</param>
     /// <returns>操作结果</returns>
     public async Task<(bool Success, string Message, Publisher Publisher)> CreateOrUpdatePublisherAsync(
         int userId, string name, string avatarUrl, string description, string summary,
@@ -110,13 +110,13 @@ public class PublisherService
                 return (false, "关联用户不存在", null!);
             }
 
-            // 查找是否已存在该用户的发布者信息
+            // 查找是否已存在该用户的开发者信息
             var publisher = await _context.Publishers
                 .FirstOrDefaultAsync(p => p.UserId == userId);
 
             if (publisher == null)
             {
-                // 创建新发布者
+                // 创建新开发者
                 publisher = new Publisher
                 {
                     Name = name,
@@ -127,7 +127,7 @@ public class PublisherService
                     Website = website,
                     AppLink = appLink,
                     UserId = userId,
-                    Status = PublisherStatus.Pending, // 新创建的发布者为待审核状态
+                    Status = PublisherStatus.Pending, // 新创建的开发者为待审核状态
                     CreatedAt = DateTime.Now
                 };
                 _context.Publishers.Add(publisher);
@@ -137,14 +137,14 @@ public class PublisherService
                 user.PublisherId = publisher.Id;
                 await _context.SaveChangesAsync();
 
-                return (true, "发布者信息已提交，等待审核", publisher);
+                return (true, "开发者信息已提交，等待审核", publisher);
             }
             else
             {
-                // 如果发布者已被拒绝，那么更新后状态变回待审核
+                // 如果开发者已被拒绝，那么更新后状态变回待审核
                 var needReview = true; // publisher.Status == PublisherStatus.Rejected;
 
-                // 更新现有发布者信息
+                // 更新现有开发者信息
                 publisher.Name = name;
                 publisher.AvatarUrl = avatarUrl;
                 publisher.Summary = summary;
@@ -172,22 +172,22 @@ public class PublisherService
                 }
 
                 string message = needReview
-                    ? "发布者信息已更新，等待重新审核"
-                    : "发布者信息已更新";
+                    ? "开发者信息已更新，等待重新审核"
+                    : "开发者信息已更新";
 
                 return (true, message, publisher);
             }
         }
         catch (Exception ex)
         {
-            return (false, $"保存发布者信息失败: {ex.Message}", null!);
+            return (false, $"保存开发者信息失败: {ex.Message}", null!);
         }
     }
 
     /// <summary>
-    /// 审核发布者申请
+    /// 审核开发者申请
     /// </summary>
-    /// <param name="publisherId">发布者ID</param>
+    /// <param name="publisherId">开发者ID</param>
     /// <param name="approved">是否通过</param>
     /// <param name="reviewNote">审核备注</param>
     /// <returns>操作结果</returns>
@@ -199,7 +199,7 @@ public class PublisherService
             var publisher = await _context.Publishers.FindAsync(publisherId);
             if (publisher == null)
             {
-                return (false, "发布者不存在");
+                return (false, "开发者不存在");
             }
 
             // 设置审核状态
@@ -243,11 +243,11 @@ public class PublisherService
     }
 
     /// <summary>
-    /// 获取待审核的发布者列表
+    /// 获取待审核的开发者列表
     /// </summary>
     /// <param name="page">页码</param>
     /// <param name="pageSize">每页数量</param>
-    /// <returns>待审核发布者列表</returns>
+    /// <returns>待审核开发者列表</returns>
     public async Task<(List<PublisherDto> Publishers, int Total)> GetPendingPublishersAsync(int page = 1,
         int pageSize = 20)
     {
@@ -286,12 +286,12 @@ public class PublisherService
     }
 
     /// <summary>
-    /// 获取所有发布者列表（可按状态筛选）
+    /// 获取所有开发者列表（可按状态筛选）
     /// </summary>
     /// <param name="page">页码</param>
     /// <param name="pageSize">每页数量</param>
     /// <param name="status">状态筛选</param>
-    /// <returns>发布者列表</returns>
+    /// <returns>开发者列表</returns>
     public async Task<(List<PublisherDto> Publishers, int Total)> GetAllPublishersAsync(
         int page = 1, int pageSize = 20, PublisherStatus? status = null)
     {
@@ -368,9 +368,9 @@ public class PublisherService
     }
 
     /// <summary>
-    /// 更新发布者统计数据
+    /// 更新开发者统计数据
     /// </summary>
-    /// <param name="publisherId">发布者ID</param>
+    /// <param name="publisherId">开发者ID</param>
     /// <returns>操作结果</returns>
     public async Task<bool> UpdatePublisherStatsAsync(int publisherId)
     {
@@ -398,7 +398,7 @@ public class PublisherService
                                  r.TargetUserId == publisherId &&
                                  r.IsActive);
 
-            // 更新发布者统计数据
+            // 更新开发者统计数据
             publisher.LikesCount = likesCount;
             publisher.FollowersCount = followersCount;
             publisher.FavoritesCount = favoritesCount;
@@ -413,10 +413,10 @@ public class PublisherService
     }
 
     /// <summary>
-    /// 获取指定用户ID对应的发布者
+    /// 获取指定用户ID对应的开发者
     /// </summary>
     /// <param name="userId">用户ID</param>
-    /// <returns>发布者信息</returns>
+    /// <returns>开发者信息</returns>
     public async Task<Publisher?> GetPublisherByUserIdAsync(int userId)
     {
         return await _context.Publishers
@@ -424,9 +424,9 @@ public class PublisherService
     }
 
     /// <summary>
-    /// 根据ID删除发布者
+    /// 根据ID删除开发者
     /// </summary>
-    /// <param name="publisherId">发布者ID</param>
+    /// <param name="publisherId">开发者ID</param>
     /// <returns>操作结果</returns>
     public async Task<(bool Success, string Message)> DeletePublisherAsync(int publisherId)
     {
@@ -435,7 +435,7 @@ public class PublisherService
             var publisher = await _context.Publishers.FindAsync(publisherId);
             if (publisher == null)
             {
-                return (false, "发布者不存在");
+                return (false, "开发者不存在");
             }
 
             // 如果存在关联的用户，清除用户的 PublisherId
@@ -452,7 +452,7 @@ public class PublisherService
             _context.Publishers.Remove(publisher);
             await _context.SaveChangesAsync();
 
-            return (true, "发布者已删除");
+            return (true, "开发者已删除");
         }
         catch (Exception ex)
         {

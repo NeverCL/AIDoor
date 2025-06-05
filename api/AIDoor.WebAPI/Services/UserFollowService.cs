@@ -58,7 +58,7 @@ public class UserFollowService
             var followingPublisher = await _context.Publishers.FindAsync(dto.FollowingId);
             if (followingPublisher == null)
             {
-                return (false, "要关注的发布者不存在", null);
+                return (false, "要关注的开发者不存在", null);
             }
 
             // 获取当前用户信息
@@ -77,7 +77,7 @@ public class UserFollowService
 
             if (existingFollow != null)
             {
-                return (false, "已经关注过该发布者", null);
+                return (false, "已经关注过该开发者", null);
             }
 
             // 如果之前关注过但取消了，则重新激活

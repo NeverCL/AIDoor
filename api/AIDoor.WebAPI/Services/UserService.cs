@@ -396,20 +396,20 @@ public class UserService
     }
 
     /// <summary>
-    /// 获取发布者详情
+    /// 获取开发者详情
     /// </summary>
-    /// <param name="publisherId">发布者ID</param>
-    /// <returns>发布者详情DTO</returns>
+    /// <param name="publisherId">开发者ID</param>
+    /// <returns>开发者详情DTO</returns>
     public async Task<PublisherDto?> GetPublisherDetailsAsync(int publisherId)
     {
-        // 1. 获取发布者基本信息
+        // 1. 获取开发者基本信息
         var publisher = await _context.Publishers.FindAsync(publisherId);
         if (publisher == null)
         {
             return null;
         }
 
-        // 2. 创建发布者DTO
+        // 2. 创建开发者DTO
         var publisherDto = new PublisherDto
         {
             Id = publisher.Id,
@@ -421,17 +421,17 @@ public class UserService
         };
 
         // 3. 获取统计数据
-        // 使用TargetUserId获取发布者的点赞数
+        // 使用TargetUserId获取开发者的点赞数
         var likesCount = await _context.UserRecords
             .CountAsync(r => r.RecordType == RecordType.Like &&
                         r.TargetUserId == publisherId &&
                         r.IsActive);
 
-        // 获取发布者的粉丝数（被关注数）
+        // 获取开发者的粉丝数（被关注数）
         var followersCount = await _context.UserFollows
             .CountAsync(f => f.FollowingId == publisherId && f.IsActive);
 
-        // 使用TargetUserId获取发布者的收藏数
+        // 使用TargetUserId获取开发者的收藏数
         var favoritesCount = await _context.UserRecords
             .CountAsync(r => r.RecordType == RecordType.Favorite &&
                         r.TargetUserId == publisherId &&
@@ -446,7 +446,7 @@ public class UserService
             Rating = 4.9 // 可以添加评分系统或使用默认值
         };
 
-        // 4. 获取发布者的内容列表
+        // 4. 获取开发者的内容列表
         var contents = await _context.UserContents
             .Where(c => c.PublisherId == publisherId)
             .OrderByDescending(c => c.CreatedAt)

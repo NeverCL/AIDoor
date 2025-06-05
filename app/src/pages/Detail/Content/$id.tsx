@@ -426,7 +426,7 @@ export default () => {
     // 返回上一页
     const onBack = () => window.history.back();
 
-    // 跳转到发布者详情页
+    // 跳转到开发者详情页
     const goToPublisher = (userId: number) => {
         if (userId) {
             history.push(`/detail/publisher/${userId}`);

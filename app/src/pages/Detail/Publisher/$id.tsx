@@ -50,19 +50,19 @@ export default () => {
     const { id } = useParams();
     const [rating, setRating] = useState(5.0);
 
-    // 获取用户发布者资料
+    // 获取用户开发者资料
     const { data: publisherData, loading: publisherLoading, error: publisherError, run: getPublisherData } = useRequest<PublisherData>(
         () => api.publisher.getPublisherId({ id: id }),
         {
             onError: (error) => {
-                // 如果没有发布者资料，可以提示用户创建
+                // 如果没有开发者资料，可以提示用户创建
                 if (error.response?.status === 404) {
                     Toast.show({
-                        content: '您尚未创建发布者资料，请先创建',
+                        content: '您尚未创建开发者资料，请先创建',
                     });
                 } else {
                     Toast.show({
-                        content: '获取发布者资料失败',
+                        content: '获取开发者资料失败',
                     });
                 }
             },
@@ -166,7 +166,7 @@ export default () => {
 
     return (
         publisherLoading ? <Loading /> :
-            <BackNavBar title="发布者资料" >
+            <BackNavBar title="开发者资料" >
                 <div className="h-full flex flex-col *:mt-8 overflow-y-auto">
                     {/* 头像 昵称 简介 消息|设置图标*/}
                     <div className="flex items-center ">

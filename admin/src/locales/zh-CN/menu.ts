@@ -7,7 +7,7 @@ export default {
   'menu.admin.account': '账户管理',
   'menu.admin.categories': '分类与应用管理',
   'menu.admin.users': '用户管理',
-  'menu.admin.publishers': '发布者管理',
+  'menu.admin.publishers': '开发者管理',
   'menu.admin.banners': 'Banner管理',
   'menu.admin.system-messages': '系统消息管理',
   'menu.login': '登录',
@@ -57,7 +57,7 @@ export default {
   'menu.editor.koni': '拓扑编辑器',
   'menu.categories': '分类与应用管理',
   'menu.users': '用户管理',
-  'menu.publishers': '发布者管理',
+  'menu.publishers': '开发者管理',
   'menu.banners': 'Banner管理',
   'menu.system-messages': '系统消息管理',
 };

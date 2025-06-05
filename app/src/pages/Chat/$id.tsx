@@ -44,7 +44,7 @@ export default () => {
         }
     );
 
-    // 获取对话发布者列表
+    // 获取对话开发者列表
     const {
         data: publishersData,
         loading: publishersLoading
@@ -53,7 +53,7 @@ export default () => {
         {
             onError: (error) => {
                 Toast.show({
-                    content: '获取发布者信息失败',
+                    content: '获取开发者信息失败',
                 });
             }
         }
@@ -95,7 +95,7 @@ export default () => {
         }
     );
 
-    // 获取当前对话发布者的信息
+    // 获取当前对话开发者的信息
     const currentPublisher = publishersData?.find((p: API.ConversationPublisherDto) => p.publisherId === publisherId);
 
     // 初始化加载消息及标记已读
@@ -138,7 +138,7 @@ export default () => {
                         const dateB = new Date(b.createdAt || 0);
                         return dateA.getTime() - dateB.getTime();
                     }).map((message) => {
-                        const isMe = message.senderType === 0; // 0 = 用户发送，1 = 发布者发送
+                        const isMe = message.senderType === 0; // 0 = 用户发送，1 = 开发者发送
                         return (
                             <div key={message.id}>
                                 <div className={`flex items-center ${isMe ? 'flex-row-reverse' : 'flex-row'}`}>

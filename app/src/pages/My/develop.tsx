@@ -45,19 +45,19 @@ export default () => {
     const [page, setPage] = useState(1);
     const pageSize = 10;
 
-    // 获取用户发布者资料
+    // 获取用户开发者资料
     const { data: publisherData, loading: publisherLoading, error: publisherError } = useRequest<PublisherData>(
         () => api.publisher.getPublisherMy(),
         {
             onError: (error: any) => {
-                // 如果没有发布者资料，可以提示用户创建
+                // 如果没有开发者资料，可以提示用户创建
                 if (error.response && error.response.status === 404) {
                     Toast.show({
-                        content: '您尚未创建发布者资料，请先创建',
+                        content: '您尚未创建开发者资料，请先创建',
                     });
                 } else {
                     Toast.show({
-                        content: '获取发布者资料失败',
+                        content: '获取开发者资料失败',
                     });
                 }
             }

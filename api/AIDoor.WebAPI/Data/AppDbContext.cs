@@ -30,10 +30,10 @@ public class AppDbContext : DbContext
     // 用户关注关系表
     public DbSet<UserFollow> UserFollows { get; set; }
 
-    // 发布者表
+    // 开发者表
     public DbSet<Publisher> Publishers { get; set; }
 
-    // 发布者评分表
+    // 开发者评分表
     public DbSet<PublisherRating> PublisherRatings { get; set; }
 
     // 私信消息表
@@ -67,7 +67,7 @@ public class AppDbContext : DbContext
             .HasForeignKey(ur => ur.UserId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        // 用户记录和发布者之间的关系配置
+        // 用户记录和开发者之间的关系配置
         modelBuilder.Entity<UserRecord>()
             .HasOne(ur => ur.Publisher)
             .WithMany()
@@ -162,7 +162,7 @@ public class AppDbContext : DbContext
         // PublisherRating 配置
         modelBuilder.Entity<PublisherRating>()
             .HasIndex(r => new { r.UserId, r.PublisherId })
-            .IsUnique(); // 确保每个用户只能对每个发布者评分一次
+            .IsUnique(); // 确保每个用户只能对每个开发者评分一次
 
         modelBuilder.Entity<PublisherRating>()
             .HasOne(r => r.User)
@@ -174,10 +174,10 @@ public class AppDbContext : DbContext
             .HasOne(r => r.Publisher)
             .WithMany(p => p.Ratings)
             .HasForeignKey(r => r.PublisherId)
-            .OnDelete(DeleteBehavior.Cascade); // 删除发布者时级联删除所有评分
+            .OnDelete(DeleteBehavior.Cascade); // 删除开发者时级联删除所有评分
 
         modelBuilder.Entity<PublisherRating>()
-            .HasIndex(r => r.PublisherId); // 便于按发布者查询评分
+            .HasIndex(r => r.PublisherId); // 便于按开发者查询评分
 
         modelBuilder.Entity<ChatMessage>()
             .HasIndex(pm => pm.IsRead);

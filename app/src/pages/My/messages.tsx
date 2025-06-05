@@ -17,7 +17,7 @@ export default () => {
     };
 
     const { user } = useModel('global');
-    const isPublisher = user?.isDevMode; // 判断是否为发布者模式
+    const isPublisher = user?.isDevMode; // 判断是否为开发者模式
 
     const [messageLoading, setMessageLoading] = useState(false);
     const [publishers, setPublishers] = useState<API.ConversationPublisherDto[]>([]);
@@ -28,7 +28,7 @@ export default () => {
         setMessageLoading(true);
         try {
             if (isPublisher) {
-                // 发布者获取用户列表
+                // 开发者获取用户列表
                 const data = await getMessagesPublisherUsers();
                 // 按最后消息时间倒序排序，最新的在最上面
                 const sortedData = data.sort((a, b) => {
@@ -38,7 +38,7 @@ export default () => {
                 });
                 setUsers(sortedData);
             } else {
-                // 用户获取发布者列表
+                // 用户获取开发者列表
                 const data = await getMessagesUserPublishers();
                 // 按最后消息时间倒序排序，最新的在最上面
                 const sortedData = data.sort((a, b) => {
@@ -111,7 +111,7 @@ export default () => {
                                     <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
                                 </div>
                             ) : isPublisher ? (
-                                // 发布者模式显示用户列表
+                                // 开发者模式显示用户列表
                                 users.length > 0 ? (
                                     users.map((user) => (
                                         <div key={user.userId} className="flex items-center gap-2 p-2 hover:bg-gray-50 rounded-lg cursor-pointer" onClick={() => navigate(`/chat/${user.userId}?type=pub`)}>
@@ -140,20 +140,20 @@ export default () => {
                                     <div className="text-center py-8 text-gray-500">暂无私信</div>
                                 )
                             ) : (
-                                // 用户模式显示发布者列表
+                                // 用户模式显示开发者列表
                                 publishers.length > 0 ? (
                                     publishers.map((publisher) => (
                                         <div key={publisher.publisherId} className="flex items-center gap-2 p-2 hover:bg-gray-50 rounded-lg cursor-pointer" onClick={() => navigate(`/chat/${publisher.publisherId}`)}>
                                             <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center overflow-hidden">
                                                 {publisher.avatarUrl ? (
-                                                    <img src={publisher.avatarUrl} alt={publisher.name || '未知发布者'} className="w-full h-full object-cover" />
+                                                    <img src={publisher.avatarUrl} alt={publisher.name || '未知开发者'} className="w-full h-full object-cover" />
                                                 ) : (
                                                     <span className="text-xl text-primary">{publisher.name ? publisher.name.charAt(0) : '?'}</span>
                                                 )}
                                             </div>
                                             <div className="flex-1">
                                                 <div className="text-base font-bold flex items-center gap-1">
-                                                    {publisher.name || '未知发布者'}
+                                                    {publisher.name || '未知开发者'}
                                                     {publisher.unreadCount && publisher.unreadCount > 0 && (
                                                         <span className="bg-red-500 text-white text-xs rounded-full px-1.5 py-0.5 ml-1">
                                                             {publisher.unreadCount}

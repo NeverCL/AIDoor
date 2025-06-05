@@ -6,7 +6,7 @@ import { Avatar, Empty, Loading, List } from "antd-mobile";
 import dayjs from "dayjs";
 
 export default () => {
-    // 使用新的API获取用户与发布者的聊天列表
+    // 使用新的API获取用户与开发者的聊天列表
     const { data: publishers, loading } = useRequest(api.chatMessage.getMessagesUserPublishers);
 
     const navigateToChat = (publisherId: number) => {
@@ -50,7 +50,7 @@ export default () => {
                             }
                             onClick={() => navigateToChat(publisher.publisherId || 0)}
                         >
-                            <div className="font-medium">{publisher.name || '未知发布者'}</div>
+                            <div className="font-medium">{publisher.name || '未知开发者'}</div>
                         </List.Item>
                     ))}
                 </List>

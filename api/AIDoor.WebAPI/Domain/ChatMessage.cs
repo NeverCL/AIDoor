@@ -5,7 +5,7 @@ using AIDoor.WebAPI.Models;
 namespace AIDoor.WebAPI.Domain
 {
     /// <summary>
-    /// 私信消息实体 - 仅支持用户与发布者之间的消息
+    /// 私信消息实体 - 仅支持用户与开发者之间的消息
     /// </summary>
     public class ChatMessage : BaseEntity
     {
@@ -21,12 +21,12 @@ namespace AIDoor.WebAPI.Domain
         public User User { get; set; } = null!;
 
         /// <summary>
-        /// 发布者ID
+        /// 开发者ID
         /// </summary>
         public int PublisherId { get; set; }
 
         /// <summary>
-        /// 发布者外键关系
+        /// 开发者外键关系
         /// </summary>
         [ForeignKey("PublisherId")]
         public Publisher Publisher { get; set; } = null!;
@@ -49,7 +49,7 @@ namespace AIDoor.WebAPI.Domain
         public DateTime? ReadAt { get; set; }
 
         /// <summary>
-        /// 发送者类型 - 用户发送 or 发布者发送
+        /// 发送者类型 - 用户发送 or 开发者发送
         /// </summary>
         public MessageSenderType SenderType { get; set; }
     }
@@ -65,7 +65,7 @@ namespace AIDoor.WebAPI.Domain
         User = 0,
 
         /// <summary>
-        /// 发布者发送
+        /// 开发者发送
         /// </summary>
         Publisher = 1
     }

@@ -7,7 +7,7 @@ using System.Security.Claims;
 namespace AIDoor.WebAPI.Services;
 
 /// <summary>
-/// 发布者评分服务
+/// 开发者评分服务
 /// </summary>
 public class PublisherRatingService
 {
@@ -39,7 +39,7 @@ public class PublisherRatingService
     }
 
     /// <summary>
-    /// 用户为发布者评分
+    /// 用户为开发者评分
     /// </summary>
     public async Task<(bool Success, string Message, double RatingValue)> RatePublisherAsync(int publisherId, double rating, string? comment = null)
     {
@@ -53,13 +53,13 @@ public class PublisherRatingService
                 return (false, "评分必须在1-5之间", 0);
             }
 
-            // 检查发布者是否存在且已审核通过
+            // 检查开发者是否存在且已审核通过
             var publisher = await _context.Publishers
                 .FirstOrDefaultAsync(p => p.Id == publisherId && p.Status == PublisherStatus.Approved);
 
             if (publisher == null)
             {
-                return (false, "发布者不存在或未通过审核", 0);
+                return (false, "开发者不存在或未通过审核", 0);
             }
 
             // 查找是否已有评分
@@ -90,20 +90,20 @@ public class PublisherRatingService
 
             await _context.SaveChangesAsync();
 
-            // 更新发布者的平均评分
+            // 更新开发者的平均评分
             await UpdatePublisherAverageRatingAsync(publisherId);
 
             return (true, "评分成功", rating);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "为发布者评分时发生错误");
+            _logger.LogError(ex, "为开发者评分时发生错误");
             return (false, $"评分失败: {ex.Message}", 0);
         }
     }
 
     /// <summary>
-    /// 获取用户对发布者的评分
+    /// 获取用户对开发者的评分
     /// </summary>
     public async Task<PublisherRatingDto?> GetUserRatingAsync(int publisherId)
     {
@@ -132,7 +132,7 @@ public class PublisherRatingService
     }
 
     /// <summary>
-    /// 获取发布者的所有评分
+    /// 获取开发者的所有评分
     /// </summary>
     public async Task<(List<PublisherRatingWithUserDto> Ratings, int Total)> GetPublisherRatingsAsync(
         int publisherId, int page = 1, int pageSize = 20)
@@ -167,13 +167,13 @@ public class PublisherRatingService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "获取发布者评分列表时发生错误");
+            _logger.LogError(ex, "获取开发者评分列表时发生错误");
             return (new List<PublisherRatingWithUserDto>(), 0);
         }
     }
 
     /// <summary>
-    /// 更新发布者的平均评分
+    /// 更新开发者的平均评分
     /// </summary>
     public async Task<bool> UpdatePublisherAverageRatingAsync(int publisherId)
     {
@@ -202,7 +202,7 @@ public class PublisherRatingService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "更新发布者平均评分时发生错误");
+            _logger.LogError(ex, "更新开发者平均评分时发生错误");
             return false;
         }
     }

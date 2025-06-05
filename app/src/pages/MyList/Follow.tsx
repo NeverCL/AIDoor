@@ -32,7 +32,7 @@ export default () => {
                 content: '取消关注成功',
             });
 
-            // 更新列表，移除已取消关注的发布者
+            // 更新列表，移除已取消关注的开发者
             const newData = {
                 ...followData,
                 follows: followData?.follows?.filter((item: any) => item.id !== id) || []
@@ -47,7 +47,7 @@ export default () => {
         }
     };
 
-    // 跳转到发布者详情页
+    // 跳转到开发者详情页
     const navigateToPublisher = (id: number) => {
         history.push(`/detail/publisher/${id}`);
     };
@@ -73,7 +73,7 @@ export default () => {
                                     className="w-12 h-12"
                                 />
                                 <div className="flex flex-col">
-                                    <span className="font-medium">{item.followingUsername || '未知发布者'}</span>
+                                    <span className="font-medium">{item.followingUsername || '未知开发者'}</span>
                                     <span className="text-xs text-gray-500 line-clamp-1">
                                         关注时间: {new Date(item.createdAt).toLocaleDateString()}
                                     </span>
@@ -94,7 +94,7 @@ export default () => {
             ) : (
                 <Empty
                     className="h-64 flex flex-col justify-center"
-                    description="暂无关注的发布者"
+                    description="暂无关注的开发者"
                 />
             )}
         </BackNavBar>

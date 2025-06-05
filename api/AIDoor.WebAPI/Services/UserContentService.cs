@@ -39,7 +39,7 @@ public class UserContentService : BaseService
 
             if (publisher == null)
             {
-                return (false, "发布者不存在", 0);
+                return (false, "开发者不存在", 0);
             }
 
             var userContent = new UserContent
@@ -74,7 +74,7 @@ public class UserContentService : BaseService
         int totalCount = await query.CountAsync();
 
         int? publisherId = null;
-        
+
         if (queryParams.IsOwner)
         {
             publisherId = GetCurrentPublisherId();

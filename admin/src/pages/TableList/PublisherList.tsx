@@ -12,7 +12,7 @@ import React, { useRef, useState } from 'react';
 import { request } from '@umijs/max';
 import { getImageUrl } from '@/utils/imageUtils';
 
-// 发布者状态枚举
+// 开发者状态枚举
 enum PublisherStatus {
     Pending = 0,
     Approved = 1,
@@ -35,8 +35,8 @@ export interface PublisherItem {
 }
 
 /**
- * 审核发布者
- * @param id 发布者ID
+ * 审核开发者
+ * @param id 开发者ID
  * @param approved 是否批准
  * @param reviewNote 审核备注
  */
@@ -48,7 +48,7 @@ const reviewPublisher = async (id: number, approved: boolean, reviewNote?: strin
             data: { approved, reviewNote },
         });
         hide();
-        message.success(approved ? '已批准发布者申请' : '已拒绝发布者申请');
+        message.success(approved ? '已批准开发者申请' : '已拒绝开发者申请');
         return true;
     } catch (error) {
         hide();
@@ -209,7 +209,7 @@ const PublisherList: React.FC = () => {
                             onClick={() => {
                                 // 查看详情逻辑
                                 Modal.info({
-                                    title: '发布者详情',
+                                    title: '开发者详情',
                                     width: 600,
                                     content: (
                                         <div>
@@ -253,7 +253,7 @@ const PublisherList: React.FC = () => {
     return (
         <PageContainer>
             <ProTable<PublisherItem>
-                headerTitle="发布者管理"
+                headerTitle="开发者管理"
                 actionRef={actionRef}
                 rowKey="id"
                 search={{
@@ -281,7 +281,7 @@ const PublisherList: React.FC = () => {
                             success: true,
                         };
                     } catch (error) {
-                        message.error('获取发布者列表失败');
+                        message.error('获取开发者列表失败');
                         return {
                             data: [],
                             total: 0,
@@ -317,7 +317,7 @@ const PublisherList: React.FC = () => {
 
             {/* 审核表单 */}
             <ModalForm
-                title={reviewType === 'approve' ? '批准发布者申请' : '拒绝发布者申请'}
+                title={reviewType === 'approve' ? '批准开发者申请' : '拒绝开发者申请'}
                 form={form}
                 open={reviewModalVisible}
                 onOpenChange={setReviewModalVisible}

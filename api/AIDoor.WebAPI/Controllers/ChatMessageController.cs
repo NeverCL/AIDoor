@@ -27,7 +27,7 @@ namespace AIDoor.WebAPI.Controllers
         }
 
         /// <summary>
-        /// 用户发送私信给发布者
+        /// 用户发送私信给开发者
         /// </summary>
         /// <param name="createDto">创建私信DTO</param>
         /// <returns>返回创建的私信</returns>
@@ -45,7 +45,7 @@ namespace AIDoor.WebAPI.Controllers
         }
 
         /// <summary>
-        /// 发布者发送私信给用户
+        /// 开发者发送私信给用户
         /// </summary>
         /// <param name="createDto">创建私信DTO</param>
         /// <returns>返回创建的私信</returns>
@@ -58,7 +58,7 @@ namespace AIDoor.WebAPI.Controllers
         }
 
         /// <summary>
-        /// 用户获取与发布者的私信列表
+        /// 用户获取与开发者的私信列表
         /// </summary>
         /// <param name="queryParams">查询参数</param>
         /// <returns>返回私信分页列表</returns>
@@ -83,7 +83,7 @@ namespace AIDoor.WebAPI.Controllers
         }
 
         /// <summary>
-        /// 发布者获取与用户的私信列表
+        /// 开发者获取与用户的私信列表
         /// </summary>
         /// <param name="queryParams">查询参数</param>
         /// <returns>返回私信分页列表</returns>
@@ -93,7 +93,7 @@ namespace AIDoor.WebAPI.Controllers
             var publisherId = int.Parse(User.FindFirstValue("PublisherId")!);
             if (publisherId <= 0)
             {
-                return BadRequest("当前用户不是发布者");
+                return BadRequest("当前用户不是开发者");
             }
 
             var (messages, total) = await _chatMessageService.GetPublisherChatMessagesAsync(publisherId, queryParams);
@@ -108,9 +108,9 @@ namespace AIDoor.WebAPI.Controllers
         }
 
         /// <summary>
-        /// 用户获取对话发布者列表
+        /// 用户获取对话开发者列表
         /// </summary>
-        /// <returns>返回对话发布者列表</returns>
+        /// <returns>返回对话开发者列表</returns>
         [HttpGet("user-publishers")]
         public async Task<ActionResult<IEnumerable<ConversationPublisherDto>>> GetUserPublishers()
         {
@@ -125,7 +125,7 @@ namespace AIDoor.WebAPI.Controllers
         }
 
         /// <summary>
-        /// 发布者获取对话用户列表
+        /// 开发者获取对话用户列表
         /// </summary>
         /// <returns>返回对话用户列表</returns>
         [HttpGet("publisher-users")]
@@ -154,7 +154,7 @@ namespace AIDoor.WebAPI.Controllers
         }
 
         /// <summary>
-        /// 发布者获取未读消息数量
+        /// 开发者获取未读消息数量
         /// </summary>
         /// <returns>返回未读消息数量</returns>
         [HttpGet("publisher-unread-count")]
@@ -164,7 +164,7 @@ namespace AIDoor.WebAPI.Controllers
             var publisherId = int.Parse(User.FindFirstValue("PublisherId")!);
             if (publisherId <= 0)
             {
-                return BadRequest("当前用户不是发布者");
+                return BadRequest("当前用户不是开发者");
             }
 
             var count = await _chatMessageService.GetPublisherUnreadCountAsync(publisherId);
@@ -195,7 +195,7 @@ namespace AIDoor.WebAPI.Controllers
         }
 
         /// <summary>
-        /// 发布者标记消息为已读
+        /// 开发者标记消息为已读
         /// </summary>
         /// <param name="messageId">消息ID</param>
         /// <returns>成功或失败</returns>
@@ -206,22 +206,22 @@ namespace AIDoor.WebAPI.Controllers
             var publisherId = int.Parse(User.FindFirstValue("PublisherId")!);
             if (publisherId <= 0)
             {
-                return BadRequest("当前用户不是发布者");
+                return BadRequest("当前用户不是开发者");
             }
 
             var success = await _chatMessageService.MarkPublisherMessageAsReadAsync(publisherId, messageId);
             if (!success)
             {
-                return NotFound("消息不存在或不属于当前发布者");
+                return NotFound("消息不存在或不属于当前开发者");
             }
 
             return Ok();
         }
 
         /// <summary>
-        /// 用户标记与发布者的所有消息为已读
+        /// 用户标记与开发者的所有消息为已读
         /// </summary>
-        /// <param name="publisherId">发布者ID</param>
+        /// <param name="publisherId">开发者ID</param>
         /// <returns>已读消息数量</returns>
         [HttpPut("user-mark-all-read/{publisherId}")]
         public async Task<ActionResult<int>> UserMarkAllAsRead(int publisherId)
@@ -237,7 +237,7 @@ namespace AIDoor.WebAPI.Controllers
         }
 
         /// <summary>
-        /// 发布者标记与用户的所有消息为已读
+        /// 开发者标记与用户的所有消息为已读
         /// </summary>
         /// <param name="userId">用户ID</param>
         /// <returns>已读消息数量</returns>
@@ -273,7 +273,7 @@ namespace AIDoor.WebAPI.Controllers
         }
 
         /// <summary>
-        /// 发布者删除消息
+        /// 开发者删除消息
         /// </summary>
         /// <param name="messageId">消息ID</param>
         /// <returns>成功或失败</returns>
@@ -284,13 +284,13 @@ namespace AIDoor.WebAPI.Controllers
             var publisherId = int.Parse(User.FindFirstValue("PublisherId")!);
             if (publisherId <= 0)
             {
-                return BadRequest("当前用户不是发布者");
+                return BadRequest("当前用户不是开发者");
             }
 
             var success = await _chatMessageService.DeleteMessageAsync(messageId, false, publisherId);
             if (!success)
             {
-                return NotFound("消息不存在或不属于当前发布者");
+                return NotFound("消息不存在或不属于当前开发者");
             }
 
             return Ok();

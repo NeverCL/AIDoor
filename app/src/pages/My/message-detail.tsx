@@ -76,7 +76,7 @@ export default () => {
                         pageSize: params.Limit
                     });
                 }
-                return Promise.reject(new Error('没有找到您的发布者信息'));
+                return Promise.reject(new Error('没有找到您的开发者信息'));
             });
         },
         {

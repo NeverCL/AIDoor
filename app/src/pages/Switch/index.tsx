@@ -7,12 +7,12 @@ import api from '@/services/api';
 export default () => {
     const { user, switchUserMode } = useModel('global');
 
-    // 使用useRequest钩子获取当前用户的发布者信息
+    // 使用useRequest钩子获取当前用户的开发者信息
     const { data: publisherData, loading, run: getMyPublisher } = useRequest(api.publisher.getPublisherMy, {
         manual: true, // 手动触发
         onError: () => {
-            // 请求错误，说明用户没有发布者信息
-            console.log('用户没有发布者信息');
+            // 请求错误，说明用户没有开发者信息
+            console.log('用户没有开发者信息');
         }
     });
 
@@ -24,13 +24,13 @@ export default () => {
                 duration: 0,
             });
 
-            // 如果要从用户模式切换到开发者模式，需要检查发布者信息
+            // 如果要从用户模式切换到开发者模式，需要检查开发者信息
             if (!user?.isDevMode) {
                 try {
-                    // 获取当前用户的发布者信息
+                    // 获取当前用户的开发者信息
                     const publisherInfo = await getMyPublisher();
 
-                    // 如果获取成功，检查发布者状态
+                    // 如果获取成功，检查开发者状态
                     if (publisherInfo) {
 
                         // 已审核通过，可以切换到开发者模式
@@ -45,19 +45,19 @@ export default () => {
 
                         const publisher = publisherInfo;
 
-                        // 根据发布者状态处理
+                        // 根据开发者状态处理
                         if (publisher.status === 0) { // Pending
                             Toast.clear();
                             Toast.show({
                                 icon: 'fail',
-                                content: '您的发布者信息正在审核中，请耐心等待',
+                                content: '您的开发者信息正在审核中，请耐心等待',
                             });
                             return;
                         } else if (publisher.status === 2) { // Rejected
                             Toast.clear();
                             Toast.show({
                                 icon: 'fail',
-                                content: '您的发布者申请被拒绝，点击确定修改信息重新提交',
+                                content: '您的开发者申请被拒绝，点击确定修改信息重新提交',
                                 afterClose: () => {
                                     history.replace('/Account/Develop');
                                 }
@@ -75,11 +75,11 @@ export default () => {
                         }
                     }
                 } catch (error) {
-                    // 没有找到发布者信息，需要注册
+                    // 没有找到开发者信息，需要注册
                     Toast.clear();
                     Toast.show({
                         icon: 'fail',
-                        content: '您需要先注册为发布者',
+                        content: '您需要先注册为开发者',
                         afterClose: () => {
                             history.replace('/Account/Develop');
                         }

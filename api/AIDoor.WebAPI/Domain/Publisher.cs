@@ -4,32 +4,32 @@ using System.ComponentModel.DataAnnotations;
 namespace AIDoor.WebAPI.Domain;
 
 /// <summary>
-/// 发布者实体
+/// 开发者实体
 /// </summary>
 public class Publisher : BaseEntity
 {
     /// <summary>
-    /// 发布者名称
+    /// 开发者名称
     /// </summary>
     public string Name { get; set; } = string.Empty;
 
     /// <summary>
-    /// 发布者头像
+    /// 开发者头像
     /// </summary>
     public string AvatarUrl { get; set; } = string.Empty;
 
     /// <summary>
-    /// 发布者描述
+    /// 开发者描述
     /// </summary>
     public string Description { get; set; } = string.Empty;
 
     /// <summary>
-    /// 发布者简介
+    /// 开发者简介
     /// </summary>
     public string Summary { get; set; } = string.Empty;
 
     /// <summary>
-    /// 发布者官网
+    /// 开发者官网
     /// </summary>
     public string? Website { get; set; }
 
@@ -39,12 +39,12 @@ public class Publisher : BaseEntity
     public string? AppLink { get; set; }
 
     /// <summary>
-    /// 发布者类型（个人/企业）
+    /// 开发者类型（个人/企业）
     /// </summary>
     public PublisherType Type { get; set; } = PublisherType.Personal;
 
     /// <summary>
-    /// 发布者状态
+    /// 开发者状态
     /// </summary>
     public PublisherStatus Status { get; set; } = PublisherStatus.Pending;
 
@@ -59,7 +59,7 @@ public class Publisher : BaseEntity
     public DateTime? ReviewedAt { get; set; }
 
     /// <summary>
-    /// 发布者评分
+    /// 开发者评分
     /// </summary>
     public double Rating { get; set; } = 5.0;
 
@@ -90,13 +90,13 @@ public class Publisher : BaseEntity
     public User? User { get; set; }
 
     /// <summary>
-    /// 导航属性：发布者的所有评分
+    /// 导航属性：开发者的所有评分
     /// </summary>
     public virtual ICollection<PublisherRating> Ratings { get; set; } = new List<PublisherRating>();
 }
 
 /// <summary>
-/// 发布者类型
+/// 开发者类型
 /// </summary>
 public enum PublisherType
 {
@@ -112,7 +112,7 @@ public enum PublisherType
 }
 
 /// <summary>
-/// 发布者审核状态
+/// 开发者审核状态
 /// </summary>
 public enum PublisherStatus
 {
@@ -133,7 +133,7 @@ public enum PublisherStatus
 }
 
 /// <summary>
-/// 发布者评分实体
+/// 开发者评分实体
 /// </summary>
 public class PublisherRating : BaseEntity
 {
@@ -149,12 +149,12 @@ public class PublisherRating : BaseEntity
     public User User { get; set; } = null!;
 
     /// <summary>
-    /// 发布者ID（被评分者）
+    /// 开发者ID（被评分者）
     /// </summary>
     public int PublisherId { get; set; }
 
     /// <summary>
-    /// 发布者外键关系
+    /// 开发者外键关系
     /// </summary>
     [ForeignKey("PublisherId")]
     public Publisher Publisher { get; set; } = null!;

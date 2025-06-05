@@ -25,7 +25,7 @@ export default () => {
         // 将图片数组转换为单个URL（只取第一张图片作为头像）
         const avatarUrl = values.avatarUrl?.[0] || '';
 
-        // 创建发布者请求
+        // 创建开发者请求
         const createPublisherRequest = {
             name: values.username,
             avatarUrl: avatarUrl,
@@ -36,7 +36,7 @@ export default () => {
             appLink: values.appLink
         };
 
-        // 提交发布者信息
+        // 提交开发者信息
         await postPublisher(createPublisherRequest);
 
         const result = await switchUserMode();
@@ -50,7 +50,7 @@ export default () => {
     };
 
     return (
-        <BackNavBar title="注册发布者">
+        <BackNavBar title="注册开发者">
             <div className="pb-16 overflow-y-auto">
                 <Form
                     layout="vertical"
@@ -73,15 +73,15 @@ export default () => {
                 >
                     <Form.Item
                         name="username"
-                        label="发布者名称"
-                        rules={[{ required: true, message: '请输入发布者名称' }]}
+                        label="开发者名称"
+                        rules={[{ required: true, message: '请输入开发者名称' }]}
                     >
-                        <Input placeholder="请输入发布者名称" />
+                        <Input placeholder="请输入开发者名称" />
                     </Form.Item>
 
                     <Form.Item
                         name="avatarUrl"
-                        label="发布者头像"
+                        label="开发者头像"
                         rules={[{ required: true, message: '请上传头像' }]}
                     >
                         <ImgUploader accept="image/*" maxCount={1} />
@@ -89,18 +89,18 @@ export default () => {
 
                     <Form.Item
                         name="summary"
-                        label="发布者简介"
-                        rules={[{ required: true, message: '请输入发布者简介' }]}
+                        label="开发者简介"
+                        rules={[{ required: true, message: '请输入开发者简介' }]}
                     >
-                        <TextArea placeholder="请输入发布者简介" rows={3} />
+                        <TextArea placeholder="请输入开发者简介" rows={3} />
                     </Form.Item>
 
                     <Form.Item
                         name="description"
-                        label="发布者描述"
-                        rules={[{ required: true, message: '请输入发布者描述' }]}
+                        label="开发者描述"
+                        rules={[{ required: true, message: '请输入开发者描述' }]}
                     >
-                        <TextArea placeholder="请输入发布者描述" rows={3} />
+                        <TextArea placeholder="请输入开发者描述" rows={3} />
                     </Form.Item>
 
                     <Form.Item
@@ -119,8 +119,8 @@ export default () => {
 
                     <Form.Item
                         name="type"
-                        label="发布者类型"
-                        rules={[{ required: true, message: '请选择发布者类型' }]}
+                        label="开发者类型"
+                        rules={[{ required: true, message: '请选择开发者类型' }]}
                         initialValue={0} // 默认选择个人
                     >
                         <Radio.Group>
