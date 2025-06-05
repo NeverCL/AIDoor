@@ -73,34 +73,26 @@ export default () => {
                 >
                     <Form.Item
                         name="username"
-                        label="开发者名称"
-                        rules={[{ required: true, message: '请输入开发者名称' }]}
+                        label="项目名称"
+                        rules={[{ required: true, message: '请输入项目名称' }]}
                     >
-                        <Input placeholder="请输入开发者名称" />
+                        <Input placeholder="请输入项目名称" />
                     </Form.Item>
 
                     <Form.Item
                         name="avatarUrl"
-                        label="开发者头像"
-                        rules={[{ required: true, message: '请上传头像' }]}
+                        label="项目logo/产品图"
+                        rules={[{ required: true, message: '请上传项目logo/产品图' }]}
                     >
                         <ImgUploader accept="image/*" maxCount={1} />
                     </Form.Item>
 
                     <Form.Item
                         name="summary"
-                        label="开发者简介"
-                        rules={[{ required: true, message: '请输入开发者简介' }]}
+                        label="项目简介"
+                        rules={[{ required: true, message: '请输入项目简介' }]}
                     >
-                        <TextArea placeholder="请输入开发者简介" rows={3} />
-                    </Form.Item>
-
-                    <Form.Item
-                        name="description"
-                        label="开发者描述"
-                        rules={[{ required: true, message: '请输入开发者描述' }]}
-                    >
-                        <TextArea placeholder="请输入开发者描述" rows={3} />
+                        <TextArea placeholder="请输入项目简介" rows={3} />
                     </Form.Item>
 
                     <Form.Item
@@ -115,20 +107,6 @@ export default () => {
                         label="应用链接"
                     >
                         <Input placeholder="请输入应用链接（选填）" />
-                    </Form.Item>
-
-                    <Form.Item
-                        name="type"
-                        label="开发者类型"
-                        rules={[{ required: true, message: '请选择开发者类型' }]}
-                        initialValue={0} // 默认选择个人
-                    >
-                        <Radio.Group>
-                            <div className="flex flex-col *:my-1">
-                                <Radio value={0}>个人</Radio>
-                                <Radio value={1}>企业</Radio>
-                            </div>
-                        </Radio.Group>
                     </Form.Item>
 
                     <div className="bg-yellow-50 p-4 rounded-lg mt-4 mb-6">
