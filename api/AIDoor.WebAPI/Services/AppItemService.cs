@@ -268,6 +268,7 @@ public class AppItemService
             application.ImageUrl = appDto.ImageUrl;
             application.DisplayOrder = appDto.DisplayOrder;
             application.IsActive = appDto.IsActive;
+            application.Link = appDto.Link;
             application.CategoryId = appDto.CategoryId;
             application.UpdatedAt = DateTime.Now;
 
