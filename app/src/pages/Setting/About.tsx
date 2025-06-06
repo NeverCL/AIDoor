@@ -5,30 +5,20 @@ import BackNavBar from "@/components/BackNavBar"
 export default () => {
     return (
         <BackNavBar title="关于我们">
-            <div className="flex-1 p-4 overflow-auto">
-                <h2 className="text-xl font-bold mb-4">AIDoor</h2>
+            <div className="flex-1 p-4 flex flex-col items-center justify-between">
+                <div className="flex flex-col items-center mt-16">
+                    <h2 className="text-2xl font-medium mb-2">AI之门</h2>
+                    <p className="text-gray-500 text-center">新一代AI创意生产力平台</p>
+                </div>
 
-                <section className="mb-6">
-                    <h3 className="text-lg font-semibold mb-2">公司简介</h3>
-                    <p className="mb-2">AIDoor是一家专注于人工智能应用开发的科技公司，致力于将先进的AI技术应用到日常生活和工作中，为用户提供智能、便捷的服务体验。</p>
-                </section>
+                <div className="w-full rounded-xl border border-gray-200 p-4 flex justify-between items-center mb-4">
+                    <span className="text-gray-500">当前版本</span>
+                    <span className="text-gray-500">version 1.0.0</span>
+                </div>
 
-                <section className="mb-6">
-                    <h3 className="text-lg font-semibold mb-2">我们的使命</h3>
-                    <p className="mb-2">通过创新的AI技术，打破传统应用的边界，为用户创造更加智能、高效的生活方式。</p>
-                </section>
-
-                <section className="mb-6">
-                    <h3 className="text-lg font-semibold mb-2">联系我们</h3>
-                    <p className="mb-1">邮箱：contact@aidoor.com</p>
-                    <p className="mb-1">电话：400-888-8888</p>
-                    <p className="mb-1">地址：北京市海淀区科技园区88号</p>
-                </section>
-
-                <section>
-                    <h3 className="text-lg font-semibold mb-2">版本信息</h3>
-                    <p>当前版本：v1.0.0</p>
-                </section>
+                <div className="mb-8 text-xs text-gray-500 text-center">
+                    <p className="mb-1">ICP备案号：京ICP备 2024082134号-3</p>
+                </div>
             </div>
         </BackNavBar>
     )
