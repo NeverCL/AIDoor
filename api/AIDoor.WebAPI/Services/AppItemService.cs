@@ -264,6 +264,7 @@ public class AppItemService
 
             application.Title = appDto.Title;
             application.Description = appDto.Description;
+            application.Content = appDto.Content;
             application.ImageUrl = appDto.ImageUrl;
             application.DisplayOrder = appDto.DisplayOrder;
             application.IsActive = appDto.IsActive;
