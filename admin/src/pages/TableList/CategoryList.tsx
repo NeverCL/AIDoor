@@ -21,6 +21,8 @@ import {
     postAdminAppitemsApplications,
     putAdminAppitemsApplicationsApplicationId,
     deleteAdminAppitemsApplicationsApplicationId,
+    getAdminAppitemsCategoriesCategoryId,
+    getAdminAppitemsApplicationsApplicationId,
 } from '@/services/api/appItemAdmin';
 import ImgUploader from '@/components/ImgUploader';
 import { getImageUrl } from '@/utils/imageUtils';
@@ -167,6 +169,40 @@ const CategoryList: React.FC = () => {
         }
     };
 
+    // 获取分类详情
+    const fetchCategoryDetail = async (categoryId: number) => {
+        const hide = message.loading('正在加载详情...');
+        try {
+            const result = await getAdminAppitemsCategoriesCategoryId({ categoryId });
+            hide();
+            if (result.data) {
+                setCurrentCategory(result.data);
+            }
+            return result.data;
+        } catch (error) {
+            hide();
+            message.error('加载详情失败，请重试');
+            return null;
+        }
+    };
+
+    // 获取应用详情
+    const fetchApplicationDetail = async (applicationId: number) => {
+        const hide = message.loading('正在加载详情...');
+        try {
+            const result = await getAdminAppitemsApplicationsApplicationId({ applicationId });
+            hide();
+            if (result.data) {
+                setCurrentApp(result.data);
+            }
+            return result.data;
+        } catch (error) {
+            hide();
+            message.error('加载详情失败，请重试');
+            return null;
+        }
+    };
+
     // 组件挂载时获取分类列表
     React.useEffect(() => {
         fetchCategories();
@@ -214,9 +250,9 @@ const CategoryList: React.FC = () => {
             render: (_, record) => [
                 <a
                     key="edit"
-                    onClick={() => {
+                    onClick={async () => {
+                        await fetchCategoryDetail(record.id);
                         handleUpdateCategoryModalOpen(true);
-                        setCurrentCategory(record);
                     }}
                 >
                     编辑
@@ -309,9 +345,9 @@ const CategoryList: React.FC = () => {
             render: (_, record) => [
                 <a
                     key="edit"
-                    onClick={() => {
+                    onClick={async () => {
+                        await fetchApplicationDetail(record.id);
                         handleUpdateAppModalOpen(true);
-                        setCurrentApp(record);
                     }}
                 >
                     编辑
@@ -407,6 +443,9 @@ const CategoryList: React.FC = () => {
                                     title="编辑分类"
                                     width="400px"
                                     open={updateCategoryModalOpen}
+                                    modalProps={{
+                                        destroyOnClose: true,
+                                    }}
                                     onOpenChange={handleUpdateCategoryModalOpen}
                                     onFinish={async (value) => {
                                         if (!currentCategory) return false;
@@ -591,6 +630,9 @@ const CategoryList: React.FC = () => {
                                     title="编辑应用"
                                     width="600px"
                                     open={updateAppModalOpen}
+                                    modalProps={{
+                                        destroyOnClose: true,
+                                    }}
                                     onOpenChange={handleUpdateAppModalOpen}
                                     onFinish={async (value) => {
                                         if (!currentApp) return false;
