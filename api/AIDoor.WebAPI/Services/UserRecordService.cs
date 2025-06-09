@@ -36,6 +36,7 @@ public class UserRecordService
         {
             throw new UnauthorizedAccessException("未登录或无法识别用户");
         }
+
         return userId;
     }
 
@@ -55,7 +56,8 @@ public class UserRecordService
             }
 
             // 如果是足迹类型，检查是否已存在相同目标的记录
-            if ((recordDto.RecordType == RecordType.ContentFootprint || recordDto.RecordType == RecordType.AppFootprint) && recordDto.TargetId.HasValue)
+            if ((recordDto.RecordType == RecordType.ContentFootprint ||
+                 recordDto.RecordType == RecordType.AppFootprint) && recordDto.TargetId.HasValue)
             {
                 var existingRecord = await _context.UserRecords
                     .FirstOrDefaultAsync(r =>
@@ -78,7 +80,8 @@ public class UserRecordService
             int? targetUserId = null; // 默认值为0，表示未指定目标
             if (recordDto.TargetId.HasValue)
             {
-                if (recordDto.RecordType == RecordType.ContentFootprint || recordDto.RecordType == RecordType.Like || recordDto.RecordType == RecordType.Favorite)
+                if (recordDto.RecordType == RecordType.ContentFootprint || recordDto.RecordType == RecordType.Like ||
+                    recordDto.RecordType == RecordType.Favorite)
                 {
                     var content = await _context.UserContents.FindAsync(recordDto.TargetId.Value);
                     if (content != null)
@@ -97,7 +100,9 @@ public class UserRecordService
                 AppId = recordDto.RecordType == RecordType.AppFootprint ? recordDto.TargetId : null,
                 ContentId = (recordDto.RecordType == RecordType.ContentFootprint ||
                              recordDto.RecordType == RecordType.Like ||
-                             recordDto.RecordType == RecordType.Favorite) ? recordDto.TargetId : null,
+                             recordDto.RecordType == RecordType.Favorite)
+                    ? recordDto.TargetId
+                    : null,
                 LastViewedAt = DateTime.Now,
                 ViewCount = 1 // 初始化浏览计数为1
             };
@@ -131,7 +136,8 @@ public class UserRecordService
                 .Include(r => r.User);
 
             // 根据记录类型过滤记录
-            if (recordType == RecordType.ContentFootprint || recordType == RecordType.Like || recordType == RecordType.Favorite)
+            if (recordType == RecordType.ContentFootprint || recordType == RecordType.Like ||
+                recordType == RecordType.Favorite)
             {
                 // 对于内容相关记录，过滤只有ContentId的记录
                 query = query.Where(r => r.ContentId != null);
@@ -153,7 +159,8 @@ public class UserRecordService
                 .ToListAsync();
 
             // 预加载内容和应用数据，避免N+1查询问题
-            var contentIds = records.Where(r => r.ContentId.HasValue).Select(r => r.ContentId.Value).Distinct().ToList();
+            var contentIds = records.Where(r => r.ContentId.HasValue).Select(r => r.ContentId.Value).Distinct()
+                .ToList();
             var appIds = records.Where(r => r.AppId.HasValue).Select(r => r.AppId.Value).Distinct().ToList();
 
             var contents = new Dictionary<int, UserContent>();
@@ -182,7 +189,7 @@ public class UserRecordService
                 if (r.ContentId.HasValue && contents.TryGetValue(r.ContentId.Value, out var content))
                 {
                     title = content.Title;
-                    imageUrl = content.Images.Length > 0 ? content.Images[0] : string.Empty;
+                    imageUrl = GetImageUrl(content.Images[0]);
                 }
                 else if (r.AppId.HasValue && apps.TryGetValue(r.AppId.Value, out var app))
                 {
@@ -213,6 +220,18 @@ public class UserRecordService
             _logger.LogError(ex, "获取用户记录失败");
             return (new List<UserRecordDto>(), 0);
         }
+    }
+
+    public static string GetImageUrl(string image)
+    {
+        if (string.IsNullOrEmpty(image))
+        {
+            return string.Empty;
+        }
+
+        return UserContentService.videoExtensions.Contains(Path.GetExtension(image))
+            ? "preview/" + Path.ChangeExtension(image, ".png")
+            : image;
     }
 
     /// <summary>

@@ -77,7 +77,6 @@ public class UserContentController : BaseController
         {
             RecordType = RecordType.ContentFootprint,
             Title = content.Title,
-            ImageUrl = GetImageUrl(content.Images[0]),
             TargetId = id
         };
 
@@ -90,18 +89,6 @@ public class UserContentController : BaseController
         }
 
         return Ok(response);
-    }
-
-    private string GetImageUrl(string image)
-    {
-        if (string.IsNullOrEmpty(image))
-        {
-            return string.Empty;
-        }
-
-        return UserContentService.videoExtensions.Contains(Path.GetExtension(image))
-            ? "preview/" + Path.ChangeExtension(image, ".png")
-            : image;
     }
 
     [HttpPost]
