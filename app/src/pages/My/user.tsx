@@ -19,7 +19,6 @@ interface RecordItem {
     imageUrl: string;
     title: string;
     targetId?: number;
-    targetType?: string;
     typeString: string;
 }
 
@@ -197,10 +196,10 @@ interface RecordCardProps {
 const RecordCard = ({ item }: RecordCardProps) => {
     // 根据记录类型和目标ID确定导航路径
     const getDetailPath = () => {
-        if (item.targetType === 'Content' && item.targetId) {
+        if (item.typeString === 'contentfootprint' && item.targetId) {
             return `/detail/content/${item.targetId}`;
-        } else if (item.targetType === 'App' && item.targetId) {
-            return `/detail/app/${item.targetId}`;
+        } else if (item.typeString === 'appfootprint' && item.targetId) {
+            return `/detail/app/${item.targetId}?open=true`;
         }
         return '#';
     };
