@@ -200,9 +200,10 @@ public class InitData
             {
                 Id = 1,
                 RecordType = RecordType.Like,
-                Title = "2025看过最好的新剧院1232",
-                ImageUrl = "https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418",
                 UserId = 1,
+                TargetUserId = 2,
+                ContentId = 1,
+                ViewCount = 1,
                 IsActive = true,
                 CreatedAt = DateTime.Now
             },
@@ -210,9 +211,10 @@ public class InitData
             {
                 Id = 2,
                 RecordType = RecordType.Like,
-                Title = "2025看过最好的新剧院1232",
-                ImageUrl = "https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418",
                 UserId = 1,
+                TargetUserId = 3,
+                ContentId = 2,
+                ViewCount = 1,
                 IsActive = true,
                 CreatedAt = DateTime.Now
             },
@@ -221,10 +223,10 @@ public class InitData
             {
                 Id = 3,
                 RecordType = RecordType.Favorite,
-                Title = "收藏的内容示例",
-                ImageUrl = "https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418",
                 UserId = 1,
-                Notes = "这是一个很好的内容",
+                TargetUserId = 2,
+                ContentId = 1,
+                ViewCount = 1,
                 IsActive = true,
                 CreatedAt = DateTime.Now
             },
@@ -232,9 +234,10 @@ public class InitData
             {
                 Id = 4,
                 RecordType = RecordType.Favorite,
-                Title = "收藏的内容示例",
-                ImageUrl = "https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418",
                 UserId = 1,
+                TargetUserId = 3,
+                ContentId = 2,
+                ViewCount = 1,
                 IsActive = true,
                 CreatedAt = DateTime.Now
             },
@@ -243,11 +246,10 @@ public class InitData
             {
                 Id = 5,
                 RecordType = RecordType.ContentFootprint,
-                Title = "浏览过的内容示例",
-                ImageUrl = "https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418",
                 UserId = 1,
+                ContentId = 1,
                 LastViewedAt = DateTime.Now,
-                ViewCount = 1,
+                ViewCount = 5,
                 IsActive = true,
                 CreatedAt = DateTime.Now
             },
@@ -255,21 +257,8 @@ public class InitData
             {
                 Id = 6,
                 RecordType = RecordType.ContentFootprint,
-                Title = "浏览过的内容示例",
-                ImageUrl = "https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418",
                 UserId = 1,
-                LastViewedAt = DateTime.Now,
-                ViewCount = 2,
-                IsActive = true,
-                CreatedAt = DateTime.Now
-            },
-            new UserRecord
-            {
-                Id = 7,
-                RecordType = RecordType.ContentFootprint,
-                Title = "浏览过的内容示例",
-                ImageUrl = "https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418",
-                UserId = 1,
+                ContentId = 2,
                 LastViewedAt = DateTime.Now,
                 ViewCount = 3,
                 IsActive = true,
@@ -277,13 +266,23 @@ public class InitData
             },
             new UserRecord
             {
+                Id = 7,
+                RecordType = RecordType.ContentFootprint,
+                UserId = 1,
+                ContentId = 3,
+                LastViewedAt = DateTime.Now,
+                ViewCount = 2,
+                IsActive = true,
+                CreatedAt = DateTime.Now
+            },
+            new UserRecord
+            {
                 Id = 8,
                 RecordType = RecordType.AppFootprint,
-                Title = "浏览过的App示例",
-                ImageUrl = "https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418",
                 UserId = 1,
+                AppId = 1,
                 LastViewedAt = DateTime.Now,
-                ViewCount = 1,
+                ViewCount = 10,
                 IsActive = true,
                 CreatedAt = DateTime.Now
             },
@@ -291,11 +290,10 @@ public class InitData
             {
                 Id = 9,
                 RecordType = RecordType.AppFootprint,
-                Title = "浏览过的App示例",
-                ImageUrl = "https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418",
                 UserId = 1,
+                AppId = 2,
                 LastViewedAt = DateTime.Now,
-                ViewCount = 1,
+                ViewCount = 7,
                 IsActive = true,
                 CreatedAt = DateTime.Now
             },
@@ -303,11 +301,10 @@ public class InitData
             {
                 Id = 10,
                 RecordType = RecordType.AppFootprint,
-                Title = "浏览过的App示例",
-                ImageUrl = "https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418",
                 UserId = 1,
+                AppId = 3,
                 LastViewedAt = DateTime.Now,
-                ViewCount = 1,
+                ViewCount = 4,
                 IsActive = true,
                 CreatedAt = DateTime.Now
             }

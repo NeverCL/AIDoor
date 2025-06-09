@@ -42,12 +42,21 @@ public class AppItemController : BaseController
             RecordType = RecordType.AppFootprint,
             Title = appItem.Title,
             ImageUrl = appItem.ImageUrl,
-            TargetId = id,
-            TargetType = "App"
+            TargetId = id
         };
 
         await _recordService.CreateRecordAsync(recordDto);
 
-        return Ok(appItem);
+        // 获取应用的总浏览次数
+        int viewCount = await _recordService.GetAppViewCountAsync(id);
+
+        return Ok(new
+        {
+            app = appItem,
+            stats = new
+            {
+                viewCount = viewCount
+            }
+        });
     }
 }

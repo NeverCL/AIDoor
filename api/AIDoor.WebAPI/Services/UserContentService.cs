@@ -140,17 +140,15 @@ public class UserContentService : BaseService
 
         int contentOwnerId = content.PublisherId;
 
-        // 获取点赞数 - 使用TargetUserId和Notes两种方式查询以兼容新旧数据
+        // 获取点赞数 - 使用ContentId和TargetUserId
         int likesCount = await _context.UserRecords.CountAsync(r =>
             r.RecordType == RecordType.Like &&
-            ((r.TargetUserId == contentOwnerId && r.Notes == $"Content:{contentId}") ||
-             (r.Notes == $"Content:{contentId}")));
+            r.ContentId == contentId);
 
-        // 获取收藏数 - 使用TargetUserId和Notes两种方式查询以兼容新旧数据
+        // 获取收藏数 - 使用ContentId和TargetUserId
         int favoritesCount = await _context.UserRecords.CountAsync(r =>
             r.RecordType == RecordType.Favorite &&
-            ((r.TargetUserId == contentOwnerId && r.Notes == $"Content:{contentId}") ||
-             (r.Notes == $"Content:{contentId}")));
+            r.ContentId == contentId);
 
         // 获取评论数
         int commentsCount = await _context.Comments.CountAsync(c =>
@@ -158,9 +156,9 @@ public class UserContentService : BaseService
             c.TargetId == contentId);
 
         // 获取浏览数（足迹记录数）
-        int viewsCount = await _context.UserRecords.CountAsync(r =>
-            r.RecordType == RecordType.ContentFootprint &&
-            r.Notes == $"Content:{contentId}");
+        int viewsCount = await _context.UserRecords
+            .Where(r => r.RecordType == RecordType.ContentFootprint && r.ContentId == contentId)
+            .SumAsync(r => r.ViewCount);
 
         return new ContentStatsDto
         {

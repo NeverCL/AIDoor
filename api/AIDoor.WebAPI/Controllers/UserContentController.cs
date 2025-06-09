@@ -73,17 +73,21 @@ public class UserContentController : BaseController
         };
 
         // 创建浏览记录
-
         var recordDto = new UserRecordCreateDto
         {
             RecordType = RecordType.ContentFootprint,
             Title = content.Title,
             ImageUrl = GetImageUrl(content.Images[0]),
-            TargetId = id,
-            TargetType = "Content"
+            TargetId = id
         };
 
-        await _recordService.CreateRecordAsync(recordDto);
+        var recordResult = await _recordService.CreateRecordAsync(recordDto);
+
+        // 更新统计数据中的浏览数，添加本次浏览
+        if (recordResult.Success && recordResult.RecordId > 0)
+        {
+            stats.ViewsCount++;
+        }
 
         return Ok(response);
     }

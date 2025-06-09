@@ -140,7 +140,6 @@ public class UserRecordController : BaseController
             Title = content.Title,
             ImageUrl = content.Images.Length > 0 ? $"https://cdn.thedoorofai.com/{content.Images[0]}" : string.Empty,
             TargetId = id,
-            TargetType = "Content"
         };
 
         await _recordService.CreateRecordAsync(recordDto);
@@ -166,8 +165,7 @@ public class UserRecordController : BaseController
             Title = appVisit.Title,
             ImageUrl = appVisit.ImageUrl,
             TargetId = appVisit.AppId,
-            TargetType = "App",
-            Notes = $"App:{appVisit.AppId} - {appVisit.Link}"
+            Notes = $"Link: {appVisit.Link}"
         };
 
         var result = await _recordService.CreateRecordAsync(recordDto);

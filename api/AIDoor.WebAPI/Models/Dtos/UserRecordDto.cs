@@ -17,7 +17,6 @@ public class UserRecordCreateDto
     /// <summary>
     /// 标题
     /// </summary>
-    [Required(ErrorMessage = "标题不能为空")]
     [MaxLength(200, ErrorMessage = "标题长度不能超过200个字符")]
     public string Title { get; set; } = string.Empty;
 
@@ -30,11 +29,6 @@ public class UserRecordCreateDto
     /// 目标ID，可以是内容ID、应用ID等
     /// </summary>
     public int? TargetId { get; set; }
-
-    /// <summary>
-    /// 目标类型，如App、Content等
-    /// </summary>
-    public string? TargetType { get; set; }
 
     /// <summary>
     /// 附加信息，可选
@@ -53,7 +47,6 @@ public class UserRecordDto
     public string Title { get; set; } = string.Empty;
     public string ImageUrl { get; set; } = string.Empty;
     public int? TargetId { get; set; }
-    public string? TargetType { get; set; }
     public string? Notes { get; set; }
     public DateTime? LastViewedAt { get; set; }
     public int ViewCount { get; set; }

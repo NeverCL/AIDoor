@@ -112,9 +112,6 @@ public class AppDbContext : DbContext
             .HasIndex(a => a.Title);
 
         modelBuilder.Entity<UserRecord>()
-            .HasIndex(ur => ur.Title);
-
-        modelBuilder.Entity<UserRecord>()
             .HasIndex(ur => ur.RecordType);
 
         // UserContent 配置

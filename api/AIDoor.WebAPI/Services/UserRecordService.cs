@@ -55,19 +55,20 @@ public class UserRecordService
             }
 
             // 如果是足迹类型，检查是否已存在相同目标的记录
-            if ((recordDto.RecordType == RecordType.ContentFootprint || recordDto.RecordType == RecordType.AppFootprint) && !string.IsNullOrEmpty(recordDto.TargetType))
+            if ((recordDto.RecordType == RecordType.ContentFootprint || recordDto.RecordType == RecordType.AppFootprint) && recordDto.TargetId.HasValue)
             {
                 var existingRecord = await _context.UserRecords
                     .FirstOrDefaultAsync(r =>
                         r.UserId == userId &&
-                        (r.RecordType == recordDto.RecordType) &&
-                        r.Notes == $"{recordDto.TargetType}:{recordDto.TargetId}");
+                        r.RecordType == recordDto.RecordType &&
+                        ((recordDto.RecordType == RecordType.AppFootprint && r.AppId == recordDto.TargetId) ||
+                         (recordDto.RecordType == RecordType.ContentFootprint && r.ContentId == recordDto.TargetId)));
 
                 if (existingRecord != null)
                 {
                     // 已存在记录，更新访问时间和计数
                     existingRecord.LastViewedAt = DateTime.Now;
-                    existingRecord.ViewCount++;
+                    existingRecord.ViewCount++; // 增加浏览计数
                     await _context.SaveChangesAsync();
                     return (true, "更新足迹记录成功", existingRecord.Id);
                 }
@@ -75,9 +76,9 @@ public class UserRecordService
 
             // 获取目标内容的创建者ID，设置为TargetUserId
             int? targetUserId = null; // 默认值为0，表示未指定目标
-            if (recordDto.TargetId.HasValue && !string.IsNullOrEmpty(recordDto.TargetType))
+            if (recordDto.TargetId.HasValue)
             {
-                if (recordDto.TargetType.Equals("Content", StringComparison.OrdinalIgnoreCase))
+                if (recordDto.RecordType == RecordType.ContentFootprint || recordDto.RecordType == RecordType.Like || recordDto.RecordType == RecordType.Favorite)
                 {
                     var content = await _context.UserContents.FindAsync(recordDto.TargetId.Value);
                     if (content != null)
@@ -85,24 +86,20 @@ public class UserRecordService
                         targetUserId = content.PublisherId;
                     }
                 }
-                else if (recordDto.TargetType.Equals("User", StringComparison.OrdinalIgnoreCase))
-                {
-                    targetUserId = recordDto.TargetId.Value;
-                }
             }
 
             // 创建新记录
             var userRecord = new UserRecord
             {
                 RecordType = recordDto.RecordType,
-                Title = recordDto.Title,
-                ImageUrl = recordDto.ImageUrl,
                 UserId = userId,
                 TargetUserId = targetUserId,
-                Notes = recordDto.TargetId.HasValue && !string.IsNullOrEmpty(recordDto.TargetType)
-                    ? $"{recordDto.TargetType}:{recordDto.TargetId}"
-                    : recordDto.Notes,
-                LastViewedAt = DateTime.Now
+                AppId = recordDto.RecordType == RecordType.AppFootprint ? recordDto.TargetId : null,
+                ContentId = (recordDto.RecordType == RecordType.ContentFootprint ||
+                             recordDto.RecordType == RecordType.Like ||
+                             recordDto.RecordType == RecordType.Favorite) ? recordDto.TargetId : null,
+                LastViewedAt = DateTime.Now,
+                ViewCount = 1 // 初始化浏览计数为1
             };
 
             _context.UserRecords.Add(userRecord);
@@ -128,39 +125,88 @@ public class UserRecordService
 
             RecordType.TryParse<RecordType>(queryParams.RecordType, out var recordType);
 
-            var query = _context.UserRecords
+            // 构建基本查询，预加载相关实体以优化性能
+            IQueryable<UserRecord> query = _context.UserRecords
                 .Where(r => r.UserId == userId && r.RecordType == recordType)
-                .Include(r => r.User); // Include User information
+                .Include(r => r.User);
+
+            // 根据记录类型过滤记录
+            if (recordType == RecordType.ContentFootprint || recordType == RecordType.Like || recordType == RecordType.Favorite)
+            {
+                // 对于内容相关记录，过滤只有ContentId的记录
+                query = query.Where(r => r.ContentId != null);
+            }
+            else if (recordType == RecordType.AppFootprint)
+            {
+                // 对于应用相关记录，过滤只有AppId的记录
+                query = query.Where(r => r.AppId != null);
+            }
 
             // 获取总记录数
             int totalCount = await query.CountAsync();
 
-            List<UserRecordDto> records;
+            // 获取分页数据
+            var records = await query
+                .OrderByDescending(r => r.LastViewedAt ?? r.CreatedAt)
+                .Skip((queryParams.Page - 1) * queryParams.Limit)
+                .Take(queryParams.Limit)
+                .ToListAsync();
 
-            records = await query
-                    .OrderByDescending(r => r.LastViewedAt ?? r.CreatedAt)
-                    .Skip((queryParams.Page - 1) * queryParams.Limit)
-                    .Take(queryParams.Limit)
-                    .Select(r => new UserRecordDto
-                    {
-                        Id = r.Id,
-                        RecordType = r.RecordType,
-                        TypeString = r.TypeString,
-                        Title = r.Title,
-                        ImageUrl = r.ImageUrl,
-                        Notes = r.Notes,
-                        LastViewedAt = r.LastViewedAt,
-                        ViewCount = r.ViewCount,
-                        CreatedAt = r.CreatedAt,
-                        UserName = r.User.Username,
-                        UserAvatarUrl = r.User.AvatarUrl
-                    })
-                    .ToListAsync();
+            // 预加载内容和应用数据，避免N+1查询问题
+            var contentIds = records.Where(r => r.ContentId.HasValue).Select(r => r.ContentId.Value).Distinct().ToList();
+            var appIds = records.Where(r => r.AppId.HasValue).Select(r => r.AppId.Value).Distinct().ToList();
 
-            // 解析目标ID和类型
-            ProcessRecords(records);
+            var contents = new Dictionary<int, UserContent>();
+            var apps = new Dictionary<int, AppItem>();
 
-            return (records, totalCount);
+            if (contentIds.Any())
+            {
+                var contentsList = await _context.UserContents.Where(c => contentIds.Contains(c.Id)).ToListAsync();
+                contents = contentsList.ToDictionary(c => c.Id);
+            }
+
+            if (appIds.Any())
+            {
+                var appsList = await _context.Applications.Where(a => appIds.Contains(a.Id)).ToListAsync();
+                apps = appsList.ToDictionary(a => a.Id);
+            }
+
+            // 转换为DTO
+            var recordDtos = new List<UserRecordDto>();
+            foreach (var r in records)
+            {
+                string title = string.Empty;
+                string imageUrl = string.Empty;
+
+                // 根据记录类型获取标题和图片
+                if (r.ContentId.HasValue && contents.TryGetValue(r.ContentId.Value, out var content))
+                {
+                    title = content.Title;
+                    imageUrl = content.Images.Length > 0 ? content.Images[0] : string.Empty;
+                }
+                else if (r.AppId.HasValue && apps.TryGetValue(r.AppId.Value, out var app))
+                {
+                    title = app.Title;
+                    imageUrl = app.ImageUrl;
+                }
+
+                recordDtos.Add(new UserRecordDto
+                {
+                    Id = r.Id,
+                    RecordType = r.RecordType,
+                    TypeString = r.TypeString,
+                    Title = title,
+                    ImageUrl = imageUrl,
+                    LastViewedAt = r.LastViewedAt,
+                    ViewCount = r.ViewCount,
+                    CreatedAt = r.CreatedAt,
+                    UserName = r.User.Username,
+                    UserAvatarUrl = r.User.AvatarUrl,
+                    TargetId = r.AppId ?? r.ContentId
+                });
+            }
+
+            return (recordDtos, totalCount);
         }
         catch (Exception ex)
         {
@@ -174,18 +220,8 @@ public class UserRecordService
     /// </summary>
     private void ProcessRecords(List<UserRecordDto> records)
     {
-        foreach (var record in records)
-        {
-            if (!string.IsNullOrEmpty(record.Notes) && record.Notes.Contains(':'))
-            {
-                var parts = record.Notes.Split(':');
-                if (parts.Length == 2 && int.TryParse(parts[1], out int targetId))
-                {
-                    record.TargetType = parts[0];
-                    record.TargetId = targetId;
-                }
-            }
-        }
+        // This method is now deprecated as we're using direct properties
+        // Keeping for backwards compatibility but not using it
     }
 
     /// <summary>
@@ -266,6 +302,89 @@ public class UserRecordService
         {
             _logger.LogError(ex, "清空用户记录失败");
             return (false, $"清空失败: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// 获取应用的总浏览次数
+    /// </summary>
+    /// <param name="appId">应用ID</param>
+    /// <returns>总浏览次数</returns>
+    public async Task<int> GetAppViewCountAsync(int appId)
+    {
+        try
+        {
+            // 查询所有记录该应用的足迹记录，并汇总ViewCount
+            var totalViews = await _context.UserRecords
+                .Where(r => r.RecordType == RecordType.AppFootprint && r.AppId == appId)
+                .SumAsync(r => r.ViewCount);
+
+            return totalViews;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"获取应用{appId}的浏览次数失败");
+            return 0;
+        }
+    }
+
+    /// <summary>
+    /// 获取最受欢迎的内容（基于浏览次数）
+    /// </summary>
+    /// <param name="limit">限制返回数量</param>
+    /// <returns>内容ID和浏览次数的列表</returns>
+    public async Task<List<(int ContentId, int ViewCount)>> GetMostViewedContentAsync(int limit = 10)
+    {
+        try
+        {
+            var mostViewedContent = await _context.UserRecords
+                .Where(r => r.RecordType == RecordType.ContentFootprint && r.ContentId.HasValue)
+                .GroupBy(r => r.ContentId)
+                .Select(g => new
+                {
+                    ContentId = g.Key.Value,
+                    TotalViews = g.Sum(r => r.ViewCount)
+                })
+                .OrderByDescending(x => x.TotalViews)
+                .Take(limit)
+                .ToListAsync();
+
+            return mostViewedContent.Select(x => (x.ContentId, x.TotalViews)).ToList();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "获取最受欢迎内容失败");
+            return new List<(int, int)>();
+        }
+    }
+
+    /// <summary>
+    /// 获取最受欢迎的应用（基于浏览次数）
+    /// </summary>
+    /// <param name="limit">限制返回数量</param>
+    /// <returns>应用ID和浏览次数的列表</returns>
+    public async Task<List<(int AppId, int ViewCount)>> GetMostViewedAppsAsync(int limit = 10)
+    {
+        try
+        {
+            var mostViewedApps = await _context.UserRecords
+                .Where(r => r.RecordType == RecordType.AppFootprint && r.AppId.HasValue)
+                .GroupBy(r => r.AppId)
+                .Select(g => new
+                {
+                    AppId = g.Key.Value,
+                    TotalViews = g.Sum(r => r.ViewCount)
+                })
+                .OrderByDescending(x => x.TotalViews)
+                .Take(limit)
+                .ToListAsync();
+
+            return mostViewedApps.Select(x => (x.AppId, x.TotalViews)).ToList();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "获取最受欢迎应用失败");
+            return new List<(int, int)>();
         }
     }
 }

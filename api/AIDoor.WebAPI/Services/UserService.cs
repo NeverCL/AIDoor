@@ -280,8 +280,8 @@ public class UserService
                 Data = likes.Select(like => new UserRecordItemDto
                 {
                     Id = like.Id,
-                    Img = like.ImageUrl,
-                    Title = like.Title,
+                    Img = string.Empty,
+                    Title = like.ContentId.HasValue ? $"Content {like.ContentId}" : "Liked item",
                     CreatedAt = like.CreatedAt
                 }).ToList()
             });
@@ -305,8 +305,8 @@ public class UserService
                 Data = favorites.Select(favorite => new UserRecordItemDto
                 {
                     Id = favorite.Id,
-                    Img = favorite.ImageUrl,
-                    Title = favorite.Title,
+                    Img = string.Empty,
+                    Title = favorite.ContentId.HasValue ? $"Content {favorite.ContentId}" : "Favorited item",
                     CreatedAt = favorite.CreatedAt
                 }).ToList()
             });
@@ -338,8 +338,10 @@ public class UserService
                     .Select(footprint => new UserRecordItemDto
                     {
                         Id = footprint.Id,
-                        Img = footprint.ImageUrl,
-                        Title = footprint.Title,
+                        Img = string.Empty,
+                        Title = footprint.ContentId.HasValue
+                            ? $"Content {footprint.ContentId}"
+                            : (footprint.AppId.HasValue ? $"App {footprint.AppId}" : "Visited item"),
                         CreatedAt = footprint.CreatedAt
                     }).ToList()
             });

@@ -94,30 +94,15 @@ export default () => {
             );
         }
 
-        const mediaUrl = `https://cdn.thedoorofai.com/${item.images[0]}`;
-        const isVideo = isVideoFile(item.images[0]);
+        const mediaUrl = getImageUrl(item.images[0]);
 
-        if (isVideo) {
-            return (
-                <video
-                    className="h-[14rem] w-full rounded-lg object-cover"
-                    controls
-                    playsInline
-                    preload="metadata"
-                >
-                    <source src={mediaUrl} type="video/mp4" />
-                    Your browser does not support the video tag.
-                </video>
-            );
-        } else {
-            return (
-                <img
-                    className="h-[14rem] rounded-lg object-cover"
-                    src={`${mediaUrl}`}
-                    alt={item.title}
-                />
-            );
-        }
+        return (
+            <img
+                className="h-[14rem] rounded-lg object-cover"
+                src={`${mediaUrl}`}
+                alt={item.title}
+            />
+        );
     };
 
     return (

@@ -19,11 +19,6 @@ public class UserRecord : BaseEntity
     [NotMapped]
     public string TypeString => RecordType.ToString().ToLower();
 
-    [MaxLength(200)]
-    public string Title { get; set; } = string.Empty;
-
-    public string ImageUrl { get; set; } = string.Empty;
-
     // 执行操作的用户ID（如：谁点赞、谁收藏）
     public int UserId { get; set; }
 
@@ -38,14 +33,16 @@ public class UserRecord : BaseEntity
     [ForeignKey("TargetUserId")]
     public Publisher? Publisher { get; set; }
 
-    // 可选备注
-    public string? Notes { get; set; }
+    // 应用ID，用于存储具体的应用ID
+    public int? AppId { get; set; }
+
+    // 内容ID，用于存储具体的内容ID
+    public int? ContentId { get; set; }
 
     // 最后查看时间，主要用于足迹类型
     public DateTime? LastViewedAt { get; set; }
 
-    // 查看计数，主要用于足迹类型
-    public int ViewCount { get; set; } = 1;
+    public int ViewCount { get; set; }
 }
 
 /// <summary>
