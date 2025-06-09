@@ -13,7 +13,7 @@ public class UserContentService : BaseService
     {
     }
 
-    private readonly static string[] videoExtensions =
+    public readonly static string[] videoExtensions =
         [".mp4", ".avi", ".mov", ".wmv", ".flv", ".mpeg", ".mpg", ".m4v", ".webm", ".mkv"];
 
     // 创建内容
@@ -97,8 +97,8 @@ public class UserContentService : BaseService
             .ToListAsync();
 
         contents.ForEach(x => x.Images = x.Images.Select(image => videoExtensions.Contains(Path.GetExtension(image))
-            ? $"preview/{Path.GetDirectoryName(image) ?? ""}/{Path.GetFileNameWithoutExtension(image)}.png"
-            : image + "?x-oss-process=image/resize,p_30").ToArray());
+            ? "preview/" + Path.ChangeExtension(image, ".png")
+            : image).ToArray());
 
         return (contents, totalCount);
     }

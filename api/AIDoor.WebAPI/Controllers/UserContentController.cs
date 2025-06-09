@@ -73,11 +73,12 @@ public class UserContentController : BaseController
         };
 
         // 创建浏览记录
+
         var recordDto = new UserRecordCreateDto
         {
             RecordType = RecordType.ContentFootprint,
             Title = content.Title,
-            ImageUrl = content.Images.Length > 0 ? $"https://cdn.thedoorofai.com/{content.Images[0]}" : string.Empty,
+            ImageUrl = GetImageUrl(content.Images[0]),
             TargetId = id,
             TargetType = "Content"
         };
@@ -85,6 +86,18 @@ public class UserContentController : BaseController
         await _recordService.CreateRecordAsync(recordDto);
 
         return Ok(response);
+    }
+
+    private string GetImageUrl(string image)
+    {
+        if (string.IsNullOrEmpty(image))
+        {
+            return string.Empty;
+        }
+
+        return UserContentService.videoExtensions.Contains(Path.GetExtension(image))
+            ? "preview/" + Path.ChangeExtension(image, ".png")
+            : image;
     }
 
     [HttpPost]
