@@ -54,7 +54,7 @@ export function getImageUrl(
     noCompress = noCompress || url.includes('x-oss-process') || noCompressExt.includes(url.split('.').pop() || '');
 
     // 构建压缩参数
-    const compressParams = noCompress ? '' : `${hasParams ? '&' : '?'}x-oss-process=image/resize,w_${pxWidth},m_lfit/quality,q_${quality}`;
+    const compressParams = noCompress ? '' : `${hasParams ? '&' : '?'}x-oss-process=image/resize,w_${pxWidth},m_lfit`;
 
     if (url.includes('http')) {
         return url + compressParams;

@@ -84,22 +84,13 @@ export default () => {
 
     // 渲染媒体内容（图片或视频）
     const renderMedia = (item: UserContent) => {
-        if (!item.images || item.images.length === 0) {
-            return (
-                <img
-                    className="h-[14rem] rounded-lg object-cover"
-                    src={defaultImg}
-                    alt={item.title}
-                />
-            );
-        }
 
         const mediaUrl = getImageUrl(item.images[0]);
 
         return (
             <img
-                className="h-[14rem] rounded-lg object-cover"
-                src={`${mediaUrl}`}
+                className="w-full max-h-[30rem] rounded-lg object-cover"
+                src={mediaUrl}
                 alt={item.title}
             />
         );
