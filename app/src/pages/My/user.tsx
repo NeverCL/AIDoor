@@ -234,18 +234,18 @@ const RecordSection = ({ section }: { section: RecordSectionProps }) => (
         {/* 记录列表 */}
         {section.type === 'footprint' ? (
             // 足迹特殊处理：上方App足迹，下方内容足迹
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col">
                 {/* App足迹 */}
                 {section.appData && section.appData.length > 0 ? (
                     <>
-                        <div className="grid grid-cols-4 gap-2">
+                        <div className="grid grid-cols-4 gap-2 mb-4">
                             {section.appData.map((item, index) => (
                                 <RecordCard key={`app-${index}`} item={item} />
                             ))}
                         </div>
                     </>
                 ) : (
-                    <div className="text-center py-2 text-gray-500">
+                    <div className="text-center py-2 text-gray-500 mb-4">
                         暂无应用足迹记录
                     </div>
                 )}
