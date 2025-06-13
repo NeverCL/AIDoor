@@ -92,7 +92,7 @@ const HomePage: React.FC = () => {
 
   // Get the first banner (if available)
   const banner = bannerData?.data?.[0];
-  const bannerImageUrl = banner?.bannerImageUrl || 'https://img1.baidu.com/it/u=990091063,3716780155&fm=253&fmt=auto&app=120&f=JPEG?w=655&h=1418';
+  const bannerImageUrl = banner?.bannerImageUrl;
 
   return (
     <>
