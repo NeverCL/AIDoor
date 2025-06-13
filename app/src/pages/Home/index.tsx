@@ -116,7 +116,9 @@ const HomePage: React.FC = () => {
       <div className='flex-1 flex flex-col overflow-y-auto'>
         {/* banner */}
         <NavLink to='/qrcode'>
-          <img className='rounded-lg h-32 w-full object-cover' src={getImageUrl(bannerImageUrl)} alt="" />
+          {bannerImageUrl && (
+            <img className='rounded-lg h-32 w-full object-cover' src={getImageUrl(bannerImageUrl)} alt="" />
+          )}
         </NavLink>
 
         {/* AI产品 */}
