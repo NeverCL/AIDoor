@@ -71,7 +71,7 @@ export default () => {
         (pageNum: number) => api.userContent.getUserContent({
             Page: pageNum,
             Limit: pageSize,
-            // IsOwner: true
+            IsOwner: true
         }),
         {
             manual: true,
@@ -117,7 +117,7 @@ export default () => {
     const statsData = publisherData?.stats || { likes: 0, followers: 0, favorites: 0, rating: 0 };
 
     return (
-        <>
+        <div className="h-full flex flex-col">
             {/* 背景图 */}
             <div className="-mx-4">
                 <img className="w-full h-full object-fill" src={getImageUrl(bgImg)} alt="" />
@@ -170,13 +170,15 @@ export default () => {
                 </div>
             </div>
 
-            <div>
-                <div className="text-2xl font-bold">{publisherData?.username || '未设置昵称'}</div>
 
-                <div className="text-base text-gray-500 mt-2">{publisherData?.summary || '暂无简介'}</div>
-            </div>
 
-            <div className="flex flex-col *:mt-8 overflow-y-auto">
+            <div className="flex-1 *:mt-8 overflow-y-auto">
+                <div>
+                    <div className="text-2xl font-bold">{publisherData?.username || '未设置昵称'}</div>
+
+                    <div className="text-base text-gray-500 mt-2">{publisherData?.summary || '暂无简介'}</div>
+                </div>
+
                 {/* 发布内容 */}
                 {contents.length > 0 ? (
                     <div className="flex flex-col *:mb-4">
@@ -211,6 +213,6 @@ export default () => {
                     </div>
                 )}
             </div>
-        </>
+        </div>
     );
 };
