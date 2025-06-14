@@ -344,6 +344,8 @@ declare namespace API {
 
   type MessageType = integer;
 
+  type NullableOfPublisherType = integer;
+
   type PagedResultOfChatMessageDto = {
     data?: ChatMessageDto[];
     total?: number;
@@ -374,12 +376,10 @@ declare namespace API {
     avatarUrl?: string;
     description?: string;
     summary?: string;
-    type?: PublisherType;
+    type?: NullableOfPublisherType;
     website?: string;
     appLink?: string;
   };
-
-  type PublisherType = integer;
 
   type putAccountIdParams = {
     id: number;
@@ -484,10 +484,9 @@ declare namespace API {
 
   type UserRecordCreateDto = {
     recordType: RecordType;
-    title: string;
+    title?: string;
     imageUrl?: string;
     targetId?: number;
-    targetType?: string;
     notes?: string;
   };
 }
