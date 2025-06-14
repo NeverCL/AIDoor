@@ -105,7 +105,7 @@ const HomePage: React.FC = () => {
           <span
             key={category.id}
             ref={el => itemRefs.current[index] = el}
-            className={cx(activeIndex === index ? 'px-5 bg-white text-black' : 'px-3 bg-[#525252] text-sm', 'shrink-0 mx-1 rounded-2xl py-2 bg-[#525252]')}
+            className={cx(activeIndex === index ? 'px-5 bg-white text-black font-bold' : 'px-3 bg-[#525252]', 'shrink-0 mx-1 rounded-2xl py-2 bg-[#525252]')}
             onClick={() => handleItemClick(index)}
           >
             {category.name}
