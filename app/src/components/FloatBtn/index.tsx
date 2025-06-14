@@ -15,10 +15,10 @@ const Guide: React.FC = () => {
 
     return (
         <>
-            <div className='left-10 right-10 bottom-10 fixed bg-[#151515] h-14 rounded-[1.72rem] flex justify-between items-center px-12 text-sm'>
+            <div className='left-10 right-10 bottom-10 fixed bg-[#151515] h-14 rounded-[1.72rem] flex justify-between items-center font-bold px-12 text-sm'>
                 <NavLink to='/home' replace={true} className={({ isActive }) => 'flex items-center ' + (isInHomeGroup ? 'text-primary' : 'text-secondary')}>
-                    <Icon icon="local:home" className='mr-2' />
-                    <span className='text-sm'>首页</span>
+                    <Icon icon="local:home" className='mr-2 text-base' />
+                    <span>首页</span>
                 </NavLink>
 
                 {
@@ -32,7 +32,7 @@ const Guide: React.FC = () => {
                 }
 
                 <NavLink to='/my' replace={true} className={({ isActive }) => 'flex items-center ' + (!isInHomeGroup ? 'text-primary' : 'text-secondary')}>
-                    <Icon icon="local:my" className='mr-2' />
+                    <Icon icon="local:my" className='mr-2 text-base' />
                     <span>我的</span>
                 </NavLink>
             </div >
