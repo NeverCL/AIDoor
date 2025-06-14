@@ -66,7 +66,7 @@ public class PublisherController : BaseController
             model.AvatarUrl,
             model.Description ?? "专注提供智能服务",
             model.Summary,
-            model.Type,
+            model.Type.GetValueOrDefault(),
             model.Website,
             model.AppLink
         );
@@ -296,7 +296,7 @@ public class PublisherCreateUpdateRequest
     /// <summary>
     /// 开发者描述
     /// </summary>
-    public string Description { get; set; }
+    public string? Description { get; set; } = string.Empty;
 
     /// <summary>
     /// 开发者简介
@@ -306,7 +306,7 @@ public class PublisherCreateUpdateRequest
     /// <summary>
     /// 开发者类型
     /// </summary>
-    public PublisherType Type { get; set; } = PublisherType.Personal;
+    public PublisherType? Type { get; set; } = PublisherType.Personal;
 
     /// <summary>
     /// 官网链接
