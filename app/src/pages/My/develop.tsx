@@ -170,8 +170,7 @@ export default () => {
                 </div>
             </div>
 
-
-
+            {/* 简介 + 发布内容 */}
             <div className="flex-1 *:mt-8 overflow-y-auto">
                 <div>
                     <div className="text-2xl font-bold">{publisherData?.username || '未设置昵称'}</div>

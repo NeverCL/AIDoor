@@ -45,4 +45,6 @@ public class UserContentQueryParams
     }
 
     public bool IsOwner { get; set; }
+
+    public int? PublisherId { get; set; } = null;
 }

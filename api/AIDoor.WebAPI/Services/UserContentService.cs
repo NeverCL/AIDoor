@@ -73,9 +73,9 @@ public class UserContentService : BaseService
 
         int totalCount = await query.CountAsync();
 
-        int? publisherId = null;
+        int? publisherId = queryParams.PublisherId;
 
-        if (queryParams.IsOwner)
+        if (queryParams.IsOwner && publisherId == null)
         {
             publisherId = GetCurrentPublisherId();
         }

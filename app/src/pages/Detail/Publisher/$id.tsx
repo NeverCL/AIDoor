@@ -1,6 +1,6 @@
 import { history, useModel, useParams } from "@umijs/max";
 import { Button, InfiniteScroll, Loading, Modal, Rate, Toast } from "antd-mobile";
-import { LocationOutline, MessageOutline, SetOutline, StarFill } from "antd-mobile-icons";
+import { BellOutline, EditSOutline, LocationOutline, MessageOutline, SetOutline, StarFill } from "antd-mobile-icons";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { useRequest } from '@umijs/max';
@@ -41,6 +41,9 @@ interface UserContent {
     createdAt: string;
 }
 
+const bgImg = '20250614/c81d62c0-efbc-4e8a-9540-d4e3407e3959.png';
+
+
 export default () => {
     const [contents, setContents] = useState<UserContent[]>([]);
     const [hasMore, setHasMore] = useState(true);
@@ -77,7 +80,8 @@ export default () => {
         (pageNum: number) => api.userContent.getUserContent({
             Page: pageNum,
             Limit: pageSize,
-            IsOwner: true
+            IsOwner: true,
+            PublisherId: Number(id)
         }),
         {
             manual: true,
@@ -167,109 +171,103 @@ export default () => {
     return (
         publisherLoading ? <Loading /> :
             <BackNavBar title="开发者资料" >
-                <div className="h-full flex flex-col *:mt-8 overflow-y-auto">
-                    {/* 头像 昵称 简介 消息|设置图标*/}
-                    <div className="flex items-center ">
-                        <div className="w-16 h-16 rounded-full bg-gray-300">
-                            {publisherData?.avatarUrl && (
-                                <img
-                                    src={getImageUrl(publisherData?.avatarUrl)}
-                                    alt={publisherData?.username}
-                                    className="w-full h-full rounded-full object-cover"
-                                />
-                            )}
+                {/* 背景图 */}
+                <div className="-mx-4">
+                    <img className="w-full h-full object-fill" src={getImageUrl(bgImg)} alt="" />
+                    {/* <div className="absolute top-4 right-6 flex">
+                        <div className="text-2xl" onClick={() => history.push('/my/messages?type=message')}>
+                            <BellOutline />
                         </div>
-                        <div className="ml-4">
-                            <div className="text-lg font-bold">{publisherData?.username || '未设置昵称'}</div>
-                            <div className="text-sm text-gray-500">{publisherData?.summary || '暂无简介'}</div>
+                        <div className="ml-6 text-2xl" onClick={() => history.push('/setting')}>
+                            <SetOutline />
                         </div>
-                        <div className="ml-auto flex items-center">
-                            <div className="text-2xl" onClick={() => history.push(`/chat/${publisherData?.id}`)}>
-                                <MessageOutline />
-                            </div>
-                        </div>
+                    </div> */}
+                </div>
+
+                {/* 头像 数字 */}
+                <div className="flex">
+                    <div className="w-24 h-24 rounded-full bg-gray-300 relative -top-12" onClick={() => history.push('/Account/Develop')}>
+                        {publisherData?.avatarUrl && (
+                            <img
+                                src={getImageUrl(publisherData.avatarUrl)}
+                                alt={publisherData.name}
+                                className="w-full h-full rounded-full object-cover"
+                            />
+                        )}
                     </div>
 
                     {/* 获赞 关注 粉丝 分值*/}
-                    <div className="flex items-center p-4 bg-secondary rounded-lg">
+                    <div className="flex-1 flex items-start rounded-lg">
                         <div className="flex-1 text-center">
-                            <div className="text-2xl font-bold">{publisherData?.stats?.likes || 0}</div>
+                            <div className="text-2xl font-bold">{publisherData?.stats.likes}</div>
                             <div className="text-sm text-gray-600">获赞</div>
                         </div>
                         <div className="flex-1 text-center">
-                            <div className="text-2xl font-bold">{publisherData?.stats?.favorites || 0}</div>
+                            <div className="text-2xl font-bold">{publisherData?.stats.followers}</div>
+                            <div className="text-sm text-gray-600">粉丝</div>
+                        </div>
+                        <div className="flex-1 text-center">
+                            <div className="text-2xl font-bold">{publisherData?.stats.favorites}</div>
                             <div className="text-sm text-gray-600">收藏</div>
                         </div>
                         <div className="flex-1 text-center">
-                            <div className="text-2xl font-bold">{publisherData?.stats?.followers || 0}</div>
-                            <div className="text-sm text-gray-600">粉丝</div>
-                        </div>
-
-                        <div className="flex-1 text-center" onClick={showRateModal}>
                             <div className="flex items-center justify-center">
-                                <span className="text-2xl font-bold mr-1">{publisherData?.stats?.rating?.toFixed(1) || '0.0'}</span>
+                                <span className="text-2xl font-bold mr-1">{publisherData?.stats.rating.toFixed(1)}</span>
                                 <StarFill fontSize={16} color='#FFB700' />
                             </div>
                             <div className="text-sm text-gray-600">评分</div>
                         </div>
                     </div>
+                </div>
 
-                    {/* 详细介绍 */}
-                    <div className="p-4">
-                        <div className="text-sm text-gray-600">{publisherData?.description || '暂无简介'}</div>
-                    </div>
+                {/* 关注按钮 */}
+                <div className="mb-4">
+                    <Button color="primary" block onClick={handleFollow}>
+                        {isFollowed ? '取消关注' : '关注'}
+                    </Button>
+                </div>
+                {/* 简介 + 发布内容 */}
+                <div className="flex-1 *:mt-8 overflow-y-auto">
+                    <div>
+                        <div className="text-2xl font-bold">{publisherData?.username || '未设置昵称'}</div>
 
-                    {/* 去App 去官网 */}
-                    <div className="flex justify-between items-center p-4">
-                        {publisherData?.appLink && <Button color="primary" onClick={() => openUrl(publisherData?.appLink)}>去App</Button>}
-                        {publisherData?.website && <Button color="primary" onClick={() => openUrl(publisherData?.website)}>去官网</Button>}
-                    </div>
-
-                    {/* 关注 */}
-                    <div className="p-4">
-                        <Button color="primary" className="w-full" onClick={handleFollow}>{isFollowed ? '取消关注' : '关注'}</Button>
+                        <div className="text-base text-gray-500 mt-2">{publisherData?.summary || '暂无简介'}</div>
                     </div>
 
                     {/* 发布内容 */}
-                    <div className="p-4">
-                        <div className="flex justify-between items-center mb-4">
-                            <h3 className="text-lg font-bold text-gray-200">发布内容</h3>
-                        </div>
-
-                        {contents.length > 0 ? (
-                            <div className="flex flex-col *:mb-4">
-                                {contents.map((content) => (
-                                    <div
-                                        key={content.id}
-                                        className="bg-[#3a3a3a] rounded-lg shadow p-3 border border-[#444444] hover:shadow-md transition-shadow"
-                                        onClick={() => history.push(`/detail/content/${content.id}`)}
-                                    >
-                                        {content.images && content.images.length > 0 && (
-                                            <div className="mb-3">
-                                                <img
-                                                    src={getImageUrl(content.images[0])}
-                                                    alt={content.title}
-                                                    className="w-full h-40 object-cover rounded-lg"
-                                                />
-                                            </div>
-                                        )}
-                                        <div className="flex justify-between items-center">
-                                            <div className="text-base font-medium text-gray-200">{content.title}</div>
-                                            <div className="text-xs text-gray-400 bg-[#444444] px-2 py-1 rounded-full">
-                                                {dayjs(content.createdAt).format('YYYY-MM-DD')}
+                    {contents.length > 0 ? (
+                        <div className="flex flex-col *:mb-4">
+                            {contents.map((content) => (
+                                <div
+                                    key={content.id}
+                                    className="bg-[#3a3a3a] rounded-lg shadow border-[#444444] hover:shadow-md transition-shadow"
+                                    onClick={() => history.push(`/detail/content/${content.id}`)}
+                                >
+                                    {content.images && content.images.length > 0 && (
+                                        <div className="flex">
+                                            <img
+                                                src={getImageUrl(content.images[0])}
+                                                alt={content.title}
+                                                className="w-20 h-20 object-cover rounded-lg"
+                                            />
+                                            <div className="flex-1 px-2">
+                                                <div className="text-base font-medium text-gray-200">{content.title}</div>
+                                                <div className="text-xs text-gray-400 rounded-full mt-2">
+                                                    {dayjs(content.createdAt).format('YYYY-MM-DD')}
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                ))}
-                                <InfiniteScroll loadMore={loadMore} hasMore={hasMore} />
-                            </div>
-                        ) : (
-                            <div className="text-center text-gray-400 py-10 bg-[#3a3a3a] rounded-lg">
-                                暂无内容
-                            </div>
-                        )}
-                    </div>
-                </div >
+                                    )}
+                                </div>
+                            ))}
+                            <InfiniteScroll loadMore={loadMore} hasMore={hasMore} />
+                        </div>
+                    ) : (
+                        <div className="text-center text-gray-400 py-10 bg-[#3a3a3a] rounded-lg">
+                            暂无内容
+                        </div>
+                    )}
+                </div>
             </BackNavBar>
     );
 };
