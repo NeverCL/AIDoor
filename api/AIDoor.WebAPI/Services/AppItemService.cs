@@ -227,6 +227,7 @@ public class AppItemService
                 ImageUrl = appDto.ImageUrl,
                 DisplayOrder = appDto.DisplayOrder,
                 IsActive = true,
+                Content = appDto.Content,
                 CategoryId = appDto.CategoryId,
                 CreatedAt = DateTime.Now
             };
