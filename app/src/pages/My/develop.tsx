@@ -1,6 +1,6 @@
 import { history } from "@umijs/max";
-import { Button, InfiniteScroll, Toast } from "antd-mobile";
-import { LocationOutline, MessageOutline, SetOutline, StarFill, EditSOutline, BellOutline } from "antd-mobile-icons";
+import { Button, InfiniteScroll, Toast, Dialog } from "antd-mobile";
+import { LocationOutline, MessageOutline, SetOutline, StarFill, EditSOutline, BellOutline, DeleteOutline } from "antd-mobile-icons";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { useRequest } from '@umijs/max';
@@ -116,6 +116,32 @@ export default () => {
     // 安全地获取统计数据
     const statsData = publisherData?.stats || { likes: 0, followers: 0, favorites: 0, rating: 0 };
 
+    // 删除内容
+    const handleDelete = async (id: number, e: React.MouseEvent) => {
+        e.stopPropagation(); // 阻止冒泡，避免触发点击内容的事件
+
+        const confirmed = await Dialog.confirm({
+            content: '确定要删除这条内容吗？',
+            confirmText: '删除',
+            cancelText: '取消',
+        });
+
+        if (confirmed) {
+            try {
+                await api.userContent.deleteUserContentId({ id });
+                Toast.show({
+                    content: '删除成功',
+                });
+                // 更新列表，移除已删除的内容
+                setContents(prev => prev.filter(item => item.id !== id));
+            } catch (error) {
+                Toast.show({
+                    content: '删除失败',
+                });
+            }
+        }
+    };
+
     return (
         <div className="h-full flex flex-col">
             {/* 背景图 */}
@@ -184,7 +210,7 @@ export default () => {
                         {contents.map((content) => (
                             <div
                                 key={content.id}
-                                className="bg-[#3a3a3a] rounded-lg shadow border-[#444444] hover:shadow-md transition-shadow"
+                                className="bg-[#3a3a3a] rounded-lg shadow border-[#444444] hover:shadow-md transition-shadow relative"
                                 onClick={() => history.push(`/detail/content/${content.id}`)}
                             >
                                 {content.images && content.images.length > 0 && (
@@ -199,6 +225,12 @@ export default () => {
                                             <div className="text-xs text-gray-400 rounded-full mt-2">
                                                 {dayjs(content.createdAt).format('YYYY-MM-DD')}
                                             </div>
+                                        </div>
+                                        <div
+                                            className="absolute right-2 top-2 p-2 text-red-500"
+                                            onClick={(e) => handleDelete(content.id, e)}
+                                        >
+                                            <DeleteOutline fontSize={18} />
                                         </div>
                                     </div>
                                 )}
