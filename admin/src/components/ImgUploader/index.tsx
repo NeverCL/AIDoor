@@ -8,9 +8,10 @@ interface ImgUploaderProps {
     label?: string;
 }
 
-const isDev = process.env.NODE_ENV === 'development';
+// const isDev = process.env.NODE_ENV === 'development';
 
-const action = isDev ? '/api/file/upload' : 'https://api.thedoorofai.com/api/file/upload';
+// const action = isDev ? '/api/file/upload' : 'https://api.thedoorofai.com/api/file/upload';
+const action = '/api/file/upload';
 
 const ImgUploader: React.FC<ImgUploaderProps> = ({
     name,
