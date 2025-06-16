@@ -295,9 +295,11 @@ public class AppItemService
                 return (false, "未找到指定应用");
             }
 
-            application.IsActive = false;
-            application.UpdatedAt = DateTime.Now;
+            // application.IsActive = false;
+            // application.UpdatedAt = DateTime.Now;
 
+            _dbContext.Applications.Remove(application);
+            
             await _dbContext.SaveChangesAsync();
 
             return (true, "应用删除成功");
