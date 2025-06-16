@@ -303,6 +303,9 @@ public class AppItemService
 
             _dbContext.Applications.Remove(application);
 
+            // 删除应用对应的记录
+            await _dbContext.UserRecords.Where(r => r.AppId == applicationId).ForEachAsync(r => _dbContext.UserRecords.Remove(r));
+
             await _dbContext.SaveChangesAsync();
 
             return (true, "应用删除成功");

@@ -188,6 +188,9 @@ public class UserContentService : BaseService
             }
 
             _context.UserContents.Remove(content);
+            // 删除内容对应的记录
+            await _context.UserRecords.Where(r => r.ContentId == id).ForEachAsync(r => _context.UserRecords.Remove(r));
+
             await _context.SaveChangesAsync();
 
             return (true, "内容已删除");
