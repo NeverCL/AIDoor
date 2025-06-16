@@ -52,7 +52,7 @@ public class AppItemService
                 Id = c.Id,
                 Name = c.Name,
                 DisplayOrder = c.DisplayOrder,
-                Applications = c.Applications.Select(a => new ApplicationDto
+                Applications = c.Applications.OrderBy(x => x.DisplayOrder).Select(a => new ApplicationDto
                 {
                     Id = a.Id,
                     Title = a.Title,
@@ -302,7 +302,7 @@ public class AppItemService
             // application.UpdatedAt = DateTime.Now;
 
             _dbContext.Applications.Remove(application);
-            
+
             await _dbContext.SaveChangesAsync();
 
             return (true, "应用删除成功");
