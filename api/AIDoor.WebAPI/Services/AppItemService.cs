@@ -228,6 +228,7 @@ public class AppItemService
                 DisplayOrder = appDto.DisplayOrder,
                 IsActive = true,
                 Content = appDto.Content,
+                Link = appDto.Link,
                 CategoryId = appDto.CategoryId,
                 CreatedAt = DateTime.Now
             };
