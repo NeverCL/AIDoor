@@ -182,8 +182,10 @@ public class AppItemService
                 return (false, "未找到指定分类");
             }
 
-            category.IsActive = false;
-            category.UpdatedAt = DateTime.Now;
+            _dbContext.ApplicationCategories.Remove(category);
+
+            // category.IsActive = false;
+            // category.UpdatedAt = DateTime.Now;
 
             // 同时将该分类下的所有应用标记为非活动
             var applications = await _dbContext.Applications
@@ -192,8 +194,9 @@ public class AppItemService
 
             foreach (var app in applications)
             {
-                app.IsActive = false;
-                app.UpdatedAt = DateTime.Now;
+                // app.IsActive = false;
+                // app.UpdatedAt = DateTime.Now;
+                _dbContext.Applications.Remove(app);
             }
 
             await _dbContext.SaveChangesAsync();
