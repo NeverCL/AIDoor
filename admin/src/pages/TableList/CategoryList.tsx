@@ -426,12 +426,12 @@ const CategoryList: React.FC = () => {
                                                 message: '请输入分类名称',
                                             },
                                         ]}
-                                        width="md"
+                                        width="lg"
                                         name="name"
                                         label="分类名称"
                                     />
                                     <ProFormDigit
-                                        width="md"
+                                        width="lg"
                                         name="displayOrder"
                                         label="显示顺序"
                                         min={0}
@@ -468,12 +468,12 @@ const CategoryList: React.FC = () => {
                                                 message: '请输入分类名称',
                                             },
                                         ]}
-                                        width="md"
+                                        width="lg"
                                         name="name"
                                         label="分类名称"
                                     />
                                     <ProFormDigit
-                                        width="md"
+                                        width="lg"
                                         name="displayOrder"
                                         label="显示顺序"
                                         min={0}
@@ -589,36 +589,36 @@ const CategoryList: React.FC = () => {
                                                 message: '请输入应用名称',
                                             },
                                         ]}
-                                        width="md"
+                                        width="lg"
                                         name="title"
                                         label="应用名称"
                                     />
                                     <ProFormSelect
                                         name="categoryId"
                                         label="所属分类"
-                                        width="md"
+                                        width="lg"
                                         options={categoryOptions}
                                         rules={[{ required: true, message: '请选择所属分类' }]}
                                     />
                                     <ImgUploader name="imageUrl" single={true} />
                                     <ProFormText
-                                        width="md"
+                                        width="lg"
                                         name="link"
                                         label="链接地址"
                                     />
                                     <ProFormTextArea
-                                        width="md"
+                                        width="lg"
                                         name="description"
                                         label="应用描述"
                                     />
                                     <ProFormTextArea
-                                        width="md"
+                                        width="lg"
                                         name="content"
                                         rules={[{ required: true, message: '请输入应用内容' }]}
                                         label="应用内容"
                                     />
                                     <ProFormDigit
-                                        width="md"
+                                        width="lg"
                                         name="displayOrder"
                                         label="显示顺序"
                                         min={0}
@@ -655,35 +655,35 @@ const CategoryList: React.FC = () => {
                                                 message: '请输入应用名称',
                                             },
                                         ]}
-                                        width="md"
+                                        width="lg"
                                         name="title"
                                         label="应用名称"
                                     />
                                     <ProFormSelect
                                         name="categoryId"
                                         label="所属分类"
-                                        width="md"
+                                        width="lg"
                                         options={categoryOptions}
                                         rules={[{ required: true, message: '请选择所属分类' }]}
                                     />
                                     <ImgUploader name="imageUrl" single={true} />
                                     <ProFormText
-                                        width="md"
+                                        width="lg"
                                         name="link"
                                         label="链接地址"
                                     />
                                     <ProFormTextArea
-                                        width="md"
+                                        width="lg"
                                         name="description"
                                         label="应用描述"
                                     />
                                     <ProFormTextArea
-                                        width="md"
+                                        width="lg"
                                         name="content"
                                         label="应用内容"
                                     />
                                     <ProFormDigit
-                                        width="md"
+                                        width="lg"
                                         name="displayOrder"
                                         label="显示顺序"
                                         min={0}

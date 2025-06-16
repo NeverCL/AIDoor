@@ -43,8 +43,8 @@ export default () => {
                                 )}
                             </div>
 
-                            <div className="p-4 leading-relaxed">
-                                {data?.content?.split('\n\n').map((paragraph: string, index: number) => (
+                            <div className="p-4 leading-relaxed text-base">
+                                {data?.content?.split('\n').map((paragraph: string, index: number) => (
                                     <p key={index} className="mb-4">{paragraph}</p>
                                 ))}
                             </div>
