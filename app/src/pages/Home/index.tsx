@@ -132,7 +132,7 @@ const HomePage: React.FC = () => {
                   imageUrl: app.imageUrl,
                   link: app.link
                 })}>
-                  <img className='w-20 h-20 rounded-lg' src={getImageUrl(app.imageUrl)} alt={app.title} />
+                  <img className='w-20 h-20 rounded-2xl' src={getImageUrl(app.imageUrl)} alt={app.title} />
 
                   <div className='flex flex-col flex-1 mx-2'>
                     <span className='font-bold text-sm'>{app.title}</span>
