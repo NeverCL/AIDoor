@@ -146,7 +146,9 @@ export default () => {
         <div className="h-full flex flex-col">
             {/* 背景图 */}
             <div className="-mx-4">
-                <img className="w-full h-full object-fill" src={getImageUrl(bgImg)} alt="" />
+                <div className="h-36">
+                    <img src={getImageUrl(bgImg)} alt="" />
+                </div>
                 <div className="absolute top-4 right-6 flex">
                     <div className="text-2xl" onClick={() => history.push('/my/messages?type=message')}>
                         <BellOutline />
