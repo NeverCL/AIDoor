@@ -117,7 +117,7 @@ const HomePage: React.FC = () => {
         {/* banner */}
         <NavLink to='/qrcode'>
           {bannerImageUrl && (
-            <img className='rounded-lg h-32 w-full object-cover' src={getImageUrl(bannerImageUrl)} alt="" />
+            <img className='rounded-lg w-full object-cover' src={getImageUrl(bannerImageUrl, true)} alt="" />
           )}
         </NavLink>
 
