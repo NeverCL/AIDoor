@@ -174,7 +174,7 @@ public class UserContentService : BaseService
     {
         try
         {
-            int userId = GetCurrentUserId();
+            var publisherId = GetCurrentPublisherId();
 
             var content = await _context.UserContents.FindAsync(id);
             if (content == null)
@@ -182,7 +182,7 @@ public class UserContentService : BaseService
                 return (false, "内容不存在");
             }
 
-            if (content.PublisherId != userId)
+            if (content.PublisherId != publisherId)
             {
                 return (false, "无权删除此内容");
             }
