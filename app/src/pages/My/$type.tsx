@@ -173,7 +173,7 @@ export default () => {
                             <List.Item
                                 key={item.id}
                                 prefix={
-                                    <div className="w-12 h-12 mr-2 overflow-hidden rounded-lg">
+                                    <div className={`w-12 h-12 overflow-hidden ${type === 'appfootprint' ? 'rounded-3xl' : 'rounded-lg'}`}>
                                         <img
                                             src={getImageUrl(item.imageUrl)}
                                             alt=""

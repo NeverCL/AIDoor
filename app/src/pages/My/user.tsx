@@ -204,25 +204,13 @@ const navigate = (item: RecordItem) => {
 };
 
 const RecordCard = ({ item }: RecordCardProps) => {
-    // 根据记录类型和目标ID确定导航路径
-    const getDetailPath = () => {
-        if (item.typeString === 'appfootprint' && item.targetId) {
-            return `/detail/app/${item.targetId}?open=true`;
-        }
-        return `/detail/content/${item.targetId}`;
-    };
-
-
-
     return (
-        <NavLink to={getDetailPath()}>
-            <div className="flex flex-col" onClick={() => navigate(item)}>
-                <div className="h-20">
-                    <img src={getImageUrl(item.imageUrl)} alt="" className="h-full w-full rounded-3xl object-cover" />
-                </div>
-                <span className="mt-[0.38rem] px-[0.06rem] text-sm truncate">{item.title}</span>
+        <div className="flex flex-col" onClick={() => navigate(item)}>
+            <div className="h-20">
+                <img src={getImageUrl(item.imageUrl)} alt="" className="h-full w-full rounded-3xl object-cover" />
             </div>
-        </NavLink>
+            <span className="mt-[0.38rem] px-[0.06rem] text-sm truncate">{item.title}</span>
+        </div>
     );
 };
 
