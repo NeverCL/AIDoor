@@ -285,9 +285,9 @@ const NavHeader: React.FC = () => {
                     className='flex flex-col items-center w-16'
                     onClick={() => navigateToApp(app.targetId, app.targetType)}
                   >
-                    <div className='w-12 h-12 rounded-lg overflow-hidden bg-gray-100 mb-1'>
+                    <div className='w-12 h-12 overflow-hidden bg-gray-100 mb-1 rounded-3xl'>
                       {app.imageUrl ? (
-                        <img src={getImageUrl(app.imageUrl)} alt={app.title} className="w-full h-full rounded-3xl object-cover" />
+                        <img src={getImageUrl(app.imageUrl)} alt={app.title} className="w-full h-full object-cover" />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center bg-blue-100 text-blue-500">
                           {app.title.charAt(0)}

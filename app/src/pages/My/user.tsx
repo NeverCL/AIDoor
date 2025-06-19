@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import api from '@/services/api';
 import { EditSOutline } from "antd-mobile-icons";
 import { getImageUrl } from "@/utils";
+import openUrl from "@/utils/openUrl";
 
 
 // 用户设置相关导航
@@ -20,6 +21,7 @@ interface RecordItem {
     title: string;
     targetId?: number;
     typeString: string;
+    notes?: string;
 }
 
 // 记录区域类型
@@ -193,6 +195,14 @@ interface RecordCardProps {
     item: RecordItem;
 }
 
+const navigate = (item: RecordItem) => {
+    if (item.typeString === 'appfootprint' && item.notes) {
+        openUrl(item.notes);
+    } else {
+        history.push(`/detail/content/${item.targetId}`);
+    }
+};
+
 const RecordCard = ({ item }: RecordCardProps) => {
     // 根据记录类型和目标ID确定导航路径
     const getDetailPath = () => {
@@ -202,9 +212,11 @@ const RecordCard = ({ item }: RecordCardProps) => {
         return `/detail/content/${item.targetId}`;
     };
 
+
+
     return (
         <NavLink to={getDetailPath()}>
-            <div className="flex flex-col">
+            <div className="flex flex-col" onClick={() => navigate(item)}>
                 <div className="h-20">
                     <img src={getImageUrl(item.imageUrl)} alt="" className="h-full w-full rounded-3xl object-cover" />
                 </div>

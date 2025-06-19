@@ -184,6 +184,7 @@ public class UserRecordService
             {
                 string title = string.Empty;
                 string imageUrl = string.Empty;
+                var appLink = string.Empty;
 
                 // 根据记录类型获取标题和图片
                 if (r.ContentId.HasValue && contents.TryGetValue(r.ContentId.Value, out var content))
@@ -195,6 +196,7 @@ public class UserRecordService
                 {
                     title = app.Title;
                     imageUrl = app.ImageUrl;
+                    appLink = app.Link;
                 }
 
                 recordDtos.Add(new UserRecordDto
@@ -204,6 +206,7 @@ public class UserRecordService
                     TypeString = r.TypeString,
                     Title = title,
                     ImageUrl = imageUrl,
+                    Notes = appLink,
                     LastViewedAt = r.LastViewedAt,
                     ViewCount = r.ViewCount,
                     CreatedAt = r.CreatedAt,

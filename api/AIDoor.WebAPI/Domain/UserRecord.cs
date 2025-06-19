@@ -42,6 +42,11 @@ public class UserRecord : BaseEntity
     // 最后查看时间，主要用于足迹类型
     public DateTime? LastViewedAt { get; set; }
 
+    // public virtual AppItem? App { get; set; }
+    
+
+    // public virtual UserContent? Content { get; set; }
+
     public int ViewCount { get; set; }
 }
 
