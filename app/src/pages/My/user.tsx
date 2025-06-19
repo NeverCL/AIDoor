@@ -206,7 +206,7 @@ const RecordCard = ({ item }: RecordCardProps) => {
         <NavLink to={getDetailPath()}>
             <div className="flex flex-col">
                 <div className="h-20">
-                    <img src={getImageUrl(item.imageUrl)} alt="" className="h-full w-full object-cover rounded-lg" />
+                    <img src={getImageUrl(item.imageUrl)} alt="" className="h-full w-full rounded-3xl object-cover" />
                 </div>
                 <span className="mt-[0.38rem] px-[0.06rem] text-sm truncate">{item.title}</span>
             </div>

@@ -287,7 +287,7 @@ const NavHeader: React.FC = () => {
                   >
                     <div className='w-12 h-12 rounded-lg overflow-hidden bg-gray-100 mb-1'>
                       {app.imageUrl ? (
-                        <img src={getImageUrl(app.imageUrl)} alt={app.title} className="w-full h-full object-cover" />
+                        <img src={getImageUrl(app.imageUrl)} alt={app.title} className="w-full h-full rounded-3xl object-cover" />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center bg-blue-100 text-blue-500">
                           {app.title.charAt(0)}
