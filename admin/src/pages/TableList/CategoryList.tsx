@@ -547,8 +547,12 @@ const CategoryList: React.FC = () => {
                                             </Button>
                                         ) : null,
                                     ]}
-                                    request={async () => {
-                                        const response = await getAdminAppitemsApplications();
+                                    request={async (params) => {
+                                        const response = await getAdminAppitemsApplications({
+                                            params: {
+                                                keyword: params.keyword,
+                                            },
+                                        });
                                         let data = response.data || [];
                                         if (selectedCategoryId) {
                                             data = data.filter((item: any) => item.categoryId === selectedCategoryId);

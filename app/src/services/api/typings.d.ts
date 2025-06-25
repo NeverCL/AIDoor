@@ -195,6 +195,10 @@ declare namespace API {
     applicationId: number;
   };
 
+  type getAdminAppitemsApplicationsParams = {
+    keyword?: string;
+  };
+
   type getAdminAppitemsCategoriesCategoryIdParams = {
     categoryId: number;
   };
@@ -325,6 +329,8 @@ declare namespace API {
     Limit?: number;
     RecordType?: string;
   };
+
+  type IFormFile = string;
 
   type LoginInput = {
     username: string;

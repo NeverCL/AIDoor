@@ -4,15 +4,12 @@ import { request } from '@umijs/max';
 
 /** 此处后端没有提供注释 POST /api/File/upload */
 export async function postFileUpload(
-  body: {},
-  file?: File,
+  body: {
+    file?: API.IFormFile;
+  },
   options?: { [key: string]: any },
 ) {
   const formData = new FormData();
-
-  if (file) {
-    formData.append('file', file);
-  }
 
   Object.keys(body).forEach((ele) => {
     const item = (body as any)[ele];

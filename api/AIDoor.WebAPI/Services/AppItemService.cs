@@ -17,11 +17,19 @@ public class AppItemService
     }
 
     // 获取所有应用（包括已禁用的应用，只有管理员可以访问）
-    public async Task<List<ApplicationDto>> GetAllApplications()
+    public async Task<List<ApplicationDto>> GetAllApplications(string? keyword)
     {
-        var applications = await _dbContext.Applications
-            .Include(a => a.Category)
+        var query = _dbContext.Applications.AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(keyword))
+        {
+            keyword = keyword.Trim();
+            query = query.Where(a => a.Title.Contains(keyword) || a.Description.Contains(keyword));
+        }
+
+        var applications = await query
             .OrderBy(a => a.DisplayOrder)
+            .Include(a => a.Category)
             .ToListAsync();
 
         return applications.Select(a => new ApplicationDto

@@ -24,9 +24,9 @@ public class AppItemAdminController : BaseController
     }
 
     [HttpGet("applications")]
-    public async Task<IActionResult> GetAllApplications()
+    public async Task<IActionResult> GetAllApplications([FromQuery] string? keyword)
     {
-        var applications = await _appItemService.GetAllApplications();
+        var applications = await _appItemService.GetAllApplications(keyword);
         return Ok("获取所有应用成功", applications);
     }
 
