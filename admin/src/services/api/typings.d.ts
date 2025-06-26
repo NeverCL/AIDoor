@@ -131,6 +131,12 @@ declare namespace API {
     applicationId: number;
   };
 
+  type getAdminAppitemsApplicationsParams = {
+    keyword?: string;
+    categoryId?: number;
+    isActive?: boolean;
+  };
+
   type getAdminAppitemsCategoriesCategoryIdParams = {
     categoryId: number;
   };

@@ -197,6 +197,8 @@ declare namespace API {
 
   type getAdminAppitemsApplicationsParams = {
     keyword?: string;
+    categoryId?: number;
+    isActive?: boolean;
   };
 
   type getAdminAppitemsCategoriesCategoryIdParams = {

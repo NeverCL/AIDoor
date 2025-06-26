@@ -26,6 +26,7 @@ import {
 } from '@/services/api/appItemAdmin';
 import ImgUploader from '@/components/ImgUploader';
 import { getImageUrl } from '@/utils/imageUtils';
+import { log } from 'console';
 
 /**
  * 添加分类
@@ -548,17 +549,15 @@ const CategoryList: React.FC = () => {
                                         ) : null,
                                     ]}
                                     request={async (params) => {
+                                        console.log(params);
+
                                         const response = await getAdminAppitemsApplications({
-                                            params: {
-                                                keyword: params.keyword,
-                                            },
+                                            keyword: params.keyword,
+                                            categoryId: selectedCategoryId || undefined,
                                         });
-                                        let data = response.data || [];
-                                        if (selectedCategoryId) {
-                                            data = data.filter((item: any) => item.categoryId === selectedCategoryId);
-                                        }
+
                                         return {
-                                            data,
+                                            data: response.data || [],
                                             success: response.success,
                                         };
                                     }}

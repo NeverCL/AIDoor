@@ -17,7 +17,7 @@ public class AppItemService
     }
 
     // 获取所有应用（包括已禁用的应用，只有管理员可以访问）
-    public async Task<List<ApplicationDto>> GetAllApplications(string? keyword)
+    public async Task<List<ApplicationDto>> GetAllApplications(string? keyword, int? categoryId = null, bool? isActive = null)
     {
         var query = _dbContext.Applications.AsQueryable();
 
@@ -25,6 +25,16 @@ public class AppItemService
         {
             keyword = keyword.Trim();
             query = query.Where(a => a.Title.Contains(keyword) || a.Description.Contains(keyword));
+        }
+
+        if (categoryId.HasValue)
+        {
+            query = query.Where(a => a.CategoryId == categoryId.Value);
+        }
+
+        if (isActive.HasValue)
+        {
+            query = query.Where(a => a.IsActive == isActive.Value);
         }
 
         var applications = await query
