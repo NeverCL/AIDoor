@@ -549,10 +549,8 @@ const CategoryList: React.FC = () => {
                                         ) : null,
                                     ]}
                                     request={async (params) => {
-                                        console.log(params);
-
                                         const response = await getAdminAppitemsApplications({
-                                            keyword: params.keyword,
+                                            keyword: params.title,
                                             categoryId: selectedCategoryId || undefined,
                                         });
 
