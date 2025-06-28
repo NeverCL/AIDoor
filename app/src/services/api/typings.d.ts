@@ -332,8 +332,6 @@ declare namespace API {
     RecordType?: string;
   };
 
-  type IFormFile = string;
-
   type LoginInput = {
     username: string;
     password: string;
