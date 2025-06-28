@@ -7,6 +7,7 @@ export default defineConfig({
   request: {
     dataField: '',
   },
+  hash: true,
   icons: {},
   title: 'AI之门',
   npmClient: "pnpm",
