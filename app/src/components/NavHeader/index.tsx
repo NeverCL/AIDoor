@@ -178,6 +178,9 @@ const NavHeader: React.FC = () => {
               placeholder='请输入内容'
               showCancelButton
               defaultValue={filter}
+              style={{
+                '--adm-color-fill-content': '#2d2d2d',
+              } as React.CSSProperties}
               onChange={val => setFilter(val)}
               onSearch={val => {
                 // Toast.show(`你搜索了：${val}`)
@@ -187,10 +190,11 @@ const NavHeader: React.FC = () => {
               }}
               onBlur={() => {
                 // console.log('失去焦点')
-                setShowSearch(false);
+                // setShowSearch(false);
               }}
               onCancel={() => {
                 setFilter(null);
+                setShowSearch(false);
                 // console.log('取消搜索')
               }}
             /> :
