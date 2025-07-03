@@ -11,10 +11,10 @@ public static class ApplicationBuilderExtensions
         app.UseGlobalExceptionHandler();
 
         // 开发环境配置
-        if (app.Environment.IsDevelopment())
-        {
-            app.MapOpenApi();
-        }
+        app.MapOpenApi();
+        // if (app.Environment.IsDevelopment())
+        // {
+        // }
 
         // 中间件管道配置
         app.UseCors(options => options.AllowCredentials().AllowAnyMethod().AllowAnyHeader().WithOrigins("https://app.thedoorofai.com", "https://admin.thedoorofai.com"));
