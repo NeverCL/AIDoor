@@ -144,7 +144,7 @@ export default defineConfig({
     },
     {
       requestLibPath: "import { request } from '@umijs/max'",
-      schemaPath: 'http://localhost:5000/openapi/v1.json',
+      schemaPath: 'https://api.thedoorofai.com/openapi/v1.json',
       projectName: 'api',
     },
   ],
