@@ -1,4 +1,5 @@
 using AIDoor.WebAPI.Data;
+using JakubKozera.OpenApiUi;
 using Microsoft.EntityFrameworkCore;
 
 namespace AIDoor.WebAPI.Extensions;
@@ -17,7 +18,8 @@ public static class ApplicationBuilderExtensions
         // }
 
         // 中间件管道配置
-        app.UseCors(options => options.AllowCredentials().AllowAnyMethod().AllowAnyHeader().WithOrigins("https://app.thedoorofai.com", "https://admin.thedoorofai.com"));
+        app.UseCors(options => options.AllowCredentials().AllowAnyMethod().AllowAnyHeader()
+            .WithOrigins("https://app.thedoorofai.com", "https://admin.thedoorofai.com"));
         app.UseStaticFiles();
         app.Use(async (context, next) =>
         {
@@ -26,9 +28,12 @@ public static class ApplicationBuilderExtensions
             {
                 context.Response.Headers.Append("trace-id", activity.TraceId.ToString());
             }
+
             await next();
         });
         app.UseRouting();
+
+        app.UseOpenApiUi(cfg => cfg.OpenApiSpecPath = "/openapi/v1.json");
 
         // 安全中间件
         app.UseAuthentication();
