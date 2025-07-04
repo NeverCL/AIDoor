@@ -99,10 +99,11 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
           <span>OpenAPI 文档</span>
         </Link>,
       ]
-      : [<Link key="openapi" to="https://api.thedoorofai.com/openapi-ui" target="_blank">
-        <LinkOutlined />
-        <span>OpenAPI 文档</span>
-      </Link>],
+      : [
+        <a key="openapi" href="https://api.thedoorofai.com/openapi-ui" target="_blank" rel="noreferrer">
+          <LinkOutlined />
+          <span>OpenAPI 文档</span>
+        </a>],
     menuHeaderRender: undefined,
     // 自定义 403 页面
     // unAccessible: <div>unAccessible</div>,
