@@ -50,7 +50,7 @@ export default () => {
 
     const pathname = routes.at(-1)?.pathnameBase ?? '';
 
-    const noLoginRoutes = ['/account/login', '/account/register', '/', '/home'];
+    const noLoginRoutes = ['/account/login', '/account/register', '/', '/home', '/private'];
 
     const checkLogin = !noLoginRoutes.includes(pathname);
 
