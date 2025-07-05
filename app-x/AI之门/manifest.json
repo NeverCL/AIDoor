@@ -3,8 +3,8 @@
     "id" : "H5508D802", /*应用的标识*/
     "name" : "AI之门", /*应用名称，程序桌面图标名称*/
     "version" : {
-        "name" : "1.0.1", /*应用版本名称*/
-        "code" : "100"
+        "name" : "1.0.2", /*应用版本名称*/
+        "code" : 102
     },
     "description" : "", /*应用描述信息*/
     "icons" : {
@@ -105,7 +105,11 @@
                 "password" : "", /*iOS应用打包个人证书导入密码*/
                 "p12" : "", /*iOS应用打包个人证书，打包配置文件关联的个人证书*/
                 "devices" : "universal", /*iOS应用支持的设备类型，可取值iphone/ipad/universal*/
-                "frameworks" : [] /*,调用Native.js调用原生Objective-c API需要引用的FrameWork，如需调用GameCenter，则添加"GameKit.framework"*/
+                "frameworks" : [], /*,调用Native.js调用原生Objective-c API需要引用的FrameWork，如需调用GameCenter，则添加"GameKit.framework"*/
+                "privacyDescription" : {
+                    "NSCameraUsageDescription" : "该应用程序拍照用于上传图片或视频作为发布信息",
+                    "NSPhotoLibraryUsageDescription" : "该应用程序读取相册用于上传图片或视频作为发布信息"
+                }
             },
             "google" : {
                 "packagename" : "", /*Android应用包名，如io.dcloud.HelloH5*/
