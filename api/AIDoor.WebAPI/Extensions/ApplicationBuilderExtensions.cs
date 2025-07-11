@@ -19,7 +19,8 @@ public static class ApplicationBuilderExtensions
 
         // 中间件管道配置
         app.UseCors(options => options.AllowCredentials().AllowAnyMethod().AllowAnyHeader()
-            .WithOrigins("https://app.thedoorofai.com", "https://admin.thedoorofai.com"));
+            .WithOrigins("https://app.thedoorofai.com", "https://admin.thedoorofai.com",
+                "https://ios.thedoorofai.com"));
         app.UseStaticFiles();
         app.Use(async (context, next) =>
         {
