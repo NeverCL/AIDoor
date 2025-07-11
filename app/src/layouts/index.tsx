@@ -50,12 +50,15 @@ export default () => {
 
     const pathname = routes.at(-1)?.pathnameBase ?? '';
 
+    console.log(pathname);
+
+
     const noLoginRoutes = ['/account/login', '/account/register', '/', '/home', '/private'];
 
     const checkLogin = !noLoginRoutes.includes(pathname);
 
     if (checkLogin && !user) {
-        return <Navigate to="/account/login" />
+        return <Navigate to="/account/login" replace={true} />
     }
 
     return (
