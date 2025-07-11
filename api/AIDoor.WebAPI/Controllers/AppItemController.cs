@@ -6,6 +6,7 @@ using AIDoor.WebAPI.Domain;
 
 namespace AIDoor.WebAPI.Controllers;
 
+[AllowAnonymous]
 public class AppItemController : BaseController
 {
     private readonly AppItemService _appItemService;
@@ -17,7 +18,6 @@ public class AppItemController : BaseController
         _recordService = recordService;
     }
 
-    [AllowAnonymous]
     [HttpGet("all")]
     public async Task<IActionResult> GetAllCategoriesWithApplications()
     {

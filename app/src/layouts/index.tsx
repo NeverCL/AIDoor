@@ -38,9 +38,9 @@ export default () => {
 
     // const { pathname } = useLocation();
 
-    const routes = useSelectedRoutes();
+    // const routes = useSelectedRoutes();
 
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
     const { user, isLoading } = useModel('global');
 
@@ -48,18 +48,17 @@ export default () => {
         return <LoadingUser />;
     }
 
-    const pathname = routes.at(-1)?.pathnameBase ?? '';
+    // const pathname = routes.at(-1)?.pathnameBase ?? '';
 
-    console.log(pathname);
+    // console.log(pathname);
 
+    // const noLoginRoutes = ['/account/login', '/account/register', '/', '/home', '/private'];
 
-    const noLoginRoutes = ['/account/login', '/account/register', '/', '/home', '/private'];
+    // const checkLogin = !noLoginRoutes.includes(pathname);
 
-    const checkLogin = !noLoginRoutes.includes(pathname);
-
-    if (checkLogin && !user) {
-        return <Navigate to="/account/login" replace={true} />
-    }
+    // if (checkLogin && !user) {
+    //     return <Navigate to="/account/login" replace={true} />
+    // }
 
     return (
         <>

@@ -20,14 +20,16 @@ public static class ServiceCollectionExtensions
         services.AddOpenApi(); // API 文档服务
         services.AddHealthChecks(); // 健康检查
         services.AddHttpContextAccessor();
-        
+
         // Environment.SetEnvironmentVariable("OTEL_EXPORTER_OTLP_HEADERS", "Authorization=Bearer ge4p0cttir@6581c63854edbf1_ge4p0cttir@53df7ad2afe8301");
-        
+
         services.AddOpenTelemetry()
             .ConfigureResource(builder => builder.AddService(serviceName))
             .WithTracing(trace =>
             {
-                trace.AddAspNetCoreInstrumentation(opt=>opt.Filter = ctx=> ctx.Request.Method != HttpMethod.Options.ToString() && !ctx.Request.Path.StartsWithSegments("/healthz"));
+                trace.AddAspNetCoreInstrumentation(opt => opt.Filter = ctx =>
+                    ctx.Request.Method != HttpMethod.Options.ToString() &&
+                    !ctx.Request.Path.StartsWithSegments("/healthz"));
                 trace.AddHttpClientInstrumentation();
                 trace.AddEntityFrameworkCoreInstrumentation();
             })
@@ -40,14 +42,11 @@ public static class ServiceCollectionExtensions
             .UseOtlpExporter(OtlpExportProtocol.HttpProtobuf, new Uri("http://otlp.thedoorofai.com/"))
             // .UseOtlpExporter(OtlpExportProtocol.Grpc, new Uri("http://tracing-analysis-dc-bj.aliyuncs.com:8090"))
             ;
-        
+
         services.AddLogging(builder =>
         {
             builder.ClearProviders();
-            builder.AddOpenTelemetry(logging =>
-            {
-                logging.IncludeScopes = true;
-            });
+            builder.AddOpenTelemetry(logging => { logging.IncludeScopes = true; });
         });
         return services;
     }
@@ -83,6 +82,23 @@ public static class ServiceCollectionExtensions
                 options.LogoutPath = "/api/Account/logout";
                 options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                 options.Cookie.SameSite = SameSiteMode.None;
+
+                // 禁用自动重定向，使用自定义中间件处理未认证请求
+                options.Events = new CookieAuthenticationEvents
+                {
+                    OnRedirectToLogin = context =>
+                    {
+                        // 不执行重定向，让自定义中间件处理
+                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                        return Task.CompletedTask;
+                    },
+                    OnRedirectToAccessDenied = context =>
+                    {
+                        context.Response.StatusCode = StatusCodes.Status403Forbidden;
+                        return Task.CompletedTask;
+                    }
+                };
+
 #if DEBUG
                 options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
                 options.Cookie.SameSite = SameSiteMode.Lax;

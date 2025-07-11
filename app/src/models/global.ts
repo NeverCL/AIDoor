@@ -21,15 +21,18 @@ const useUser = () => {
   const { run: requestUserInfo } = useRequest(api.user.getUserProfile, {
     manual: false,
     onSuccess: (response) => {
-      response.avatarUrl = getImageUrl(response.avatarUrl, true);
+      if (response) {
+        response.avatarUrl = getImageUrl(response.avatarUrl, true);
+      }
       setUser(response);
       setIsLoading(false);
     },
     onError: (error) => {
-
-      if (error.response.status === 404 || error.response.status === 405 || error.response.status === 0) {
-        setIsLoading(false);
-        return;
+      if (error.response) {
+        if (error.response.status === 401 || error.response.status === 404 || error.response.status === 405 || error.response.status === 0) {
+          setIsLoading(false);
+          return;
+        }
       }
 
       setTimeout(() => {

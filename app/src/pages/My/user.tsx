@@ -151,10 +151,10 @@ const UserCard = () => {
     // 获取未读消息数量
     const { data, loading: countLoading } = useRequest(
         () => api.chatMessage.getMessagesUserUnreadCount(),
-        {
-            refreshOnWindowFocus: true,
-            pollingInterval: 30000, // 每30秒刷新一次
-        }
+        // {
+        //     refreshOnWindowFocus: true,
+        //     pollingInterval: 30000, // 每30秒刷新一次
+        // }
     );
 
     // 安全地获取未读消息数量

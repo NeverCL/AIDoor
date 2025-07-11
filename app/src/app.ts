@@ -1,6 +1,6 @@
 // 运行时配置
 
-import { RequestConfig } from "@umijs/max";
+import { RequestConfig, useNavigate, history } from "@umijs/max";
 import { Toast } from "antd-mobile";
 // 全局初始化数据配置，用于 Layout 用户信息和权限初始化
 // 更多信息见文档：https://umijs.org/docs/api/runtime-config#getinitialstate
@@ -16,6 +16,9 @@ export async function getInitialState(): Promise<{ name: string }> {
 //     },
 //   };
 // };
+
+// const navigate = useNavigate();
+// 
 
 const baseUrl = process.env.NODE_ENV === 'development'
   // ? 'http://192.168.20.157:8000'
@@ -51,6 +54,10 @@ export const request: RequestConfig = {
       },
 
       (error) => {
+        if (error.response.status === 401 && location.pathname !== '/account/login') {
+          history.replace('/account/login');
+          return Promise.reject(error);
+        }
 
         if (error.response.data && typeof error.response.data.message === 'string') {
           const message = error.response?.data.message;

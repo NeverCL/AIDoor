@@ -161,13 +161,14 @@ public class UserController : BaseController
     }
 
     [HttpGet("profile")]
+    [AllowAnonymous]
     public async Task<IActionResult> GetProfile()
     {
         var user = await _userService.GetUserProfileAsync(UserId);
 
         if (user == null)
         {
-            return NotFound();
+            return Ok();
         }
 
         // 首先尝试从Claims中获取开发者模式状态

@@ -35,27 +35,6 @@ const NavHeader: React.FC = () => {
     }
   }, [showSearch]);
 
-  // 获取系统消息未读数量
-  useEffect(() => {
-    const fetchUnreadCount = async () => {
-      try {
-        const count = await getSystemMessageUnreadCount();
-        setUnreadCount(count);
-      } catch (error) {
-        console.error('获取未读消息数量失败:', error);
-      }
-    };
-
-    // 初始加载时获取未读消息数量
-    fetchUnreadCount();
-
-    // 设置定时器，每分钟检查一次未读消息
-    const timer = setInterval(fetchUnreadCount, 60000);
-
-    // 组件卸载时清除定时器
-    return () => clearInterval(timer);
-  }, []);
-
   // 获取系统消息列表
   const fetchMessages = async () => {
     if (!open) return;
