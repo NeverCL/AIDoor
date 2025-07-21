@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
         - name: admin
-          image: registry.cn-beijing.aliyuncs.com/wdora/aidoor-admin:latest
+          image: registry.cn-beijing.aliyuncs.com/wdora/aidoor-admin:20250721102836
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
