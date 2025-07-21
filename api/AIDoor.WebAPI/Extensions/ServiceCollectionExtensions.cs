@@ -23,31 +23,31 @@ public static class ServiceCollectionExtensions
 
         // Environment.SetEnvironmentVariable("OTEL_EXPORTER_OTLP_HEADERS", "Authorization=Bearer ge4p0cttir@6581c63854edbf1_ge4p0cttir@53df7ad2afe8301");
 
-        services.AddOpenTelemetry()
-            .ConfigureResource(builder => builder.AddService(serviceName))
-            .WithTracing(trace =>
-            {
-                trace.AddAspNetCoreInstrumentation(opt => opt.Filter = ctx =>
-                    ctx.Request.Method != HttpMethod.Options.ToString() &&
-                    !ctx.Request.Path.StartsWithSegments("/healthz"));
-                trace.AddHttpClientInstrumentation();
-                trace.AddEntityFrameworkCoreInstrumentation();
-            })
-            .WithMetrics(metric =>
-            {
-                metric.AddAspNetCoreInstrumentation();
-                metric.AddHttpClientInstrumentation();
-                metric.AddRuntimeInstrumentation();
-            })
-            .UseOtlpExporter(OtlpExportProtocol.HttpProtobuf, new Uri("http://aspire-dashboard.otlp:18889"))
-            // .UseOtlpExporter(OtlpExportProtocol.Grpc, new Uri("http://tracing-analysis-dc-bj.aliyuncs.com:8090"))
-            ;
-
-        services.AddLogging(builder =>
-        {
-            builder.ClearProviders();
-            builder.AddOpenTelemetry(logging => { logging.IncludeScopes = true; });
-        });
+        // services.AddOpenTelemetry()
+        //     .ConfigureResource(builder => builder.AddService(serviceName))
+        //     .WithTracing(trace =>
+        //     {
+        //         trace.AddAspNetCoreInstrumentation(opt => opt.Filter = ctx =>
+        //             ctx.Request.Method != HttpMethod.Options.ToString() &&
+        //             !ctx.Request.Path.StartsWithSegments("/healthz"));
+        //         trace.AddHttpClientInstrumentation();
+        //         trace.AddEntityFrameworkCoreInstrumentation();
+        //     })
+        //     .WithMetrics(metric =>
+        //     {
+        //         metric.AddAspNetCoreInstrumentation();
+        //         metric.AddHttpClientInstrumentation();
+        //         metric.AddRuntimeInstrumentation();
+        //     })
+        //     .UseOtlpExporter(OtlpExportProtocol.HttpProtobuf, new Uri("http://aspire-dashboard.otlp:18889"))
+        //     // .UseOtlpExporter(OtlpExportProtocol.Grpc, new Uri("http://tracing-analysis-dc-bj.aliyuncs.com:8090"))
+        //     ;
+        //
+        // services.AddLogging(builder =>
+        // {
+        //     builder.ClearProviders();
+        //     builder.AddOpenTelemetry(logging => { logging.IncludeScopes = true; });
+        // });
         return services;
     }
 
