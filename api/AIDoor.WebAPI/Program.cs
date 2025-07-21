@@ -9,11 +9,17 @@ builder.Services
     .AddSecret()
     .AddSecurityServices()
     .AddConfigOptions(builder.Configuration)
-    .AddApplicationServices();
+    .AddApplicationServices()
+    ;
+
+builder.AddServiceDefaults();
+
 
 var app = builder.Build();
 
 // 配置中间件管道
+app.MapDefaultEndpoints();
+
 app.ConfigurePipeline();
 
 // 初始化数据库
