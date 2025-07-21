@@ -20,23 +20,23 @@ spec:
                 name: api
                 port:
                   number: 80
-    - host: app.thedoorofai.com
-      http:
-        paths:
-          - path: /api
-            pathType: Prefix
-            backend:
-              service:
-                name: api
-                port:
-                  number: 80
-    - host: admin.thedoorofai.com
-      http:
-        paths:
-          - path: /api
-            pathType: Prefix
-            backend:
-              service:
-                name: api
-                port:
-                  number: 80
+    # - host: app.thedoorofai.com
+    #   http:
+    #     paths:
+    #       - path: /api
+    #         pathType: Prefix
+    #         backend:
+    #           service:
+    #             name: api
+    #             port:
+    #               number: 80
+    # - host: admin.thedoorofai.com
+    #   http:
+    #     paths:
+    #       - path: /api
+    #         pathType: Prefix
+    #         backend:
+    #           service:
+    #             name: api
+    #             port:
+    #               number: 80
