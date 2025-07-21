@@ -61,6 +61,10 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+      - name: Git Pull
+        run: |
+          git pull
+
       - name: Update Kubernetes manifests
         run: |
           # Update the image tag in the deployment.yaml
