@@ -28,4 +28,11 @@ spec:
           envFrom:
             - configMapRef:
                 name: api-env
+          volumeMounts:
+            - name: identity
+              mountPath: /app/keys
+      volumes:
+        - name: identity
+          configMap:
+            name: identity
       terminationGracePeriodSeconds: 180
