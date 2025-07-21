@@ -19,7 +19,7 @@ spec:
               service:
                 name: api
                 port:
-                  number: 80
+                  number: 8080
     - host: app.thedoorofai.com
       http:
         paths:
@@ -29,7 +29,7 @@ spec:
               service:
                 name: api
                 port:
-                  number: 80
+                  number: 8080
     - host: admin.thedoorofai.com
       http:
         paths:
@@ -39,4 +39,4 @@ spec:
               service:
                 name: api
                 port:
-                  number: 80
+                  number: 8080
