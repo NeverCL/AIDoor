@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
         - name: api
-          image: registry.cn-beijing.aliyuncs.com/wdora/aidoor-api:20250721133604
+          image: registry.cn-beijing.aliyuncs.com/wdora/aidoor-api:20250721133648
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
