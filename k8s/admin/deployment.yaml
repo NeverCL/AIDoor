@@ -1,0 +1,31 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: admin
+  labels:
+    app: admin
+spec:
+  minReadySeconds: 60
+  replicas: 1
+  selector:
+    matchLabels:
+      app: admin
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: admin
+    spec:
+      containers:
+        - name: admin
+          image: registry.cn-beijing.aliyuncs.com/wdora/aidoor-admin:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 80
+          envFrom:
+            - configMapRef:
+                name: admin-env
+      terminationGracePeriodSeconds: 180

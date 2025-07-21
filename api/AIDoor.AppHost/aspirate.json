@@ -1,0 +1,13 @@
+{
+  "TemplatePath": null,
+  "ContainerSettings": {
+    "Registry": "registry.cn-beijing.aliyuncs.com",
+    "RepositoryPrefix": "wdora",
+    "Tags": [
+      "latest"
+    ],
+    "Builder": "docker",
+    "BuildArgs": null,
+    "Context": null
+  }
+}

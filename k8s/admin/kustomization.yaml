@@ -1,0 +1,15 @@
+resources:
+  - deployment.yaml
+  - service.yaml
+  - ingress.yaml
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+configMapGenerator:
+  - name: admin-env
+    literals:
+      - NODE_ENV=development
+      - port=8001
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://aspire-dashboard:18889
+      - OTEL_SERVICE_NAME=admin

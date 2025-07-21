@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json.schemastore.org/aspire-8.0.json",
+  "resources": {
+    "api": {
+      "type": "project.v0",
+      "path": "../AIDoor.WebAPI/AIDoor.WebAPI.csproj",
+      "env": {
+        "OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EXCEPTION_LOG_ATTRIBUTES": "true",
+        "OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EVENT_LOG_ATTRIBUTES": "true",
+        "OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY": "in_memory",
+        "ASPNETCORE_FORWARDEDHEADERS_ENABLED": "true",
+        "HTTP_PORTS": "{api.bindings.http.targetPort}"
+      },
+      "bindings": {
+        "http": {
+          "scheme": "http",
+          "protocol": "tcp",
+          "transport": "http"
+        },
+        "https": {
+          "scheme": "https",
+          "protocol": "tcp",
+          "transport": "http"
+        }
+      }
+    },
+    "app": {
+      "type": "container.v1",
+      "build": {
+        "context": "../../app",
+        "dockerfile": "../../app/Dockerfile"
+      },
+      "env": {
+        "NODE_ENV": "development",
+        "port": "{app.bindings.http.targetPort}"
+      },
+      "bindings": {
+        "http": {
+          "scheme": "http",
+          "protocol": "tcp",
+          "transport": "http",
+          "targetPort": 8000
+        }
+      }
+    },
+    "admin": {
+      "type": "container.v1",
+      "build": {
+        "context": "../../admin",
+        "dockerfile": "../../admin/Dockerfile"
+      },
+      "env": {
+        "NODE_ENV": "development",
+        "port": "{admin.bindings.http.targetPort}"
+      },
+      "bindings": {
+        "http": {
+          "scheme": "http",
+          "protocol": "tcp",
+          "transport": "http",
+          "targetPort": 8001
+        }
+      }
+    }
+  }
+}

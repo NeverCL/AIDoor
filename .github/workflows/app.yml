@@ -1,0 +1,73 @@
+name: app
+
+on:
+  push:
+    branches: ["**"]
+    paths:
+      - "app/**"
+  workflow_dispatch:
+
+# 添加并发控制，确保同一时间只有一个工作流在运行
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  IMAGE_NAME: registry.cn-beijing.aliyuncs.com/wdora/aidoor-app
+  KUSTOMIZE_PATH: k8s/app
+  ALIYUN_USERNAME: gmmtec
+  ALIYUN_PASSWORD: 123123.Com
+  DOCKERCONTEXT: app
+  DOCKERFILE: app/Dockerfile
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Aliyun Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: registry.cn-beijing.aliyuncs.com
+          username: ${{ env.ALIYUN_USERNAME }}
+          password: ${{ env.ALIYUN_PASSWORD }}
+
+      - name: Set timestamp
+        id: timestamp
+        run: echo "timestamp=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_OUTPUT
+
+      - name: Extract metadata for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,value=${{ steps.timestamp.outputs.timestamp }}
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: ${{ env.DOCKERCONTEXT }}
+          file: ${{ env.DOCKERFILE }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Update Kubernetes manifests
+        run: |
+          # Update the image tag in the deployment.yaml
+          sed -i "s|image: ${{ env.IMAGE_NAME }}:.*|image: ${{ env.IMAGE_NAME }}:${{ steps.timestamp.outputs.timestamp }}|" ${{ env.KUSTOMIZE_PATH }}/deployment.yaml
+
+      - name: Commit and push changes
+        uses: stefanzweifel/git-auto-commit-action@v6
+        with:
+          commit_message: "Update image to timestamp ${{ steps.timestamp.outputs.timestamp }}"
+          file_pattern: ${{ env.KUSTOMIZE_PATH }}/deployment.yaml

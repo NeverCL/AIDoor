@@ -1,8 +1,7 @@
-FROM node:20-alpine AS base
+# Stage 1: Build the application
+FROM node:23-alpine AS builder
 
-# 安装依赖
-FROM base AS builder
-WORKDIR /app
+WORKDIR /
 
 # Add pnpm
 RUN corepack enable
@@ -23,18 +22,25 @@ COPY . .
 # Build the project
 RUN pnpm build
 
-# 生产环境
-FROM nginx:alpine AS runner
-ARG BUILD_VERSION=dev
-ENV BUILD_VERSION=${BUILD_VERSION}
+# Stage 2: Create production image
+FROM nginx:alpine
 
-# 复制 Nginx 配置
-COPY ./nginx.conf /etc/nginx/conf.d/default.conf
+# Copy built assets from builder stage
+COPY --from=builder /dist /usr/share/nginx/html
 
-# 复制构建产物到 Nginx 目录
-COPY --from=builder /app/dist /usr/share/nginx/html
+# Add custom nginx configuration for SPA routing
+RUN echo 'server { \
+    listen 80; \
+    server_name _; \
+    root /usr/share/nginx/html; \
+    index index.html; \
+    location / { \
+        try_files $uri $uri/ /index.html; \
+    } \
+}' > /etc/nginx/conf.d/default.conf
 
+# Expose port
 EXPOSE 80
 
-# 启动 Nginx
+# Start nginx
 CMD ["nginx", "-g", "daemon off;"] 

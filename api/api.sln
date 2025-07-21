@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AIDoor.WebAPI", "AIDoor.Web
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AIDoor.Test", "AIDoor.Test\AIDoor.Test.csproj", "{647A4AFF-E97A-4AFF-BB26-83C86925C9F3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AIDoor.ServiceDefaults", "AIDoor.ServiceDefaults\AIDoor.ServiceDefaults.csproj", "{353B085F-33C1-4655-932A-4F2D28C4B5BD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AIDoor.AppHost", "AIDoor.AppHost\AIDoor.AppHost.csproj", "{32F4F8F3-813A-4BDB-9B73-CC9643F6DC01}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +28,13 @@ Global
 		{647A4AFF-E97A-4AFF-BB26-83C86925C9F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{647A4AFF-E97A-4AFF-BB26-83C86925C9F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{647A4AFF-E97A-4AFF-BB26-83C86925C9F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{353B085F-33C1-4655-932A-4F2D28C4B5BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{353B085F-33C1-4655-932A-4F2D28C4B5BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{353B085F-33C1-4655-932A-4F2D28C4B5BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{353B085F-33C1-4655-932A-4F2D28C4B5BD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32F4F8F3-813A-4BDB-9B73-CC9643F6DC01}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32F4F8F3-813A-4BDB-9B73-CC9643F6DC01}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32F4F8F3-813A-4BDB-9B73-CC9643F6DC01}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32F4F8F3-813A-4BDB-9B73-CC9643F6DC01}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -1,0 +1,12 @@
+namespace: aidoor
+
+resources:
+- api
+- app
+- admin
+- namespace.yaml
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+

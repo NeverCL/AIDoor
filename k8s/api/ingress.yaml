@@ -1,0 +1,42 @@
+# https://kubernetes.io/docs/concepts/services-networking/ingress/#the-ingress-resource
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: api
+  annotations:
+    argocd.argoproj.io/ignore-healthcheck: "true"
+    k8s.apisix.apache.org/http-to-https: "true"
+spec:
+  ingressClassName: apisix
+  rules:
+    - host: api.thedoorofai.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: api
+                port:
+                  number: 80
+    - host: app.thedoorofai.com
+      http:
+        paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: api
+                port:
+                  number: 80
+    - host: admin.thedoorofai.com
+      http:
+        paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: api
+                port:
+                  number: 80

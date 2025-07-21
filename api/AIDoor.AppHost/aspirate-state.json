@@ -1,0 +1,23 @@
+{
+  "projectPath": ".",
+  "outputPath": "../../k8s",
+  "namespace": "aidoor",
+  "containerRegistry": "registry.cn-beijing.aliyuncs.com",
+  "containerImageTags": [
+    "latest"
+  ],
+  "imagePullPolicy": "IfNotPresent",
+  "containerBuilder": "docker",
+  "containerRepositoryPrefix": "wdora",
+  "outputFormat": "kustomize",
+  "skipFinalKustomizeGeneration": false,
+  "privateRegistryEmail": "aspir8@aka.ms",
+  "includeDashboard": true,
+  "useCustomNamespace": true,
+  "secrets": {
+    "salt": "l3guqfGQjStk4wEj",
+    "hash": "SMOIxIAmLxwQDbFGtYtdCX4Eg3McVnHwAEKqwRVKCc0=",
+    "secrets": {}
+  },
+  "processAllComponents": true
+}

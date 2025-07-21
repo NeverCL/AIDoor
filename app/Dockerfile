@@ -1,7 +1,7 @@
 # Stage 1: Build the application
 FROM node:23-alpine AS builder
 
-WORKDIR /app
+WORKDIR /
 
 # Add pnpm
 RUN corepack enable
@@ -26,7 +26,7 @@ RUN pnpm build
 FROM nginx:alpine
 
 # Copy built assets from builder stage
-COPY --from=builder /app/dist /usr/share/nginx/html
+COPY --from=builder /dist /usr/share/nginx/html
 
 # Add custom nginx configuration for SPA routing
 RUN echo 'server { \
