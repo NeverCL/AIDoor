@@ -39,7 +39,7 @@ public static class ServiceCollectionExtensions
                 metric.AddHttpClientInstrumentation();
                 metric.AddRuntimeInstrumentation();
             })
-            .UseOtlpExporter(OtlpExportProtocol.HttpProtobuf, new Uri("http://otlp.thedoorofai.com/"))
+            .UseOtlpExporter(OtlpExportProtocol.HttpProtobuf, new Uri("http://aspire-dashboard.otlp:18889"))
             // .UseOtlpExporter(OtlpExportProtocol.Grpc, new Uri("http://tracing-analysis-dc-bj.aliyuncs.com:8090"))
             ;
 
