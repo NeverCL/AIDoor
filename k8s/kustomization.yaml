@@ -1,12 +1,11 @@
 namespace: aidoor
 
 resources:
-- api
-- app
-- admin
-- namespace.yaml
+  - api
+  - app
+  - admin
+  - redis
+  - namespace.yaml
 
 generatorOptions:
   disableNameSuffixHash: true
-
-
