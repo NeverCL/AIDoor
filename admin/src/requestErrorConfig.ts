@@ -86,17 +86,12 @@ export const errorConfig: RequestConfig = {
       }
     },
   },
-  withCredentials: true,
+  // withCredentials: true,
   // 请求拦截器
   requestInterceptors: [
     (config: RequestOptions) => {
       // 拦截请求配置，进行个性化处理。
       // 为所有请求添加credentials以支持Cookie认证
-
-      if (!isDev) {
-        config.baseURL = 'https://adminapi.thedoorofai.com/';
-      }
-
       return config;
     },
   ],
