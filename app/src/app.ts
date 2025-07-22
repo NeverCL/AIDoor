@@ -34,10 +34,10 @@ export const request: RequestConfig = {
     }
   },
   requestInterceptors: [
-    (config: any) => {
-      const url = baseUrl + config.url;
-      return { ...config, url };
-    }
+    // (config: any) => {
+    //   const url = baseUrl + config.url;
+    //   return { ...config, url };
+    // }
   ],
   responseInterceptors: [
     [

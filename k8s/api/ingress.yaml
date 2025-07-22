@@ -30,16 +30,6 @@ spec:
                 name: api
                 port:
                   number: 8080
-    - host: adminapi.thedoorofai.com
-      http:
-        paths:
-          - path: /api
-            pathType: Prefix
-            backend:
-              service:
-                name: api
-                port:
-                  number: 8080
     - host: admin.thedoorofai.com
       http:
         paths:
