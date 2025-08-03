@@ -10,6 +10,10 @@ export default () => {
 
         window.addEventListener('resize', handleResize);
 
+        if (plus) {
+            plus.navigator.setStatusBarStyle('#2d2d2d');
+        }
+
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
@@ -62,7 +66,7 @@ export default () => {
 
     return (
         <>
-            <div className="bg-[#2d2d2d] text-primary px-4" style={{ height: windowHeight }}>
+            <div className="bg-[#2d2d2d] text-primary px-4" style={{ height: windowHeight - 10 }}>
                 <Outlet />
             </div>
         </>
