@@ -210,7 +210,7 @@ export default () => {
                             <div className="text-2xl font-bold">{publisherData?.stats.favorites}</div>
                             <div className="text-sm text-gray-600">收藏</div>
                         </div>
-                        <div className="flex-1 text-center">
+                        <div className="flex-1 text-center" onClick={showRateModal}>
                             <div className="flex items-center justify-center">
                                 <span className="text-2xl font-bold mr-1">{publisherData?.stats.rating.toFixed(1)}</span>
                                 <StarFill fontSize={16} color='#FFB700' />
