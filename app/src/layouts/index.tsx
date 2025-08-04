@@ -10,7 +10,7 @@ export default () => {
 
         window.addEventListener('resize', handleResize);
 
-        if (plus) {
+        if (typeof plus !== 'undefined') {
             plus.navigator.setStatusBarBackground('#2d2d2d');
         }
 
