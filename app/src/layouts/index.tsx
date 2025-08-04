@@ -11,7 +11,7 @@ export default () => {
         window.addEventListener('resize', handleResize);
 
         if (plus) {
-            plus.navigator.setStatusBarStyle('#2d2d2d');
+            plus.navigator.setStatusBarBackground('#2d2d2d');
         }
 
         return () => window.removeEventListener('resize', handleResize);
