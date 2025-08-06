@@ -446,7 +446,7 @@ export default () => {
                 ) : content ? (
                     <div className="p-4">
                         {content.images && content.images.length > 0 && (
-                            <div className="mb-4">
+                            <div className="mb-4 -mx-4">
                                 <Swiper>
                                     {content.images.map((image, index) => (
                                         <Swiper.Item key={index}>
@@ -468,7 +468,7 @@ export default () => {
                                                     <Image
                                                         src={getImageUrl(image)}
                                                         fit="cover"
-                                                        style={{ borderRadius: 8 }}
+                                                    // style={{ borderRadius: 8 }}
                                                     />
                                                 </div>
                                             )}

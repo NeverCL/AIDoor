@@ -1,4 +1,5 @@
-import { Navigate, Outlet, useModel, useNavigate, useSelectedRoutes } from "@umijs/max"
+import cx from "@/utils/classNames";
+import { Navigate, Outlet, useLocation, useModel, useNavigate, useSelectedRoutes } from "@umijs/max"
 import { Toast } from "antd-mobile"
 import { useEffect, useState } from "react"
 
@@ -42,7 +43,7 @@ export default () => {
 
     // const { pathname } = useLocation();
 
-    // const routes = useSelectedRoutes();
+    const routes = useSelectedRoutes();
 
     // const navigate = useNavigate();
 
@@ -52,7 +53,9 @@ export default () => {
         return <LoadingUser />;
     }
 
-    // const pathname = routes.at(-1)?.pathnameBase ?? '';
+    const routePath = routes.at(-1)?.route.path ?? '';
+
+    // console.log(routePath);
 
     // console.log(pathname);
 
@@ -66,7 +69,7 @@ export default () => {
 
     return (
         <>
-            <div className="bg-[#2d2d2d] text-primary px-4" style={{ height: windowHeight - 10 }}>
+            <div className={cx('bg-[#2d2d2d] text-primary', routePath !== 'Detail/Content/:id' ? 'px-4' : '')} style={{ height: windowHeight - 10 }}>
                 <Outlet />
             </div>
         </>
