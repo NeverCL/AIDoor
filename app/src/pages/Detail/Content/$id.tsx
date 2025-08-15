@@ -4,6 +4,7 @@ import { Swiper, Image, NavBar, Card, Skeleton, ImageViewer, Button, TextArea, D
 import { HeartOutline, HeartFill, StarOutline, StarFill, MessageOutline, EyeOutline, CheckOutline, AddOutline } from 'antd-mobile-icons';
 import api from '@/services/api';
 import dayjs from 'dayjs';
+import { getImageUrl } from "@/utils";
 
 // 定义内容详情接口
 interface UserContent {
@@ -410,11 +411,6 @@ export default () => {
             e.preventDefault(); // 阻止默认换行
             submitComment();
         }
-    };
-
-    // 获取图片完整URL
-    const getImageUrl = (fileName: string) => {
-        return `https://cdn.thedoorofai.com/${fileName}`;
     };
 
     // 判断文件是否为视频
