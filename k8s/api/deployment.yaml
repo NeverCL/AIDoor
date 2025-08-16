@@ -32,7 +32,7 @@ spec:
             - name: identity
               mountPath: /app/keys
             - name: config
-              mountPath: /app
+              mountPath: /app/appsettings.json # 直接指定文件路径
               subPath: appsettings.json
       volumes:
         - name: identity
