@@ -34,9 +34,9 @@ public class SmsService
         AlibabaCloud.OpenApiClient.Models.Config config = new AlibabaCloud.OpenApiClient.Models.Config
         {
             // 必填，请确保代码运行环境设置了环境变量 ALIBABA_CLOUD_ACCESS_KEY_ID。
-            AccessKeyId = "LTAI5tNAXNky8uG8xsuqTCBk",
+            AccessKeyId = "LTAI5tEU7Ys5YR6QMYpQ7GY9",
             // 必填，请确保代码运行环境设置了环境变量 ALIBABA_CLOUD_ACCESS_KEY_SECRET。
-            AccessKeySecret = "FjpFHalzTPs9X78yVaX42j68Vj7mBP",
+            AccessKeySecret = "z9aoQaD1E3dGRF3rYghlgKHZFCgdpF",
         };
         // Endpoint 请参考 https://api.aliyun.com/product/Dysmsapi
         config.Endpoint = "dysmsapi.aliyuncs.com";
