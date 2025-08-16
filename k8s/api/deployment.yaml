@@ -31,8 +31,13 @@ spec:
           volumeMounts:
             - name: identity
               mountPath: /app/keys
+            - name: config
+              mountPath: /app/appsettings.json
       volumes:
         - name: identity
           configMap:
             name: identity
+        - name: config
+          configMap:
+            name: api-config
       terminationGracePeriodSeconds: 180

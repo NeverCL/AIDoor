@@ -1,8 +1,18 @@
 ﻿namespace AIDoor.WebAPI.Services;
 
+using AIDoor.WebAPI.Options;
+using Microsoft.Extensions.Options;
+
 // https://next.api.aliyun.com/api/Dysmsapi/2018-05-01/SendMessageWithTemplate?params={%22From%22:%22%22}
 public class SmsService
 {
+    private readonly AliyunOSSOptions _aliyunOptions;
+
+    public SmsService(IOptions<AliyunOSSOptions> aliyunOptions)
+    {
+        _aliyunOptions = aliyunOptions.Value;
+    }
+
     public void SendCode(string phone, int code)
     {
         if (phone == "17090413576")
@@ -33,10 +43,9 @@ public class SmsService
         // 建议使用更安全的 STS 方式，更多鉴权访问方式请参见：https://help.aliyun.com/document_detail/378671.html。
         AlibabaCloud.OpenApiClient.Models.Config config = new AlibabaCloud.OpenApiClient.Models.Config
         {
-            // 必填，请确保代码运行环境设置了环境变量 ALIBABA_CLOUD_ACCESS_KEY_ID。
-            AccessKeyId = "LTAI5tEU7Ys5YR6QMYpQ7GY9",
-            // 必填，请确保代码运行环境设置了环境变量 ALIBABA_CLOUD_ACCESS_KEY_SECRET。
-            AccessKeySecret = "z9aoQaD1E3dGRF3rYghlgKHZFCgdpF",
+            // 使用从选项中获取的凭证
+            AccessKeyId = _aliyunOptions.AccessKeyId,
+            AccessKeySecret = _aliyunOptions.AccessKeySecret,
         };
         // Endpoint 请参考 https://api.aliyun.com/product/Dysmsapi
         config.Endpoint = "dysmsapi.aliyuncs.com";

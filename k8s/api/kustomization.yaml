@@ -19,3 +19,6 @@ configMapGenerator:
   - name: identity
     files:
       - key-d8a9f8cf-dbe9-4cd5-b479-30b469092538.xml
+  - name: api-config
+    files:
+      - appsettings.json
