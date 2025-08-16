@@ -32,7 +32,8 @@ spec:
             - name: identity
               mountPath: /app/keys
             - name: config
-              mountPath: /app/appsettings.json
+              mountPath: /app
+              subPath: appsettings.json
       volumes:
         - name: identity
           configMap:
