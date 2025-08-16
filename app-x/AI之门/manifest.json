@@ -4,7 +4,7 @@
     "name" : "AI之门", /*应用名称，程序桌面图标名称*/
     "version" : {
         "name" : "1.0.3", /*应用版本名称*/
-        "code" : 108
+        "code" : 112
     },
     "description" : "", /*应用描述信息*/
     "icons" : {
@@ -67,7 +67,8 @@
                     "<uses-permission android:name=\"android.permission.INTERNET\" />",
                     "<uses-permission android:name=\"android.permission.CAMERA\" />",
                     "<uses-permission android:name=\"android.permission.READ_EXTERNAL_STORAGE\" />"
-                ]
+                ],
+                "targetSdkVersion" : 30
             },
             /*使用Native.js调用原生安卓API需要使用到的系统权限*/
             "orientation" : [ "portrait-primary" ], /*应用支持的方向，portrait-primary：竖屏正方向；portrait-secondary：竖屏反方向；landscape-primary：横屏正方向；landscape-secondary：横屏反方向*/
